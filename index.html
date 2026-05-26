@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#f26419" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -36,7 +36,7 @@
           <label for="cfg-tarifa">Tarifa / km</label>
           <div class="config-value-wrap">
             <span class="config-sym" aria-hidden="true">$</span>
-            <input id="cfg-tarifa" type="number" value="850" inputmode="numeric"
+            <input id="cfg-tarifa" type="number" value="850" inputmode="numeric" pattern="[0-9]*"
                    aria-label="Tarifa por kilómetro en pesos" />
           </div>
         </div>
@@ -46,7 +46,7 @@
         <div class="config-field">
           <label for="cfg-distancia">Distancia</label>
           <div class="config-value-wrap">
-            <input id="cfg-distancia" type="number" value="25" inputmode="numeric"
+            <input id="cfg-distancia" type="number" value="25" inputmode="numeric" pattern="[0-9]*"
                    aria-label="Distancia en kilómetros" />
             <span class="config-sym" aria-hidden="true">km</span>
           </div>
@@ -57,7 +57,7 @@
         <div class="config-field">
           <label for="cfg-capacidad">Camión m³</label>
           <div class="config-value-wrap">
-            <input id="cfg-capacidad" type="number" value="20" inputmode="numeric"
+            <input id="cfg-capacidad" type="number" value="20" inputmode="numeric" pattern="[0-9]*"
                    aria-label="Capacidad del camión en metros cúbicos" />
           </div>
         </div>
@@ -134,6 +134,24 @@
 
       <div class="scroll-spacer"></div>
     </main>
+
+    <!-- ── Barra de resumen fija ─────────────── -->
+    <div class="summary-bar" aria-label="Resumen de cotización" aria-live="polite">
+      <div class="sbar-item">
+        <span class="sbar-label">Volumen</span>
+        <span class="sbar-value" id="sbar-volume">0.00 m³</span>
+      </div>
+      <div class="sbar-divider" aria-hidden="true"></div>
+      <div class="sbar-item">
+        <span class="sbar-label">Ocupación</span>
+        <span class="sbar-value" id="sbar-pct">0%</span>
+      </div>
+      <div class="sbar-divider" aria-hidden="true"></div>
+      <div class="sbar-item">
+        <span class="sbar-label">Total</span>
+        <span class="sbar-value accent" id="sbar-total">$0</span>
+      </div>
+    </div>
 
     <!-- ── Nav inferior (2 tabs) ──────────────── -->
     <nav class="bottom-nav" aria-label="Navegación principal">

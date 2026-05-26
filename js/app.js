@@ -19,6 +19,9 @@ const $statDist   = document.getElementById('stat-distancia');
 const $sumItems   = document.getElementById('summary-items');
 const $totalPrice = document.getElementById('btn-total-price');
 const $btnShare   = document.querySelector('.btn-share');
+const $sbarVol    = document.getElementById('sbar-volume');
+const $sbarPct    = document.getElementById('sbar-pct');
+const $sbarTotal  = document.getElementById('sbar-total');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const formatCLP = n => '$' + Math.round(n).toLocaleString('es-CL');
@@ -91,6 +94,11 @@ function recalc() {
 
   // Botón total
   $totalPrice.textContent = formatCLP(costo);
+
+  // Barra de resumen fija
+  $sbarVol.textContent   = totalVol.toFixed(2) + ' m³';
+  $sbarPct.textContent   = Math.round(pct) + '%';
+  $sbarTotal.textContent = formatCLP(costo);
 }
 
 // ─── Gestión de cantidad ──────────────────────────────────────────────────────
