@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f0f0f" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f0f0f'/%3E%3Ctext x='5' y='25' font-family='Arial Black,sans-serif' font-size='24' font-weight='900' fill='%23f26419'%3EF%3C/text%3E%3C/svg%3E" />
+  <title>FleteApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <span class="logo">FLETE<span class="logo-dot">.</span>APP</span>
+      <div class="avatar" role="img" aria-label="Avatar del transportista">FC</div>
+    </header>
+
+    <!-- Scrollable content -->
+    <main class="main">
+
+      <!-- Config strip -->
+      <section class="config-strip">
+        <div class="config-field">
+          <label for="cfg-tarifa">Tarifa</label>
+          <div class="config-input-wrap">
+            <span class="config-prefix" aria-hidden="true">$</span>
+            <input id="cfg-tarifa" type="number" value="850" inputmode="numeric" aria-label="Tarifa por kilómetro en pesos" />
+            <span class="config-suffix" aria-hidden="true">/km</span>
+          </div>
+        </div>
+        <div class="config-field">
+          <label for="cfg-distancia">Distancia</label>
+          <div class="config-input-wrap">
+            <input id="cfg-distancia" type="number" value="25" inputmode="numeric" aria-label="Distancia en kilómetros" />
+            <span class="config-suffix" aria-hidden="true">km</span>
+          </div>
+        </div>
+        <div class="config-field">
+          <label for="cfg-capacidad">Camión</label>
+          <div class="config-input-wrap">
+            <input id="cfg-capacidad" type="number" value="20" inputmode="numeric" aria-label="Capacidad del camión en metros cúbicos" />
+            <span class="config-suffix" aria-hidden="true">m³</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category tabs -->
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-cat="todos">Todos</button>
+        <button class="tab" data-cat="dormitorio">Dormitorio</button>
+        <button class="tab" data-cat="living">Living</button>
+        <button class="tab" data-cat="cocina">Cocina</button>
+        <button class="tab" data-cat="otros">Otros</button>
+      </div>
+
+      <!-- Articles list -->
+      <section class="articles" id="articles-list">
+
+        <div class="category-label" data-cat="dormitorio">Dormitorio</div>
+
+        <div class="article-item" data-cat="dormitorio">
+          <div class="article-icon">🛏️</div>
+          <div class="article-info">
+            <span class="article-name">Cama 2 plazas</span>
+            <span class="article-volume">1.80 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="dormitorio">
+          <div class="article-icon">🛏️</div>
+          <div class="article-info">
+            <span class="article-name">Cama 1½ plaza</span>
+            <span class="article-volume">1.20 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="dormitorio">
+          <div class="article-icon">🪟</div>
+          <div class="article-info">
+            <span class="article-name">Ropero 3 puertas</span>
+            <span class="article-volume">2.10 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="dormitorio">
+          <div class="article-icon">🗄️</div>
+          <div class="article-info">
+            <span class="article-name">Cómoda</span>
+            <span class="article-volume">0.80 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="dormitorio">
+          <div class="article-icon">🪑</div>
+          <div class="article-info">
+            <span class="article-name">Velador</span>
+            <span class="article-volume">0.15 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="dormitorio">
+          <div class="article-icon">🪞</div>
+          <div class="article-info">
+            <span class="article-name">Escritorio</span>
+            <span class="article-volume">0.60 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="category-label" data-cat="living">Living</div>
+
+        <div class="article-item" data-cat="living">
+          <div class="article-icon">🛋️</div>
+          <div class="article-info">
+            <span class="article-name">Sofá 3 cuerpos</span>
+            <span class="article-volume">2.40 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="living">
+          <div class="article-icon">🛋️</div>
+          <div class="article-info">
+            <span class="article-name">Sofá 2 cuerpos</span>
+            <span class="article-volume">1.60 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="living">
+          <div class="article-icon">📺</div>
+          <div class="article-info">
+            <span class="article-name">TV + rack</span>
+            <span class="article-volume">0.60 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="living">
+          <div class="article-icon">🪑</div>
+          <div class="article-info">
+            <span class="article-name">Mesa de centro</span>
+            <span class="article-volume">0.25 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="living">
+          <div class="article-icon">🪑</div>
+          <div class="article-info">
+            <span class="article-name">Sillón individual</span>
+            <span class="article-volume">0.90 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="category-label" data-cat="cocina">Cocina</div>
+
+        <div class="article-item" data-cat="cocina">
+          <div class="article-icon">🧊</div>
+          <div class="article-info">
+            <span class="article-name">Refrigerador</span>
+            <span class="article-volume">1.20 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="cocina">
+          <div class="article-icon">🫧</div>
+          <div class="article-info">
+            <span class="article-name">Lavadora</span>
+            <span class="article-volume">0.70 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="cocina">
+          <div class="article-icon">🍽️</div>
+          <div class="article-info">
+            <span class="article-name">Mesa comedor 6p</span>
+            <span class="article-volume">1.50 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="cocina">
+          <div class="article-icon">🪑</div>
+          <div class="article-info">
+            <span class="article-name">Silla comedor</span>
+            <span class="article-volume">0.12 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="cocina">
+          <div class="article-icon">🍳</div>
+          <div class="article-info">
+            <span class="article-name">Cocina / horno</span>
+            <span class="article-volume">0.55 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="category-label" data-cat="otros">Otros</div>
+
+        <div class="article-item" data-cat="otros">
+          <div class="article-icon">📦</div>
+          <div class="article-info">
+            <span class="article-name">Caja estándar</span>
+            <span class="article-volume">0.08 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="otros">
+          <div class="article-icon">🚲</div>
+          <div class="article-info">
+            <span class="article-name">Bicicleta</span>
+            <span class="article-volume">0.35 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="otros">
+          <div class="article-icon">🛏️</div>
+          <div class="article-info">
+            <span class="article-name">Colchón 2 plazas</span>
+            <span class="article-volume">0.90 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+        <div class="article-item" data-cat="otros">
+          <div class="article-icon">🧺</div>
+          <div class="article-info">
+            <span class="article-name">Electrodoméstico peq.</span>
+            <span class="article-volume">0.05 m³</span>
+          </div>
+          <div class="article-controls">
+            <button class="btn-qty minus">−</button>
+            <span class="qty">0</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Summary card -->
+      <section class="summary-card">
+        <div class="summary-header">
+          <span class="summary-title">Resumen de carga</span>
+          <span class="summary-items" id="summary-items">0 artículos</span>
+        </div>
+        <div class="occupancy-wrap">
+          <div class="occupancy-bar">
+            <div class="occupancy-fill" id="occupancy-fill"></div>
+          </div>
+          <span class="occupancy-pct" id="occupancy-pct">0%</span>
+        </div>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-label">Volumen total</span>
+            <span class="stat-value" id="stat-volume">0.00 m³</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Costo aprox.</span>
+            <span class="stat-value" id="stat-costo">$0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Total + share -->
+      <div class="action-row">
+        <button class="btn-total">
+          <span class="btn-total-label">Total estimado</span>
+          <span class="btn-total-price" id="btn-total-price">$0</span>
+        </button>
+        <button class="btn-share" aria-label="Compartir">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </button>
+      </div>
+
+    </main>
+
+    <!-- Bottom navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" aria-label="Cotizar" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="1" y="3" width="15" height="13" rx="1"/>
+          <path d="M16 8h4l3 5v3h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <span>Cotizar</span>
+      </button>
+      <button class="nav-item" aria-label="Historial de cotizaciones">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <line x1="10" y1="9" x2="8" y2="9"/>
+        </svg>
+        <span>Historial</span>
+      </button>
+      <button class="nav-item" aria-label="Lista de clientes">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Clientes</span>
+      </button>
+      <button class="nav-item" aria-label="Mi perfil">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Perfil</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="js/catalog.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
