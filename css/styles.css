@@ -113,7 +113,7 @@ input[type=number] { -moz-appearance: textfield; }
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 152px;
+  padding-bottom: 160px;
   scrollbar-width: none;
 }
 .main::-webkit-scrollbar { display: none; }
@@ -126,6 +126,7 @@ input[type=number] { -moz-appearance: textfield; }
   border: 1px solid var(--border);
   display: flex;
   align-items: stretch;
+  min-height: 90px;
 }
 
 .config-field {
@@ -134,15 +135,15 @@ input[type=number] { -moz-appearance: textfield; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 14px 8px;
+  padding: 20px 16px;
   gap: 6px;
   min-width: 0;
 }
 
 .config-field label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
   text-align: center;
@@ -153,12 +154,13 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   align-items: baseline;
   gap: 2px;
+  padding-top: 4px;
 }
 
 .config-sym {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--accent);
   opacity: 0.65;
   flex-shrink: 0;
@@ -166,11 +168,11 @@ input[type=number] { -moz-appearance: textfield; }
 
 .config-field input {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--accent);
   text-align: center;
-  width: 62px;
+  width: 74px;
   min-width: 0;
 }
 
@@ -189,15 +191,15 @@ input[type=number] { -moz-appearance: textfield; }
   letter-spacing: 1.6px;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 0 18px 10px;
+  padding: 0 18px;
+  margin-top: 24px;
+  margin-bottom: 12px;
 }
-
-.section-label.top-gap { padding-top: 22px; }
 
 /* ─── Tabs ───────────────────────────────────────────────────────────────────── */
 .tabs {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   padding: 0 14px 14px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -207,21 +209,21 @@ input[type=number] { -moz-appearance: textfield; }
 .tab {
   flex-shrink: 0;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 7px 15px;
+  padding: 8px 18px;
   border-radius: 20px;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .tab.active {
-  background: var(--accent);
-  color: #fff;
+  background: transparent;
+  color: var(--accent);
   border-color: var(--accent);
 }
 
@@ -229,7 +231,7 @@ input[type=number] { -moz-appearance: textfield; }
 .articles {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   padding: 0 14px 6px;
 }
 
@@ -240,8 +242,8 @@ input[type=number] { -moz-appearance: textfield; }
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 12px 12px 14px;
+  gap: 16px;
+  padding: 16px 14px;
   transition: border-color 0.18s, background 0.18s;
 }
 
@@ -271,7 +273,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .article-name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
@@ -280,7 +282,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .article-volume {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -491,11 +493,12 @@ input[type=number] { -moz-appearance: textfield; }
   transform: translateX(-50%);
   width: 100%;
   max-width: 390px;
-  height: 48px;
+  height: 56px;
   background: var(--surface);
-  border-top: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
   display: flex;
   align-items: center;
+  padding: 0 20px;
   z-index: 15;
 }
 
@@ -505,11 +508,11 @@ input[type=number] { -moz-appearance: textfield; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
 }
 
 .sbar-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -518,17 +521,20 @@ input[type=number] { -moz-appearance: textfield; }
 
 .sbar-value {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text);
   line-height: 1;
 }
 
-.sbar-value.accent { color: var(--accent); }
+.sbar-value.accent {
+  color: var(--accent);
+  font-size: 17px;
+}
 
 .sbar-divider {
   width: 1px;
-  height: 22px;
+  height: 24px;
   background: var(--border);
   flex-shrink: 0;
 }
