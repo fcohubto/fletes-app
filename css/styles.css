@@ -2,13 +2,13 @@
 
 /* ─── Variables ──────────────────────────────────────────────────────────────── */
 :root {
-  --bg:      #0f0f0f;
-  --surface: #1a1a1a;
-  --card:    #222222;
-  --border:  #2e2e2e;
-  --accent:  #f26419;
-  --text:    #f0ece4;
-  --muted:   #7a7570;
+  --bg:      #111111;
+  --surface: #1C1C1E;
+  --card:    #2C2C2E;
+  --border:  #3A3A3C;
+  --accent:  #FF6B2F;
+  --text:    #FFFFFF;
+  --muted:   #8E8E93;
 
   --r-sm: 8px;
   --r-md: 12px;
@@ -74,8 +74,9 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 20px 16px;
+  padding: 20px 20px 18px;
   background: var(--bg);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -84,7 +85,7 @@ input[type=number] { -moz-appearance: textfield; }
 .logo {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 32px;
   letter-spacing: 1.5px;
   color: var(--text);
   line-height: 1;
@@ -113,6 +114,7 @@ input[type=number] { -moz-appearance: textfield; }
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding-top: 20px;
   padding-bottom: 160px;
   scrollbar-width: none;
 }
@@ -120,7 +122,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── Config card ────────────────────────────────────────────────────────────── */
 .config-card {
-  margin: 2px 16px 0;
+  margin: 0 16px;
   background: var(--surface);
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
@@ -168,11 +170,11 @@ input[type=number] { -moz-appearance: textfield; }
 
 .config-field input {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 700;
   color: var(--text);
   text-align: center;
-  width: 74px;
+  width: 86px;
   min-width: 0;
 }
 
@@ -186,7 +188,7 @@ input[type=number] { -moz-appearance: textfield; }
 /* ─── Section labels ─────────────────────────────────────────────────────────── */
 .section-label {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.6px;
   text-transform: uppercase;
@@ -251,7 +253,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 .article-card.selected {
   border-color: var(--accent);
-  background: rgba(242, 100, 25, 0.13);
+  background: rgba(255, 107, 47, 0.13);
 }
 
 .article-icon {
@@ -275,7 +277,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .article-name {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
@@ -425,7 +427,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 .summary-row-value {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--text);
 }
@@ -656,7 +658,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 .config-extra-field input {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text);
   text-align: center;

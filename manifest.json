@@ -5,8 +5,8 @@
   "start_url": "/fletes-app/",
   "scope": "/fletes-app/",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#f26419",
+  "background_color": "#111111",
+  "theme_color": "#FF6B2F",
   "orientation": "portrait",
   "icons": [
     {
