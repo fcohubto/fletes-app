@@ -26,7 +26,7 @@ html {
 }
 
 body {
-  background: #F5F7FA;
+  background: var(--bg);
   color: var(--text);
   font-family: 'Barlow', sans-serif;
   font-weight: 400;
@@ -831,3 +831,28 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .hcard-btn:active { background: var(--border); }
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:           #0F172A;
+    --surface:      #1E293B;
+    --card:         #1E293B;
+    --border:       #334155;
+    --accent:       #3B82F6;
+    --accent-light: rgba(59, 130, 246, 0.15);
+    --text:         #F1F5F9;
+    --muted:        #94A3B8;
+  }
+
+  /* Las sombras son imperceptibles sobre fondos oscuros — se eliminan */
+  .config-card,
+  .article-card,
+  .summary-card,
+  .btn-share,
+  .history-card,
+  .config-extra { box-shadow: none; }
+
+  .summary-bar { box-shadow: 0 -1px 0 var(--border); }
+  .bottom-nav  { box-shadow: 0 -1px 0 var(--border); }
+}
