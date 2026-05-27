@@ -598,3 +598,63 @@ input[type=number] { -moz-appearance: textfield; }
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
+
+.config-row-extra {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.config-row-extra label {
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 3px;
+  letter-spacing: 0.5px;
+}
+.config-input {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  padding: 6px 10px;
+  width: 100%;
+}
+#alerta-exceso {
+  background: #7f1d1d;
+  color: #fecaca;
+  font-size: 13px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Barlow', sans-serif;
+}
+#alerta-exceso span {
+  font-size: 18px;
+}
+#alerta-exceso.hidden {
+  display: none;
+}
+.ocupacion-excedida {
+  color: #ef4444 !important;
+}
+#btn-limpiar {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-family: 'Barlow', sans-serif;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+#btn-limpiar:active {
+  opacity: 0.6;
+}
