@@ -22,6 +22,11 @@ const $btnShare   = document.querySelector('.btn-share');
 const $sbarVol    = document.getElementById('sbar-volume');
 const $sbarPct    = document.getElementById('sbar-pct');
 const $sbarTotal  = document.getElementById('sbar-total');
+const $cfgBencina = document.getElementById('input-bencina-litro');
+const $cfgRend    = document.getElementById('input-bencina-rendimiento');
+const $cfgPeajes  = document.getElementById('input-peajes');
+const $alertExc   = document.getElementById('alerta-exceso');
+const $btnLimpiar = document.getElementById('btn-limpiar');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const formatCLP = n => '$' + Math.round(n).toLocaleString('es-CL');
@@ -74,13 +79,22 @@ function recalc() {
 
   const pct   = (totalVol / capacidad) * 100;
   const pctUI = Math.min(pct, 100);
-  const costo = tarifa * distancia;
+
+  const precioBencina  = parseFloat($cfgBencina?.value) || 0;
+  const rendimiento    = parseFloat($cfgRend?.value)    || 0;
+  const peajes         = parseFloat($cfgPeajes?.value)  || 0;
+  const costoBencina   = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
+  const costo          = (tarifa * distancia) + costoBencina + peajes;
 
   // Barra de ocupación
   $occFill.style.width = pctUI + '%';
   $occFill.className   = 'occupancy-fill' + (pct >= 100 ? ' over' : pct >= 80 ? ' warning' : '');
   $occPct.textContent  = Math.round(pct) + '%';
+  $occPct.classList.toggle('ocupacion-excedida', pct > 100);
   $occBar.setAttribute('aria-valuenow', Math.round(pctUI));
+
+  // Alerta exceso capacidad
+  if ($alertExc) $alertExc.classList.toggle('hidden', totalVol <= capacidad);
 
   // Stats del resumen
   $statVol.textContent  = totalVol.toFixed(2) + ' m³';
@@ -194,6 +208,18 @@ $list.addEventListener('click', e => {
 
 // Botón compartir
 $btnShare.addEventListener('click', compartir);
+
+// Campos costos adicionales
+[$cfgBencina, $cfgRend, $cfgPeajes].forEach(input => {
+  input?.addEventListener('input', recalc);
+});
+
+// Botón limpiar
+$btnLimpiar?.addEventListener('click', () => {
+  CATALOG.forEach(item => { qty[item.id] = 0; });
+  render();
+  recalc();
+});
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 render();
