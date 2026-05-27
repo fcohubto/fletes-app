@@ -120,7 +120,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── Config card ────────────────────────────────────────────────────────────── */
 .config-card {
-  margin: 2px 14px 22px;
+  margin: 2px 14px 0;
   background: var(--surface);
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
@@ -195,6 +195,8 @@ input[type=number] { -moz-appearance: textfield; }
   margin-top: 24px;
   margin-bottom: 12px;
 }
+
+.section-label.top-gap { margin-top: 32px; }
 
 /* ─── Tabs ───────────────────────────────────────────────────────────────────── */
 .tabs {
@@ -483,6 +485,27 @@ input[type=number] { -moz-appearance: textfield; }
 
 .btn-share:active { background: var(--card); }
 
+/* ─── Action secondary ───────────────────────────────────────────────────────── */
+.action-secondary {
+  display: flex;
+  justify-content: center;
+  padding: 10px 14px 0;
+}
+
+#btn-limpiar {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: 'Barlow', sans-serif;
+  padding: 6px 12px;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#btn-limpiar:active { opacity: 0.5; }
+
 .scroll-spacer { height: 16px; }
 
 /* ─── Summary bar fija ───────────────────────────────────────────────────────── */
@@ -599,62 +622,68 @@ input[type=number] { -moz-appearance: textfield; }
   text-transform: uppercase;
 }
 
-.config-row-extra {
-  display: flex;
-  gap: 8px;
-  padding: 10px 16px;
+.config-extra {
+  margin: 0 14px 22px;
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
-}
-.config-row-extra label {
-  font-size: 10px;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 3px;
-  letter-spacing: 0.5px;
-}
-.config-input {
-  flex: 1;
-  background: var(--card);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 15px;
-  font-family: 'Barlow Condensed', sans-serif;
+  border-top: none;
+  display: flex;
+  align-items: stretch;
+}
+
+.config-extra-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  gap: 4px;
+  min-width: 0;
+}
+
+.config-extra-field label {
+  font-size: 10px;
   font-weight: 600;
-  padding: 6px 10px;
-  width: 100%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.config-extra-field input {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  width: 70px;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
 }
 #alerta-exceso {
-  background: #7f1d1d;
-  color: #fecaca;
+  margin: 12px 14px 0;
+  background: rgba(127, 29, 29, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--r-md);
+  color: #fca5a5;
   font-size: 13px;
-  padding: 10px 16px;
+  font-family: 'Barlow', sans-serif;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Barlow', sans-serif;
 }
 #alerta-exceso span {
-  font-size: 18px;
+  font-size: 16px;
 }
 #alerta-exceso.hidden {
   display: none;
 }
 .ocupacion-excedida {
   color: #ef4444 !important;
-}
-#btn-limpiar {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 11px;
-  font-family: 'Barlow', sans-serif;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-}
-#btn-limpiar:active {
-  opacity: 0.6;
 }

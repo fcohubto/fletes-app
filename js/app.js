@@ -18,7 +18,8 @@ const $statCosto  = document.getElementById('stat-costo');
 const $statDist   = document.getElementById('stat-distancia');
 const $sumItems   = document.getElementById('summary-items');
 const $totalPrice = document.getElementById('btn-total-price');
-const $btnShare   = document.querySelector('.btn-share');
+const $btnShare     = document.querySelector('.btn-share');
+const $btnCompartir = document.getElementById('btn-compartir');
 const $sbarVol    = document.getElementById('sbar-volume');
 const $sbarPct    = document.getElementById('sbar-pct');
 const $sbarTotal  = document.getElementById('sbar-total');
@@ -84,7 +85,7 @@ function recalc() {
   const rendimiento    = parseFloat($cfgRend?.value)    || 0;
   const peajes         = parseFloat($cfgPeajes?.value)  || 0;
   const costoBencina   = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
-  const costo          = (tarifa * distancia) + costoBencina + peajes;
+  const costo = (tarifa * distancia) + costoBencina + peajes;
 
   // Barra de ocupación
   $occFill.style.width = pctUI + '%';
@@ -143,7 +144,11 @@ async function compartir() {
 
   let totalVol = 0;
   seleccionados.forEach(item => { totalVol += item.vol * qty[item.id]; });
-  const costo = tarifa * distancia;
+  const precioBencina = parseFloat($cfgBencina?.value) || 0;
+  const rendimiento   = parseFloat($cfgRend?.value)    || 0;
+  const peajes        = parseFloat($cfgPeajes?.value)  || 0;
+  const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
+  const costo         = (tarifa * distancia) + costoBencina + peajes;
 
   const lineas = seleccionados.map(item => {
     const sub = (item.vol * qty[item.id]).toFixed(2);
@@ -206,8 +211,9 @@ $list.addEventListener('click', e => {
   input.addEventListener('input', recalc);
 });
 
-// Botón compartir
+// Botones compartir
 $btnShare.addEventListener('click', compartir);
+$btnCompartir?.addEventListener('click', compartir);
 
 // Campos costos adicionales
 [$cfgBencina, $cfgRend, $cfgPeajes].forEach(input => {

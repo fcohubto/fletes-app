@@ -63,19 +63,24 @@
         </div>
       </div>
 
-      <!-- Config extra: bencina y peajes -->
-      <div class="config-row-extra">
-        <div>
-          <label for="input-bencina-litro">$/litro bencina</label>
-          <input id="input-bencina-litro" type="number" class="config-input" value="0" inputmode="numeric" pattern="[0-9]*" />
+      <!-- Config extra: costos adicionales -->
+      <div class="config-extra">
+        <div class="config-extra-field">
+          <label for="input-bencina-litro">$/L bencina</label>
+          <input id="input-bencina-litro" type="number" value="0" inputmode="numeric" pattern="[0-9]*"
+                 aria-label="Precio por litro de bencina" />
         </div>
-        <div>
-          <label for="input-bencina-rendimiento">km/litro</label>
-          <input id="input-bencina-rendimiento" type="number" class="config-input" value="0" inputmode="numeric" pattern="[0-9]*" />
+        <div class="config-divider" aria-hidden="true"></div>
+        <div class="config-extra-field">
+          <label for="input-bencina-rendimiento">km / litro</label>
+          <input id="input-bencina-rendimiento" type="number" value="0" inputmode="numeric" pattern="[0-9]*"
+                 aria-label="Rendimiento en kilómetros por litro" />
         </div>
-        <div>
+        <div class="config-divider" aria-hidden="true"></div>
+        <div class="config-extra-field">
           <label for="input-peajes">Peajes $</label>
-          <input id="input-peajes" type="number" class="config-input" value="0" inputmode="numeric" pattern="[0-9]*" />
+          <input id="input-peajes" type="number" value="0" inputmode="numeric" pattern="[0-9]*"
+                 aria-label="Costo total de peajes" />
         </div>
       </div>
 
@@ -88,7 +93,10 @@
         <button class="tab"        data-cat="dormitorio" role="tab" aria-selected="false">Dormitorio</button>
         <button class="tab"        data-cat="living"     role="tab" aria-selected="false">Living</button>
         <button class="tab"        data-cat="cocina"     role="tab" aria-selected="false">Cocina</button>
-        <button class="tab"        data-cat="otros"      role="tab" aria-selected="false">Otros</button>
+        <button class="tab"        data-cat="lavadero"   role="tab" aria-selected="false">Lavadero</button>
+        <button class="tab"        data-cat="despacho"   role="tab" aria-selected="false">Despacho</button>
+        <button class="tab"        data-cat="terraza"    role="tab" aria-selected="false">Terraza</button>
+        <button class="tab"        data-cat="cajas"      role="tab" aria-selected="false">Cajas</button>
       </div>
 
       <!-- Lista de artículos (renderizada por app.js) -->
@@ -118,7 +126,7 @@
             <span class="summary-row-value" id="stat-volume">0.00 m³</span>
           </div>
           <div class="summary-row">
-            <span class="summary-row-label">Costo por distancia</span>
+            <span class="summary-row-label">Costo estimado</span>
             <span class="summary-row-value accent" id="stat-costo">$0</span>
           </div>
           <div class="summary-row last">
@@ -129,9 +137,14 @@
 
       </div>
 
-      <!-- Fila de acción: total + compartir -->
+      <!-- Alerta exceso capacidad -->
+      <div id="alerta-exceso" class="hidden" role="alert">
+        <span aria-hidden="true">⚠</span> Excede la capacidad — puedes continuar agregando
+      </div>
+
+      <!-- Acciones -->
       <div class="action-row">
-        <button class="btn-total" aria-label="Ver total estimado">
+        <button class="btn-total" id="btn-compartir" aria-label="Compartir cotización">
           <span class="btn-total-label">Total estimado</span>
           <span class="btn-total-price" id="btn-total-price">$0</span>
         </button>
@@ -147,12 +160,12 @@
           </svg>
         </button>
       </div>
+      <div class="action-secondary">
+        <button id="btn-limpiar">Limpiar todo</button>
+      </div>
 
       <div class="scroll-spacer"></div>
     </main>
-
-    <!-- Alerta exceso capacidad -->
-    <div id="alerta-exceso" class="hidden"><span>⚠</span> Excede la capacidad máxima — puedes continuar agregando</div>
 
     <!-- ── Barra de resumen fija ─────────────── -->
     <div class="summary-bar" aria-label="Resumen de cotización" aria-live="polite">
@@ -170,7 +183,6 @@
         <span class="sbar-label">Total</span>
         <span class="sbar-value accent" id="sbar-total">$0</span>
       </div>
-      <button id="btn-limpiar">Limpiar todo</button>
     </div>
 
     <!-- ── Nav inferior (2 tabs) ──────────────── -->
