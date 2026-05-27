@@ -687,3 +687,133 @@ input[type=number] { -moz-appearance: textfield; }
 .ocupacion-excedida {
   color: #ef4444 !important;
 }
+
+/* ─── Vistas ─────────────────────────────────────────────────────────────────── */
+.hidden { display: none; }
+
+/* ─── Perfil ─────────────────────────────────────────────────────────────────── */
+.config-extra.standalone {
+  border-top: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+#prof-nombre {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  width: 200px;
+  text-align: center;
+}
+
+#prof-nombre::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 16px;
+}
+
+/* ─── Cliente input ──────────────────────────────────────────────────────────── */
+.cliente-row {
+  padding: 12px 14px 0;
+}
+
+#input-cliente {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  transition: border-color 0.2s;
+}
+
+#input-cliente::placeholder { color: var(--muted); font-weight: 400; }
+#input-cliente:focus { border-color: var(--accent); }
+
+/* ─── Historial ──────────────────────────────────────────────────────────────── */
+.historial-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 14px;
+}
+
+.history-empty {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding: 24px 20px;
+  line-height: 1.6;
+}
+
+.history-card {
+  background: var(--card);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hcard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hcard-cliente {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.hcard-fecha {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.hcard-items {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.hcard-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.hcard-stat {
+  font-size: 12px;
+  color: var(--muted);
+  flex: 1;
+}
+
+.hcard-costo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.hcard-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  letter-spacing: 0.2px;
+  transition: background 0.15s;
+}
+
+.hcard-btn:active { background: var(--border); }

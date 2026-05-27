@@ -28,6 +28,190 @@ const $cfgRend    = document.getElementById('input-bencina-rendimiento');
 const $cfgPeajes  = document.getElementById('input-peajes');
 const $alertExc   = document.getElementById('alerta-exceso');
 const $btnLimpiar = document.getElementById('btn-limpiar');
+const $avatar          = document.querySelector('.avatar');
+const $profNombre      = document.getElementById('prof-nombre');
+const $profTarifa      = document.getElementById('prof-tarifa');
+const $profCapacidad   = document.getElementById('prof-capacidad');
+const $profBencina     = document.getElementById('prof-bencina');
+const $profRendimiento = document.getElementById('prof-rendimiento');
+const $inputCliente    = document.getElementById('input-cliente');
+const $historialList   = document.getElementById('historial-list');
+const $navCotizar      = document.getElementById('nav-cotizar');
+const $navPerfil       = document.getElementById('nav-perfil');
+const $viewCotizar     = document.getElementById('view-cotizar');
+const $viewPerfil      = document.getElementById('view-perfil');
+const $summaryBar      = document.querySelector('.summary-bar');
+
+// ─── Persistencia ─────────────────────────────────────────────────────────────
+const CONFIG_KEY = 'fleteapp-config';
+
+function saveConfig() {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify({
+    tarifa:       $cfgTarifa.value,
+    distancia:    $cfgDist.value,
+    capacidad:    $cfgCap.value,
+    bencina:      $cfgBencina?.value  ?? '0',
+    rendimiento:  $cfgRend?.value     ?? '0',
+    peajes:       $cfgPeajes?.value   ?? '0',
+  }));
+}
+
+function loadConfig() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CONFIG_KEY));
+    if (!saved) return;
+    if (saved.tarifa      != null) $cfgTarifa.value          = saved.tarifa;
+    if (saved.distancia   != null) $cfgDist.value            = saved.distancia;
+    if (saved.capacidad   != null) $cfgCap.value             = saved.capacidad;
+    if (saved.bencina     != null && $cfgBencina)  $cfgBencina.value  = saved.bencina;
+    if (saved.rendimiento != null && $cfgRend)     $cfgRend.value     = saved.rendimiento;
+    if (saved.peajes      != null && $cfgPeajes)   $cfgPeajes.value   = saved.peajes;
+  } catch (_) { /* localStorage no disponible o dato corrupto — se usan defaults */ }
+}
+
+// ─── Perfil ───────────────────────────────────────────────────────────────────
+const PROFILE_KEY = 'fleteapp-profile';
+
+function updateAvatar(nombre) {
+  if (!$avatar) return;
+  const n = (nombre || '').trim();
+  $avatar.textContent = n
+    ? n.split(/\s+/).map(w => w[0]).join('').substring(0, 2).toUpperCase()
+    : 'FC';
+}
+
+function saveProfile() {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify({
+    nombre:      $profNombre?.value      ?? '',
+    tarifa:      $profTarifa?.value      ?? '850',
+    capacidad:   $profCapacidad?.value   ?? '20',
+    bencina:     $profBencina?.value     ?? '0',
+    rendimiento: $profRendimiento?.value ?? '0',
+  }));
+}
+
+function loadProfile() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PROFILE_KEY));
+    if (!saved) return;
+    if (saved.nombre      != null && $profNombre)      { $profNombre.value      = saved.nombre; updateAvatar(saved.nombre); }
+    if (saved.tarifa      != null && $profTarifa)      $profTarifa.value      = saved.tarifa;
+    if (saved.capacidad   != null && $profCapacidad)   $profCapacidad.value   = saved.capacidad;
+    if (saved.bencina     != null && $profBencina)     $profBencina.value     = saved.bencina;
+    if (saved.rendimiento != null && $profRendimiento) $profRendimiento.value = saved.rendimiento;
+  } catch (_) {}
+}
+
+// ─── Historial ────────────────────────────────────────────────────────────────
+const HISTORY_KEY = 'fleteapp-history';
+
+function saveQuote() {
+  const seleccionados = CATALOG.filter(item => (qty[item.id] || 0) > 0);
+  if (!seleccionados.length) return;
+
+  const { tarifa, distancia, capacidad } = getConfig();
+  const precioBencina = parseFloat($cfgBencina?.value) || 0;
+  const rendimiento   = parseFloat($cfgRend?.value)    || 0;
+  const peajes        = parseFloat($cfgPeajes?.value)  || 0;
+  const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
+  const costo         = (tarifa * distancia) + costoBencina + peajes;
+
+  let volumen = 0;
+  const items = seleccionados.map(item => {
+    const q = qty[item.id];
+    volumen += item.vol * q;
+    return { name: item.name, icon: item.icon, qty: q, vol: +(item.vol * q).toFixed(2) };
+  });
+
+  const now   = new Date();
+  const fecha = now.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+
+  const quote = {
+    id:        now.getTime(),
+    fecha,
+    cliente:   ($inputCliente?.value || '').trim(),
+    items,
+    volumen:   +volumen.toFixed(2),
+    distancia,
+    costo:     Math.round(costo),
+  };
+
+  try {
+    const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    history.unshift(quote);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 10)));
+  } catch (_) {}
+}
+
+function loadHistory() {
+  if (!$historialList) return;
+  try {
+    const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    if (!history.length) {
+      $historialList.innerHTML = '<p class="history-empty">Las cotizaciones que compartas aparecerán aquí.</p>';
+      return;
+    }
+    $historialList.innerHTML = history.map(q => {
+      const preview = q.items.slice(0, 2).map(i => `${i.name} × ${i.qty}`).join(', ')
+        + (q.items.length > 2 ? ` y ${q.items.length - 2} más` : '');
+      return `
+        <div class="history-card">
+          <div class="hcard-header">
+            <span class="hcard-cliente">${q.cliente || 'Sin nombre'}</span>
+            <span class="hcard-fecha">${q.fecha}</span>
+          </div>
+          <p class="hcard-items">${preview}</p>
+          <div class="hcard-footer">
+            <span class="hcard-stat">${q.volumen} m³ · ${q.distancia} km</span>
+            <span class="hcard-costo">${formatCLP(q.costo)}</span>
+            <button class="hcard-btn" data-id="${q.id}" aria-label="Reenviar cotización">Reenviar</button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (_) {}
+}
+
+async function reshare(id) {
+  try {
+    const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    const q = history.find(h => h.id === id);
+    if (!q) return;
+
+    const lineas = q.items.map(i => `${i.icon} ${i.name} × ${i.qty}  (${i.vol.toFixed(2)} m³)`);
+    const texto  = [
+      '🚛 COTIZACIÓN FLETE.APP',
+      '─────────────────────',
+      ...(q.cliente ? [`👤 ${q.cliente}`] : []),
+      ...lineas,
+      '─────────────────────',
+      `📦 Volumen total : ${q.volumen.toFixed(2)} m³`,
+      `📍 Distancia     : ${q.distancia} km`,
+      `💰 Costo estimado: ${formatCLP(q.costo)}`,
+      '',
+      'Generado con FLETE.APP',
+    ].join('\n');
+
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Cotización FleteApp', text: texto }); }
+      catch (err) { if (err.name !== 'AbortError') copiarPortapapeles(texto); }
+    } else {
+      copiarPortapapeles(texto);
+    }
+  } catch (_) {}
+}
+
+// ─── Vistas ───────────────────────────────────────────────────────────────────
+function showView(view) {
+  const isCotizar = view === 'cotizar';
+  $viewCotizar.classList.toggle('hidden', !isCotizar);
+  $viewPerfil.classList.toggle('hidden', isCotizar);
+  $summaryBar.classList.toggle('hidden', !isCotizar);
+  $navCotizar.classList.toggle('active', isCotizar);
+  $navPerfil.classList.toggle('active', !isCotizar);
+  $navCotizar.setAttribute('aria-current', isCotizar ? 'page' : 'false');
+  $navPerfil.setAttribute('aria-current', !isCotizar ? 'page' : 'false');
+  if (!isCotizar) loadHistory();
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const formatCLP = n => '$' + Math.round(n).toLocaleString('es-CL');
@@ -155,9 +339,11 @@ async function compartir() {
     return `${item.icon} ${item.name} × ${qty[item.id]}  (${sub} m³)`;
   });
 
+  const cliente = ($inputCliente?.value || '').trim();
   const texto = [
     '🚛 COTIZACIÓN FLETE.APP',
     '─────────────────────',
+    ...(cliente ? [`👤 ${cliente}`] : []),
     ...lineas,
     '─────────────────────',
     `📦 Volumen total : ${totalVol.toFixed(2)} m³`,
@@ -166,6 +352,9 @@ async function compartir() {
     '',
     'Generado con FLETE.APP',
   ].join('\n');
+
+  saveQuote();
+  if ($inputCliente) $inputCliente.value = '';
 
   if (navigator.share) {
     try {
@@ -208,7 +397,7 @@ $list.addEventListener('click', e => {
 
 // Campos de configuración
 [$cfgTarifa, $cfgDist, $cfgCap].forEach(input => {
-  input.addEventListener('input', recalc);
+  input.addEventListener('input', () => { recalc(); saveConfig(); });
 });
 
 // Botones compartir
@@ -217,7 +406,38 @@ $btnCompartir?.addEventListener('click', compartir);
 
 // Campos costos adicionales
 [$cfgBencina, $cfgRend, $cfgPeajes].forEach(input => {
-  input?.addEventListener('input', recalc);
+  input?.addEventListener('input', () => { recalc(); saveConfig(); });
+});
+
+// Perfil: sincronizar a config card al editar
+$profNombre?.addEventListener('input', () => {
+  updateAvatar($profNombre.value);
+  saveProfile();
+});
+
+[
+  [$profTarifa,      $cfgTarifa],
+  [$profCapacidad,   $cfgCap],
+  [$profBencina,     $cfgBencina],
+  [$profRendimiento, $cfgRend],
+].forEach(([src, dst]) => {
+  src?.addEventListener('input', () => {
+    if (dst) dst.value = src.value;
+    saveProfile();
+    recalc();
+    saveConfig();
+  });
+});
+
+// Nav switching
+$navCotizar?.addEventListener('click', () => showView('cotizar'));
+$navPerfil?.addEventListener('click',  () => showView('perfil'));
+
+// Reenviar cotización desde historial
+$historialList?.addEventListener('click', e => {
+  const btn = e.target.closest('.hcard-btn');
+  if (!btn) return;
+  reshare(parseInt(btn.dataset.id, 10));
 });
 
 // Botón limpiar
@@ -228,5 +448,7 @@ $btnLimpiar?.addEventListener('click', () => {
 });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
+loadConfig();
+loadProfile();
 render();
 recalc();

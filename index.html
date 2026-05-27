@@ -28,7 +28,7 @@
     </header>
 
     <!-- ── Contenido scrolleable ──────────────── -->
-    <main class="main">
+    <main class="main" id="view-cotizar">
 
       <!-- Config card -->
       <div class="config-card">
@@ -142,6 +142,13 @@
         <span aria-hidden="true">⚠</span> Excede la capacidad — puedes continuar agregando
       </div>
 
+      <!-- Cliente (opcional) -->
+      <div class="cliente-row">
+        <input id="input-cliente" type="text" placeholder="Cliente (opcional)"
+               autocomplete="off" spellcheck="false"
+               aria-label="Nombre del cliente para la cotización" />
+      </div>
+
       <!-- Acciones -->
       <div class="action-row">
         <button class="btn-total" id="btn-compartir" aria-label="Compartir cotización">
@@ -167,6 +174,66 @@
       <div class="scroll-spacer"></div>
     </main>
 
+    <!-- ── Vista: Perfil ────────────────────── -->
+    <div id="view-perfil" class="main hidden" aria-label="Perfil">
+
+      <p class="section-label" style="margin-top:16px;">Tus datos</p>
+      <div class="config-card">
+        <div class="config-field">
+          <label for="prof-nombre">Nombre</label>
+          <input id="prof-nombre" type="text" placeholder="Tu nombre"
+                 autocomplete="given-name" aria-label="Tu nombre" spellcheck="false" />
+        </div>
+      </div>
+
+      <p class="section-label top-gap">Tu camión</p>
+      <div class="config-card">
+        <div class="config-field">
+          <label for="prof-tarifa">Tarifa / km</label>
+          <div class="config-value-wrap">
+            <span class="config-sym" aria-hidden="true">$</span>
+            <input id="prof-tarifa" type="number" value="850"
+                   inputmode="numeric" pattern="[0-9]*"
+                   aria-label="Tarifa base por kilómetro" />
+          </div>
+        </div>
+        <div class="config-divider" aria-hidden="true"></div>
+        <div class="config-field">
+          <label for="prof-capacidad">Capacidad</label>
+          <div class="config-value-wrap">
+            <input id="prof-capacidad" type="number" value="20"
+                   inputmode="numeric" pattern="[0-9]*"
+                   aria-label="Capacidad del camión en metros cúbicos" />
+            <span class="config-sym" aria-hidden="true">m³</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-label top-gap">Combustible</p>
+      <div class="config-extra standalone">
+        <div class="config-extra-field">
+          <label for="prof-bencina">$/L bencina</label>
+          <input id="prof-bencina" type="number" value="0"
+                 inputmode="numeric" pattern="[0-9]*"
+                 aria-label="Precio por litro de bencina" />
+        </div>
+        <div class="config-divider" aria-hidden="true"></div>
+        <div class="config-extra-field">
+          <label for="prof-rendimiento">km / litro</label>
+          <input id="prof-rendimiento" type="number" value="0"
+                 inputmode="numeric" pattern="[0-9]*"
+                 aria-label="Rendimiento en kilómetros por litro" />
+        </div>
+      </div>
+
+      <p class="section-label top-gap">Historial</p>
+      <div class="historial-list" id="historial-list" aria-label="Historial de cotizaciones">
+        <!-- Renderizado por JS -->
+      </div>
+
+      <div class="scroll-spacer"></div>
+    </div>
+
     <!-- ── Barra de resumen fija ─────────────── -->
     <div class="summary-bar" aria-label="Resumen de cotización" aria-live="polite">
       <div class="sbar-item">
@@ -188,7 +255,7 @@
     <!-- ── Nav inferior (2 tabs) ──────────────── -->
     <nav class="bottom-nav" aria-label="Navegación principal">
 
-      <button class="nav-item active" aria-label="Cotizar" aria-current="page">
+      <button class="nav-item active" id="nav-cotizar" aria-label="Cotizar" aria-current="page">
         <div class="nav-icon-wrap">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2"
@@ -203,7 +270,7 @@
         <span class="nav-label">Cotizar</span>
       </button>
 
-      <button class="nav-item" aria-label="Mi perfil">
+      <button class="nav-item" id="nav-perfil" aria-label="Mi perfil">
         <div class="nav-icon-wrap">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2"
