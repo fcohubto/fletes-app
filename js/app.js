@@ -298,6 +298,10 @@ function recalc() {
   $sbarVol.textContent   = totalVol.toFixed(2) + ' m³';
   $sbarPct.textContent   = Math.round(pct) + '%';
   $sbarTotal.textContent = formatCLP(costo);
+
+  // Estado visual de la barra según ocupación
+  $summaryBar?.classList.toggle('warning', pct >= 80 && pct < 100);
+  $summaryBar?.classList.toggle('over',    pct >= 100);
 }
 
 // ─── Gestión de cantidad ──────────────────────────────────────────────────────

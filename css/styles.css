@@ -120,7 +120,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── Config card ────────────────────────────────────────────────────────────── */
 .config-card {
-  margin: 2px 14px 0;
+  margin: 2px 16px 0;
   background: var(--surface);
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
@@ -170,7 +170,7 @@ input[type=number] { -moz-appearance: textfield; }
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text);
   text-align: center;
   width: 74px;
   min-width: 0;
@@ -191,18 +191,18 @@ input[type=number] { -moz-appearance: textfield; }
   letter-spacing: 1.6px;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 0 18px;
-  margin-top: 24px;
+  padding: 0 20px;
+  margin-top: 28px;
   margin-bottom: 12px;
 }
 
-.section-label.top-gap { margin-top: 32px; }
+.section-label.top-gap { margin-top: 38px; }
 
 /* ─── Tabs ───────────────────────────────────────────────────────────────────── */
 .tabs {
   display: flex;
   gap: 10px;
-  padding: 0 14px 14px;
+  padding: 0 16px 14px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -234,7 +234,7 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 0 14px 6px;
+  padding: 0 16px 6px;
 }
 
 /* Cada artículo es una tarjeta */
@@ -251,7 +251,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 .article-card.selected {
   border-color: var(--accent);
-  background: rgba(242, 100, 25, 0.08);
+  background: rgba(242, 100, 25, 0.13);
 }
 
 .article-icon {
@@ -345,7 +345,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── Summary card ───────────────────────────────────────────────────────────── */
 .summary-card {
-  margin: 0 14px;
+  margin: 0 16px;
   background: var(--surface);
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
@@ -437,7 +437,7 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   align-items: stretch;
   gap: 10px;
-  padding: 16px 14px 0;
+  padding: 16px 16px 0;
 }
 
 .btn-total {
@@ -489,7 +489,7 @@ input[type=number] { -moz-appearance: textfield; }
 .action-secondary {
   display: flex;
   justify-content: center;
-  padding: 10px 14px 0;
+  padding: 10px 16px 0;
 }
 
 #btn-limpiar {
@@ -518,7 +518,8 @@ input[type=number] { -moz-appearance: textfield; }
   max-width: 390px;
   height: 56px;
   background: var(--surface);
-  border-top: 2px solid var(--accent);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -623,7 +624,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .config-extra {
-  margin: 0 14px 22px;
+  margin: 0 16px 22px;
   background: var(--surface);
   border-radius: 0 0 var(--r-lg) var(--r-lg);
   border: 1px solid var(--border);
@@ -666,7 +667,7 @@ input[type=number] { -moz-appearance: textfield; }
   outline: none;
 }
 #alerta-exceso {
-  margin: 12px 14px 0;
+  margin: 12px 16px 0;
   background: rgba(127, 29, 29, 0.25);
   border: 1px solid rgba(239, 68, 68, 0.35);
   border-radius: var(--r-md);
@@ -687,6 +688,13 @@ input[type=number] { -moz-appearance: textfield; }
 .ocupacion-excedida {
   color: #ef4444 !important;
 }
+
+/* ─── Summary bar estados ────────────────────────────────────────────────────── */
+.summary-bar.warning { border-top-color: #e8a000; }
+.summary-bar.over    { border-top-color: #ef4444; }
+
+.summary-bar.warning #sbar-pct { color: #e8a000; }
+.summary-bar.over    #sbar-pct { color: #ef4444; }
 
 /* ─── Vistas ─────────────────────────────────────────────────────────────────── */
 .hidden { display: none; }
@@ -713,7 +721,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── Cliente input ──────────────────────────────────────────────────────────── */
 .cliente-row {
-  padding: 12px 14px 0;
+  padding: 12px 16px 0;
 }
 
 #input-cliente {
@@ -737,7 +745,7 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 0 14px;
+  padding: 0 16px;
 }
 
 .history-empty {
