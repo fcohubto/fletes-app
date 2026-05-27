@@ -41,6 +41,7 @@ const $navPerfil       = document.getElementById('nav-perfil');
 const $viewCotizar     = document.getElementById('view-cotizar');
 const $viewPerfil      = document.getElementById('view-perfil');
 const $summaryBar      = document.querySelector('.summary-bar');
+const $navTotal        = document.getElementById('nav-total');
 
 // ─── Persistencia ─────────────────────────────────────────────────────────────
 const CONFIG_KEY = 'fleteapp-config';
@@ -293,6 +294,7 @@ function recalc() {
 
   // Botón total
   $totalPrice.textContent = formatCLP(costo);
+  if ($navTotal) $navTotal.textContent = costo > 0 ? formatCLP(costo) : '';
 
   // Barra de resumen fija
   $sbarVol.textContent   = totalVol.toFixed(2) + ' m³';
