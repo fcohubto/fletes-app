@@ -185,6 +185,7 @@ function saveQuote() {
     destino:   ($inputDestino?.value  || '').trim(),
     items,
     volumen:   +volumen.toFixed(2),
+    capacidad,
     distancia,
     viajes,
     costo:     Math.round(costo),
@@ -243,8 +244,14 @@ async function reshare(id) {
     const q = history.find(h => h.id === id);
     if (!q) return;
 
-    const lineas = q.items.map(i => `${i.icon} ${i.name} × ${i.qty}  (${i.vol.toFixed(2)} m³)`);
-    const ruta   = q.destino ? `${q.origen || 'Santiago'} → ${q.destino}` : '';
+    const lineas       = q.items.map(i => `${i.icon} ${i.name} × ${i.qty}  (${i.vol.toFixed(2)} m³)`);
+    const ruta         = q.destino ? `${q.origen || 'Santiago'} → ${q.destino}` : '';
+    const cap          = q.capacidad || 0;
+    const pctOcupacion = cap > 0 ? Math.round((q.volumen / cap) * 100) : 0;
+    const volLabel     = cap > 0
+      ? `${q.volumen.toFixed(2)} m³ / ${cap} m³ (${pctOcupacion}%)`
+      : `${q.volumen.toFixed(2)} m³`;
+    const costoPorViaje = q.viajes > 1 ? Math.round(q.costo / q.viajes) : 0;
     const texto  = [
       '🚛 COTIZACIÓN FLETE.APP',
       '─────────────────────',
@@ -252,10 +259,11 @@ async function reshare(id) {
       ...(ruta      ? [`📍 Ruta: ${ruta}`] : []),
       ...lineas,
       '─────────────────────',
-      `📦 Volumen total  : ${q.volumen.toFixed(2)} m³`,
+      `📦 Volumen        : ${volLabel}`,
       ...(q.viajes > 1 ? [`🔄 Viajes          : ${q.viajes}`] : []),
+      ...(q.viajes > 1 ? [`💰 Por viaje       : ${formatCLP(costoPorViaje)}`] : []),
       `🛣  Distancia      : ${q.distancia} km`,
-      `💰 Costo estimado : ${formatCLP(q.costo)}`,
+      `💰 Cotización      : ${formatCLP(q.costo)}`,
       '',
       'Generado con FLETE.APP',
     ].join('\n');
@@ -490,6 +498,7 @@ async function compartir() {
   const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
   const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
   const costo         = costoPorViaje * viajes;
+  const pctOcupacion  = capacidad > 0 ? Math.round((totalVol / capacidad) * 100) : 0;
 
   const lineas = allSel.map(item => {
     const sub  = (item.vol * qty[item.id]).toFixed(2);
@@ -509,11 +518,11 @@ async function compartir() {
     ...(ruta    ? [`📍 Ruta: ${ruta}`] : []),
     ...lineas,
     '─────────────────────',
-    `📦 Volumen total  : ${totalVol.toFixed(2)} m³`,
+    `📦 Volumen        : ${totalVol.toFixed(2)} m³ / ${capacidad} m³ (${pctOcupacion}%)`,
     ...(viajes > 1 ? [`🔄 Viajes          : ${viajes}`] : []),
     ...(viajes > 1 ? [`💰 Por viaje       : ${formatCLP(costoPorViaje)}`] : []),
     `🛣  Distancia      : ${distancia} km`,
-    `💰 Costo ${viajes > 1 ? 'TOTAL     ' : 'estimado'} : ${formatCLP(costo)}`,
+    `💰 Cotización      : ${formatCLP(costo)}`,
     '',
     'Generado con FLETE.APP',
   ].join('\n');
