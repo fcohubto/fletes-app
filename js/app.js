@@ -1,59 +1,100 @@
 // FleteApp — Lógica principal
 
+// ─── Distancias desde Santiago (km aprox. por ruta) ───────────────────────────
+const KM_DESDE_SANTIAGO = {
+  'arica': 2060, 'iquique': 1850, 'tocopilla': 1640,
+  'antofagasta': 1380, 'calama': 1540, 'mejillones': 1370,
+  'copiapo': 805, 'vallenar': 680,
+  'la serena': 470, 'coquimbo': 480, 'ovalle': 395,
+  'illapel': 320, 'los vilos': 230,
+  'valparaiso': 120, 'vina del mar': 125, 'quilpue': 115,
+  'villa alemana': 108, 'san antonio': 103,
+  'santiago': 0, 'rancagua': 90, 'san fernando': 145,
+  'curico': 200, 'talca': 260, 'constitucion': 355,
+  'linares': 310, 'chillan': 405, 'los angeles': 510,
+  'concepcion': 520, 'talcahuano': 535, 'coronel': 545,
+  'lebu': 645, 'canete': 600,
+  'temuco': 680, 'villarrica': 760, 'pucon': 785, 'angol': 635,
+  'valdivia': 845, 'la union': 880, 'osorno': 950,
+  'puerto montt': 1020, 'puerto varas': 1010,
+  'ancud': 1105, 'castro': 1155,
+  'coyhaique': 1770, 'puerto aysen': 1810,
+  'punta arenas': 3100, 'puerto natales': 3055,
+};
+
+function normalizeCity(str) {
+  return str.trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
 // ─── Estado ───────────────────────────────────────────────────────────────────
-const qty = {};          // { [id]: number }
+const qty       = {};
 let activeCategory = 'todos';
+let customItems    = [];
+let customIdCtr    = 0;
 
 // ─── Referencias DOM ──────────────────────────────────────────────────────────
-const $list       = document.getElementById('articles-list');
-const $tabs       = document.querySelectorAll('.tab');
-const $cfgTarifa  = document.getElementById('cfg-tarifa');
-const $cfgDist    = document.getElementById('cfg-distancia');
-const $cfgCap     = document.getElementById('cfg-capacidad');
-const $occFill    = document.getElementById('occupancy-fill');
-const $occPct     = document.getElementById('occupancy-pct');
-const $occBar     = document.querySelector('.occupancy-bar');
-const $statVol    = document.getElementById('stat-volume');
-const $statCosto  = document.getElementById('stat-costo');
-const $statDist   = document.getElementById('stat-distancia');
-const $sumItems   = document.getElementById('summary-items');
-const $totalPrice = document.getElementById('btn-total-price');
-const $btnShare     = document.querySelector('.btn-share');
-const $btnCompartir = document.getElementById('btn-compartir');
-const $sbarVol    = document.getElementById('sbar-volume');
-const $sbarPct    = document.getElementById('sbar-pct');
-const $sbarTotal  = document.getElementById('sbar-total');
-const $cfgBencina = document.getElementById('input-bencina-litro');
-const $cfgRend    = document.getElementById('input-bencina-rendimiento');
-const $cfgPeajes  = document.getElementById('input-peajes');
-const $alertExc   = document.getElementById('alerta-exceso');
-const $btnLimpiar = document.getElementById('btn-limpiar');
-const $avatar          = document.querySelector('.avatar');
-const $profNombre      = document.getElementById('prof-nombre');
-const $profTarifa      = document.getElementById('prof-tarifa');
-const $profCapacidad   = document.getElementById('prof-capacidad');
-const $profBencina     = document.getElementById('prof-bencina');
-const $profRendimiento = document.getElementById('prof-rendimiento');
-const $inputCliente    = document.getElementById('input-cliente');
-const $historialList   = document.getElementById('historial-list');
-const $navCotizar      = document.getElementById('nav-cotizar');
-const $navPerfil       = document.getElementById('nav-perfil');
-const $viewCotizar     = document.getElementById('view-cotizar');
-const $viewPerfil      = document.getElementById('view-perfil');
-const $summaryBar      = document.querySelector('.summary-bar');
-const $navTotal        = document.getElementById('nav-total');
+const $list           = document.getElementById('articles-list');
+const $customList     = document.getElementById('custom-list');
+const $tabs           = document.querySelectorAll('.tab');
+const $cfgTarifa      = document.getElementById('cfg-tarifa');
+const $cfgDist        = document.getElementById('cfg-distancia');
+const $cfgCap         = document.getElementById('cfg-capacidad');
+const $occFill        = document.getElementById('occupancy-fill');
+const $occPct         = document.getElementById('occupancy-pct');
+const $occBar         = document.querySelector('.occupancy-bar');
+const $statVol        = document.getElementById('stat-volume');
+const $statCosto      = document.getElementById('stat-costo');
+const $statDist       = document.getElementById('stat-distancia');
+const $statViajes     = document.getElementById('stat-viajes');
+const $viajesRow      = document.getElementById('viajes-row');
+const $sumItems       = document.getElementById('summary-items');
+const $totalPrice     = document.getElementById('btn-total-price');
+const $btnShare       = document.querySelector('.btn-share');
+const $btnCompartir   = document.getElementById('btn-compartir');
+const $sbarVol        = document.getElementById('sbar-volume');
+const $sbarPct        = document.getElementById('sbar-pct');
+const $sbarTotal      = document.getElementById('sbar-total');
+const $cfgBencina     = document.getElementById('input-bencina-litro');
+const $cfgRend        = document.getElementById('input-bencina-rendimiento');
+const $cfgPeajes      = document.getElementById('input-peajes');
+const $alertExc       = document.getElementById('alerta-exceso');
+const $alertExcText   = document.getElementById('alerta-exceso-text');
+const $tarifaWarn     = document.getElementById('tarifa-warn');
+const $btnLimpiar     = document.getElementById('btn-limpiar');
+const $avatar         = document.querySelector('.avatar');
+const $profNombre     = document.getElementById('prof-nombre');
+const $profTarifa     = document.getElementById('prof-tarifa');
+const $profCapacidad  = document.getElementById('prof-capacidad');
+const $profBencina    = document.getElementById('prof-bencina');
+const $profRendimiento= document.getElementById('prof-rendimiento');
+const $inputCliente   = document.getElementById('input-cliente');
+const $historialList  = document.getElementById('historial-list');
+const $navCotizar     = document.getElementById('nav-cotizar');
+const $navPerfil      = document.getElementById('nav-perfil');
+const $viewCotizar    = document.getElementById('view-cotizar');
+const $viewPerfil     = document.getElementById('view-perfil');
+const $summaryBar     = document.querySelector('.summary-bar');
+const $inputOrigen    = document.getElementById('input-origen');
+const $inputDestino   = document.getElementById('input-destino');
+const $odKmHint       = document.getElementById('od-km-hint');
+const $odKmValue      = document.getElementById('od-km-value');
+const $customName     = document.getElementById('custom-name');
+const $customVol      = document.getElementById('custom-vol');
+const $btnAddCustom   = document.getElementById('btn-add-custom');
 
 // ─── Persistencia ─────────────────────────────────────────────────────────────
 const CONFIG_KEY = 'fleteapp-config';
 
 function saveConfig() {
   localStorage.setItem(CONFIG_KEY, JSON.stringify({
-    tarifa:       $cfgTarifa.value,
-    distancia:    $cfgDist.value,
-    capacidad:    $cfgCap.value,
-    bencina:      $cfgBencina?.value  ?? '0',
-    rendimiento:  $cfgRend?.value     ?? '0',
-    peajes:       $cfgPeajes?.value   ?? '0',
+    tarifa:      $cfgTarifa.value,
+    distancia:   $cfgDist.value,
+    capacidad:   $cfgCap.value,
+    bencina:     $cfgBencina?.value  ?? '0',
+    rendimiento: $cfgRend?.value     ?? '0',
+    peajes:      $cfgPeajes?.value   ?? '0',
+    destino:     $inputDestino?.value ?? '',
   }));
 }
 
@@ -61,13 +102,14 @@ function loadConfig() {
   try {
     const saved = JSON.parse(localStorage.getItem(CONFIG_KEY));
     if (!saved) return;
-    if (saved.tarifa      != null) $cfgTarifa.value          = saved.tarifa;
-    if (saved.distancia   != null) $cfgDist.value            = saved.distancia;
-    if (saved.capacidad   != null) $cfgCap.value             = saved.capacidad;
+    if (saved.tarifa      != null) $cfgTarifa.value                  = saved.tarifa;
+    if (saved.distancia   != null) $cfgDist.value                    = saved.distancia;
+    if (saved.capacidad   != null) $cfgCap.value                     = saved.capacidad;
     if (saved.bencina     != null && $cfgBencina)  $cfgBencina.value  = saved.bencina;
     if (saved.rendimiento != null && $cfgRend)     $cfgRend.value     = saved.rendimiento;
     if (saved.peajes      != null && $cfgPeajes)   $cfgPeajes.value   = saved.peajes;
-  } catch (_) { /* localStorage no disponible o dato corrupto — se usan defaults */ }
+    if (saved.destino     != null && $inputDestino) $inputDestino.value = saved.destino;
+  } catch (_) {}
 }
 
 // ─── Perfil ───────────────────────────────────────────────────────────────────
@@ -95,7 +137,7 @@ function loadProfile() {
   try {
     const saved = JSON.parse(localStorage.getItem(PROFILE_KEY));
     if (!saved) return;
-    if (saved.nombre      != null && $profNombre)      { $profNombre.value      = saved.nombre; updateAvatar(saved.nombre); }
+    if (saved.nombre      != null && $profNombre)      { $profNombre.value = saved.nombre; updateAvatar(saved.nombre); }
     if (saved.tarifa      != null && $profTarifa)      $profTarifa.value      = saved.tarifa;
     if (saved.capacidad   != null && $profCapacidad)   $profCapacidad.value   = saved.capacidad;
     if (saved.bencina     != null && $profBencina)     $profBencina.value     = saved.bencina;
@@ -107,22 +149,28 @@ function loadProfile() {
 const HISTORY_KEY = 'fleteapp-history';
 
 function saveQuote() {
-  const seleccionados = CATALOG.filter(item => (qty[item.id] || 0) > 0);
-  if (!seleccionados.length) return;
+  const allSel = [
+    ...CATALOG.filter(item => (qty[item.id] || 0) > 0),
+    ...customItems.filter(item => (qty[item.id] || 0) > 0),
+  ];
+  if (!allSel.length) return;
 
   const { tarifa, distancia, capacidad } = getConfig();
   const precioBencina = parseFloat($cfgBencina?.value) || 0;
   const rendimiento   = parseFloat($cfgRend?.value)    || 0;
   const peajes        = parseFloat($cfgPeajes?.value)  || 0;
   const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
-  const costo         = (tarifa * distancia) + costoBencina + peajes;
 
   let volumen = 0;
-  const items = seleccionados.map(item => {
+  const items = allSel.map(item => {
     const q = qty[item.id];
     volumen += item.vol * q;
-    return { name: item.name, icon: item.icon, qty: q, vol: +(item.vol * q).toFixed(2) };
+    return { name: item.name, icon: item.icon ?? '📦', qty: q, vol: +(item.vol * q).toFixed(2) };
   });
+
+  const viajes        = capacidad > 0 && volumen > capacidad ? Math.ceil(volumen / capacidad) : 1;
+  const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
+  const costo         = costoPorViaje * viajes;
 
   const now   = new Date();
   const fecha = now.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
@@ -130,10 +178,12 @@ function saveQuote() {
   const quote = {
     id:        now.getTime(),
     fecha,
-    cliente:   ($inputCliente?.value || '').trim(),
+    cliente:   ($inputCliente?.value  || '').trim(),
+    destino:   ($inputDestino?.value  || '').trim(),
     items,
     volumen:   +volumen.toFixed(2),
     distancia,
+    viajes,
     costo:     Math.round(costo),
   };
 
@@ -155,6 +205,7 @@ function loadHistory() {
     $historialList.innerHTML = history.map(q => {
       const preview = q.items.slice(0, 2).map(i => `${i.name} × ${i.qty}`).join(', ')
         + (q.items.length > 2 ? ` y ${q.items.length - 2} más` : '');
+      const viajesLabel = (q.viajes > 1) ? ` · ${q.viajes} viajes` : '';
       return `
         <div class="history-card">
           <div class="hcard-header">
@@ -163,7 +214,7 @@ function loadHistory() {
           </div>
           <p class="hcard-items">${preview}</p>
           <div class="hcard-footer">
-            <span class="hcard-stat">${q.volumen} m³ · ${q.distancia} km</span>
+            <span class="hcard-stat">${q.volumen} m³ · ${q.distancia} km${viajesLabel}</span>
             <span class="hcard-costo">${formatCLP(q.costo)}</span>
             <button class="hcard-btn" data-id="${q.id}" aria-label="Reenviar cotización">Reenviar</button>
           </div>
@@ -179,15 +230,18 @@ async function reshare(id) {
     if (!q) return;
 
     const lineas = q.items.map(i => `${i.icon} ${i.name} × ${i.qty}  (${i.vol.toFixed(2)} m³)`);
+    const ruta   = q.destino ? `Santiago → ${q.destino}` : '';
     const texto  = [
       '🚛 COTIZACIÓN FLETE.APP',
       '─────────────────────',
       ...(q.cliente ? [`👤 ${q.cliente}`] : []),
+      ...(ruta      ? [`📍 Ruta: ${ruta}`] : []),
       ...lineas,
       '─────────────────────',
-      `📦 Volumen total : ${q.volumen.toFixed(2)} m³`,
-      `📍 Distancia     : ${q.distancia} km`,
-      `💰 Costo estimado: ${formatCLP(q.costo)}`,
+      `📦 Volumen total  : ${q.volumen.toFixed(2)} m³`,
+      ...(q.viajes > 1 ? [`🔄 Viajes          : ${q.viajes}`] : []),
+      `🛣  Distancia      : ${q.distancia} km`,
+      `💰 Costo estimado : ${formatCLP(q.costo)}`,
       '',
       'Generado con FLETE.APP',
     ].join('\n');
@@ -219,12 +273,48 @@ const formatCLP = n => '$' + Math.round(n).toLocaleString('es-CL');
 
 const getConfig = () => ({
   tarifa:    parseFloat($cfgTarifa.value) || 0,
-  distancia: parseFloat($cfgDist.value)   || 0,
-  capacidad: parseFloat($cfgCap.value)    || 1,
+  distancia: parseFloat($cfgDist.value)  || 0,
+  capacidad: parseFloat($cfgCap.value)   || 1,
 });
 
-// ─── Render ───────────────────────────────────────────────────────────────────
-// Genera las tarjetas de artículos filtradas por categoría activa.
+// ─── Artículos personalizados ──────────────────────────────────────────────────
+function renderCustomItems() {
+  if (!$customList) return;
+  $customList.innerHTML = customItems.map(item => {
+    const cantidad = qty[item.id] || 0;
+    return `
+      <div class="article-card${cantidad > 0 ? ' selected' : ''}" role="listitem">
+        <div class="article-icon" aria-hidden="true">📦</div>
+        <div class="article-info">
+          <span class="article-name">${item.name}</span>
+          <span class="article-volume">${item.vol.toFixed(2)} m³</span>
+        </div>
+        <div class="article-controls" role="group" aria-label="Cantidad de ${item.name}">
+          <button class="btn-qty minus" data-custom-id="${item.id}" aria-label="Quitar ${item.name}">−</button>
+          <span class="qty${cantidad > 0 ? ' has-value' : ''}"
+                aria-live="polite" aria-label="Cantidad: ${cantidad}">${cantidad}</span>
+          <button class="btn-qty plus"  data-custom-id="${item.id}" aria-label="Agregar ${item.name}">+</button>
+        </div>
+        <button class="btn-remove-custom" data-remove="${item.id}" aria-label="Eliminar ${item.name}">×</button>
+      </div>`;
+  }).join('');
+}
+
+function addCustomItem() {
+  const name = ($customName?.value || '').trim();
+  const vol  = parseFloat($customVol?.value);
+  if (!name || !vol || vol <= 0) return;
+
+  const id = `custom-${++customIdCtr}`;
+  customItems.push({ id, name, vol });
+  qty[id] = 1;
+  if ($customName) $customName.value = '';
+  if ($customVol)  $customVol.value  = '';
+  renderCustomItems();
+  recalc();
+}
+
+// ─── Render catálogo ──────────────────────────────────────────────────────────
 function render() {
   const filtrados = activeCategory === 'todos'
     ? CATALOG
@@ -250,7 +340,6 @@ function render() {
 }
 
 // ─── Recalc ───────────────────────────────────────────────────────────────────
-// Recalcula todo y actualiza el DOM en tiempo real.
 function recalc() {
   const { tarifa, distancia, capacidad } = getConfig();
 
@@ -262,15 +351,25 @@ function recalc() {
     totalVol   += item.vol * q;
     totalItems += q;
   });
+  customItems.forEach(item => {
+    const q = qty[item.id] || 0;
+    totalVol   += item.vol * q;
+    totalItems += q;
+  });
 
-  const pct   = (totalVol / capacidad) * 100;
+  const viajes = capacidad > 0 && totalVol > capacidad
+    ? Math.ceil(totalVol / capacidad)
+    : 1;
+
+  const pct   = capacidad > 0 ? (totalVol / capacidad) * 100 : 0;
   const pctUI = Math.min(pct, 100);
 
-  const precioBencina  = parseFloat($cfgBencina?.value) || 0;
-  const rendimiento    = parseFloat($cfgRend?.value)    || 0;
-  const peajes         = parseFloat($cfgPeajes?.value)  || 0;
-  const costoBencina   = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
-  const costo = (tarifa * distancia) + costoBencina + peajes;
+  const precioBencina = parseFloat($cfgBencina?.value) || 0;
+  const rendimiento   = parseFloat($cfgRend?.value)    || 0;
+  const peajes        = parseFloat($cfgPeajes?.value)  || 0;
+  const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
+  const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
+  const costo         = costoPorViaje * viajes;
 
   // Barra de ocupación
   $occFill.style.width = pctUI + '%';
@@ -279,35 +378,47 @@ function recalc() {
   $occPct.classList.toggle('ocupacion-excedida', pct > 100);
   $occBar.setAttribute('aria-valuenow', Math.round(pctUI));
 
-  // Alerta exceso capacidad
-  if ($alertExc) $alertExc.classList.toggle('hidden', totalVol <= capacidad);
+  // Fila de viajes (visible solo cuando se necesita más de uno)
+  if ($viajesRow && $statViajes) {
+    $viajesRow.hidden = viajes <= 1;
+    $statViajes.textContent = viajes;
+  }
 
-  // Stats del resumen
-  $statVol.textContent  = totalVol.toFixed(2) + ' m³';
+  // Alerta exceso — ahora informa la cantidad de viajes
+  if ($alertExc) {
+    const excede = capacidad > 0 && totalVol > capacidad;
+    $alertExc.classList.toggle('hidden', !excede);
+    if (excede && $alertExcText) {
+      $alertExcText.textContent = viajes > 1
+        ? `${viajes} viajes necesarios — costo total calculado`
+        : 'Excede la capacidad';
+    }
+  }
+
+  // Validación tarifa = 0
+  if ($tarifaWarn) $tarifaWarn.hidden = tarifa > 0;
+
+  // Stats resumen
+  $statVol.textContent   = totalVol.toFixed(2) + ' m³';
   $statCosto.textContent = formatCLP(costo);
   $statDist.textContent  = distancia + ' km';
 
-  // Contador de artículos
   $sumItems.textContent = totalItems === 1
     ? '1 artículo seleccionado'
     : `${totalItems} artículos seleccionados`;
 
-  // Botón total
   $totalPrice.textContent = formatCLP(costo);
-  if ($navTotal) $navTotal.textContent = costo > 0 ? formatCLP(costo) : '';
 
-  // Barra de resumen fija
+  // Summary bar — pct muestra viajes cuando hay más de uno
   $sbarVol.textContent   = totalVol.toFixed(2) + ' m³';
-  $sbarPct.textContent   = Math.round(pct) + '%';
+  $sbarPct.textContent   = viajes > 1 ? `${viajes} vj.` : Math.round(pct) + '%';
   $sbarTotal.textContent = formatCLP(costo);
 
-  // Estado visual de la barra según ocupación
   $summaryBar?.classList.toggle('warning', pct >= 80 && pct < 100);
   $summaryBar?.classList.toggle('over',    pct >= 100);
 }
 
-// ─── Gestión de cantidad ──────────────────────────────────────────────────────
-// Actualiza qty[id] y refresca solo los nodos afectados, sin re-renderizar toda la lista.
+// ─── Gestión de cantidad (catálogo) ──────────────────────────────────────────
 function changeQty(id, delta) {
   qty[id] = Math.max(0, (qty[id] || 0) + delta);
 
@@ -318,43 +429,60 @@ function changeQty(id, delta) {
     $span.classList.toggle('has-value', qty[id] > 0);
     $span.closest('.article-card').classList.toggle('selected', qty[id] > 0);
   }
-
   recalc();
 }
 
 // ─── Compartir ────────────────────────────────────────────────────────────────
 async function compartir() {
-  const { tarifa, distancia } = getConfig();
-  const seleccionados = CATALOG.filter(item => (qty[item.id] || 0) > 0);
+  const { tarifa, distancia, capacidad } = getConfig();
+  const allSel = [
+    ...CATALOG.filter(item => (qty[item.id] || 0) > 0),
+    ...customItems.filter(item => (qty[item.id] || 0) > 0),
+  ];
 
-  if (!seleccionados.length) {
+  if (!allSel.length) {
     alert('Agrega al menos un artículo antes de compartir.');
     return;
   }
 
+  if (tarifa === 0) {
+    const ok = confirm('La tarifa por km está en $0. ¿Compartir de todas formas?');
+    if (!ok) return;
+  }
+
   let totalVol = 0;
-  seleccionados.forEach(item => { totalVol += item.vol * qty[item.id]; });
+  allSel.forEach(item => { totalVol += item.vol * qty[item.id]; });
+
+  const viajes        = capacidad > 0 && totalVol > capacidad ? Math.ceil(totalVol / capacidad) : 1;
   const precioBencina = parseFloat($cfgBencina?.value) || 0;
   const rendimiento   = parseFloat($cfgRend?.value)    || 0;
   const peajes        = parseFloat($cfgPeajes?.value)  || 0;
   const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
-  const costo         = (tarifa * distancia) + costoBencina + peajes;
+  const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
+  const costo         = costoPorViaje * viajes;
 
-  const lineas = seleccionados.map(item => {
-    const sub = (item.vol * qty[item.id]).toFixed(2);
-    return `${item.icon} ${item.name} × ${qty[item.id]}  (${sub} m³)`;
+  const lineas = allSel.map(item => {
+    const sub  = (item.vol * qty[item.id]).toFixed(2);
+    const icon = item.icon ?? '📦';
+    return `${icon} ${item.name} × ${qty[item.id]}  (${sub} m³)`;
   });
 
   const cliente = ($inputCliente?.value || '').trim();
+  const destino = ($inputDestino?.value || '').trim();
+  const ruta    = destino ? `Santiago → ${destino}` : '';
+
   const texto = [
     '🚛 COTIZACIÓN FLETE.APP',
     '─────────────────────',
     ...(cliente ? [`👤 ${cliente}`] : []),
+    ...(ruta    ? [`📍 Ruta: ${ruta}`] : []),
     ...lineas,
     '─────────────────────',
-    `📦 Volumen total : ${totalVol.toFixed(2)} m³`,
-    `📍 Distancia     : ${distancia} km`,
-    `💰 Costo estimado: ${formatCLP(costo)}`,
+    `📦 Volumen total  : ${totalVol.toFixed(2)} m³`,
+    ...(viajes > 1 ? [`🔄 Viajes          : ${viajes}`] : []),
+    ...(viajes > 1 ? [`💰 Por viaje       : ${formatCLP(costoPorViaje)}`] : []),
+    `🛣  Distancia      : ${distancia} km`,
+    `💰 Costo ${viajes > 1 ? 'TOTAL     ' : 'estimado'} : ${formatCLP(costo)}`,
     '',
     'Generado con FLETE.APP',
   ].join('\n');
@@ -381,7 +509,7 @@ function copiarPortapapeles(texto) {
 
 // ─── Event listeners ──────────────────────────────────────────────────────────
 
-// Tabs
+// Tabs catálogo
 $tabs.forEach(tab => {
   tab.addEventListener('click', () => {
     $tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
@@ -392,7 +520,7 @@ $tabs.forEach(tab => {
   });
 });
 
-// Botones +/− con delegación de eventos
+// Botones +/− catálogo
 $list.addEventListener('click', e => {
   const btn = e.target.closest('.btn-qty');
   if (!btn) return;
@@ -400,6 +528,31 @@ $list.addEventListener('click', e => {
   const delta = btn.classList.contains('plus') ? 1 : -1;
   changeQty(id, delta);
 });
+
+// Botones +/−, eliminar artículos personalizados
+$customList?.addEventListener('click', e => {
+  const removeBtn = e.target.closest('.btn-remove-custom');
+  if (removeBtn) {
+    const removeId = removeBtn.dataset.remove;
+    customItems = customItems.filter(item => item.id !== removeId);
+    delete qty[removeId];
+    renderCustomItems();
+    recalc();
+    return;
+  }
+  const btn = e.target.closest('.btn-qty');
+  if (!btn) return;
+  const id    = btn.dataset.customId;
+  const delta = btn.classList.contains('plus') ? 1 : -1;
+  qty[id]     = Math.max(0, (qty[id] || 0) + delta);
+  renderCustomItems();
+  recalc();
+});
+
+// Agregar artículo personalizado
+$btnAddCustom?.addEventListener('click', addCustomItem);
+$customName?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomItem(); } });
+$customVol?.addEventListener('keydown',  e => { if (e.key === 'Enter') { e.preventDefault(); addCustomItem(); } });
 
 // Campos de configuración
 [$cfgTarifa, $cfgDist, $cfgCap].forEach(input => {
@@ -410,12 +563,12 @@ $list.addEventListener('click', e => {
 $btnShare.addEventListener('click', compartir);
 $btnCompartir?.addEventListener('click', compartir);
 
-// Campos costos adicionales
+// Costos adicionales
 [$cfgBencina, $cfgRend, $cfgPeajes].forEach(input => {
   input?.addEventListener('input', () => { recalc(); saveConfig(); });
 });
 
-// Perfil: sincronizar a config card al editar
+// Perfil — sincroniza valores a config card
 $profNombre?.addEventListener('input', () => {
   updateAvatar($profNombre.value);
   saveProfile();
@@ -435,20 +588,44 @@ $profNombre?.addEventListener('input', () => {
   });
 });
 
-// Nav switching
+// Nav
 $navCotizar?.addEventListener('click', () => showView('cotizar'));
 $navPerfil?.addEventListener('click',  () => showView('perfil'));
 
-// Reenviar cotización desde historial
+// Historial — reenviar
 $historialList?.addEventListener('click', e => {
   const btn = e.target.closest('.hcard-btn');
   if (!btn) return;
   reshare(parseInt(btn.dataset.id, 10));
 });
 
-// Botón limpiar
+// O/D — destino auto-llena distancia y muestra hint
+function applyKmHint(value) {
+  const km = KM_DESDE_SANTIAGO[normalizeCity(value)];
+  if (km !== undefined) {
+    $cfgDist.value = km;
+    if ($odKmHint && $odKmValue) {
+      $odKmValue.textContent = km.toLocaleString('es-CL');
+      $odKmHint.hidden = false;
+    }
+    recalc();
+  } else if ($odKmHint) {
+    $odKmHint.hidden = true;
+  }
+}
+
+$inputDestino?.addEventListener('change', () => {
+  $inputDestino.classList.toggle('placeholder', !$inputDestino.value);
+  applyKmHint($inputDestino.value);
+  saveConfig();
+});
+
+// Limpiar todo
 $btnLimpiar?.addEventListener('click', () => {
   CATALOG.forEach(item => { qty[item.id] = 0; });
+  customItems = [];
+  customIdCtr = 0;
+  renderCustomItems();
   render();
   recalc();
 });
@@ -456,5 +633,13 @@ $btnLimpiar?.addEventListener('click', () => {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 loadConfig();
 loadProfile();
+
+if ($inputOrigen) $inputOrigen.value = 'Santiago';
+if ($inputDestino) {
+  $inputDestino.classList.toggle('placeholder', !$inputDestino.value);
+  if ($inputDestino.value) applyKmHint($inputDestino.value);
+}
+
 render();
+renderCustomItems();
 recalc();
