@@ -1,12 +1,12 @@
 {
   "name": "FleteApp",
   "short_name": "FleteApp",
-  "description": "Cotizador de fletes para transportistas",
+  "description": "Cotizaciones profesionales de transporte",
   "start_url": "/fletes-app/",
   "scope": "/fletes-app/",
   "display": "standalone",
-  "background_color": "#F5F7FA",
-  "theme_color": "#FFFFFF",
+  "background_color": "#E8EBF2",
+  "theme_color": "#E8EBF2",
   "orientation": "portrait",
   "icons": [
     {

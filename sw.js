@@ -1,15 +1,15 @@
 // FleteApp — Service Worker
-const CACHE_NAME = 'fleteapp-v1';
+const CACHE_NAME = 'fleteapp-v3';
 
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/css/styles.css',
-  '/js/app.js',
-  '/js/catalog.js',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  '/fletes-app/',
+  '/fletes-app/index.html',
+  '/fletes-app/css/styles.css',
+  '/fletes-app/js/app.js',
+  '/fletes-app/js/catalog.js',
+  '/fletes-app/manifest.json',
+  '/fletes-app/icons/icon-192.png',
+  '/fletes-app/icons/icon-512.png',
 ];
 
 // Instalación: pre-cachea todos los assets
@@ -56,7 +56,7 @@ self.addEventListener('fetch', event => {
           .catch(() => {
             // Sin red y sin cache: devolver index.html como fallback
             if (event.request.destination === 'document') {
-              return caches.match('/index.html');
+              return caches.match('/fletes-app/index.html');
             }
           });
       })

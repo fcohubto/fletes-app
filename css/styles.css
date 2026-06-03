@@ -133,7 +133,7 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--sp-5) var(--sp-5) var(--sp-4);
+  padding: calc(var(--sp-5) + env(safe-area-inset-top, 0px)) var(--sp-5) var(--sp-4);
   background: var(--bg);
   border-bottom: 1px solid var(--separator);
 }
@@ -684,7 +684,7 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-md);
   box-shadow: var(--neu-in);
   padding: var(--sp-3) var(--sp-4);
-  font-size: var(--text-base);
+  font-size: 1rem;
   font-weight: var(--fw-mid);
   color: var(--text);
   font-family: 'Barlow', sans-serif;
@@ -1023,7 +1023,7 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-md);
   box-shadow: var(--neu-in-sm);
   padding: var(--sp-3) var(--sp-3);
-  font-size: var(--text-base);
+  font-size: 1rem;
   font-family: 'Barlow', sans-serif;
   color: var(--text);
 }
@@ -1036,7 +1036,7 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-md);
   box-shadow: var(--neu-in-sm);
   padding: var(--sp-3) var(--sp-2);
-  font-size: var(--text-base);
+  font-size: 1rem;
   font-family: 'Barlow', sans-serif;
   text-align: center;
   color: var(--text);
