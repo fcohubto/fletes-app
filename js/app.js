@@ -94,6 +94,7 @@ function saveConfig() {
     bencina:     $cfgBencina?.value  ?? '0',
     rendimiento: $cfgRend?.value     ?? '0',
     peajes:      $cfgPeajes?.value   ?? '0',
+    origen:      $inputOrigen?.value ?? 'Santiago',
     destino:     $inputDestino?.value ?? '',
   }));
 }
@@ -102,12 +103,13 @@ function loadConfig() {
   try {
     const saved = JSON.parse(localStorage.getItem(CONFIG_KEY));
     if (!saved) return;
-    if (saved.tarifa      != null) $cfgTarifa.value                  = saved.tarifa;
-    if (saved.distancia   != null) $cfgDist.value                    = saved.distancia;
-    if (saved.capacidad   != null) $cfgCap.value                     = saved.capacidad;
+    if (saved.tarifa      != null) $cfgTarifa.value               = saved.tarifa;
+    if (saved.distancia   != null) $cfgDist.value                 = saved.distancia;
+    if (saved.capacidad   != null) $cfgCap.value                  = saved.capacidad;
     if (saved.bencina     != null && $cfgBencina)  $cfgBencina.value  = saved.bencina;
     if (saved.rendimiento != null && $cfgRend)     $cfgRend.value     = saved.rendimiento;
     if (saved.peajes      != null && $cfgPeajes)   $cfgPeajes.value   = saved.peajes;
+    if (saved.origen      != null && $inputOrigen)  $inputOrigen.value  = saved.origen;
     if (saved.destino     != null && $inputDestino) $inputDestino.value = saved.destino;
   } catch (_) {}
 }
@@ -179,6 +181,7 @@ function saveQuote() {
     id:        now.getTime(),
     fecha,
     cliente:   ($inputCliente?.value  || '').trim(),
+    origen:    ($inputOrigen?.value   || 'Santiago').trim(),
     destino:   ($inputDestino?.value  || '').trim(),
     items,
     volumen:   +volumen.toFixed(2),
@@ -194,6 +197,14 @@ function saveQuote() {
   } catch (_) {}
 }
 
+function deleteHistory(id) {
+  try {
+    const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.filter(h => h.id !== id)));
+    loadHistory();
+  } catch (_) {}
+}
+
 function loadHistory() {
   if (!$historialList) return;
   try {
@@ -206,12 +217,15 @@ function loadHistory() {
       const preview = q.items.slice(0, 2).map(i => `${i.name} × ${i.qty}`).join(', ')
         + (q.items.length > 2 ? ` y ${q.items.length - 2} más` : '');
       const viajesLabel = (q.viajes > 1) ? ` · ${q.viajes} viajes` : '';
+      const ruta = q.destino ? `${q.origen || 'Santiago'} → ${q.destino}` : '';
       return `
         <div class="history-card">
           <div class="hcard-header">
             <span class="hcard-cliente">${q.cliente || 'Sin nombre'}</span>
             <span class="hcard-fecha">${q.fecha}</span>
+            <button class="hcard-btn-delete" data-delete="${q.id}" aria-label="Eliminar cotización">×</button>
           </div>
+          ${ruta ? `<p class="hcard-ruta">${ruta}</p>` : ''}
           <p class="hcard-items">${preview}</p>
           <div class="hcard-footer">
             <span class="hcard-stat">${q.volumen} m³ · ${q.distancia} km${viajesLabel}</span>
@@ -230,7 +244,7 @@ async function reshare(id) {
     if (!q) return;
 
     const lineas = q.items.map(i => `${i.icon} ${i.name} × ${i.qty}  (${i.vol.toFixed(2)} m³)`);
-    const ruta   = q.destino ? `Santiago → ${q.destino}` : '';
+    const ruta   = q.destino ? `${q.origen || 'Santiago'} → ${q.destino}` : '';
     const texto  = [
       '🚛 COTIZACIÓN FLETE.APP',
       '─────────────────────',
@@ -276,6 +290,28 @@ const getConfig = () => ({
   distancia: parseFloat($cfgDist.value)  || 0,
   capacidad: parseFloat($cfgCap.value)   || 1,
 });
+
+// ─── Km hint (solo funciona cuando origen es Santiago) ────────────────────────
+function applyKmHint(destino) {
+  const origenNorm = normalizeCity($inputOrigen?.value || 'Santiago');
+  const esDesde    = origenNorm === 'santiago';
+
+  if (!destino || !esDesde) {
+    if ($odKmHint) $odKmHint.hidden = true;
+    return;
+  }
+  const km = KM_DESDE_SANTIAGO[normalizeCity(destino)];
+  if (km !== undefined) {
+    $cfgDist.value = km;
+    if ($odKmHint && $odKmValue) {
+      $odKmValue.textContent = km.toLocaleString('es-CL');
+      $odKmHint.hidden = false;
+    }
+    recalc();
+  } else if ($odKmHint) {
+    $odKmHint.hidden = true;
+  }
+}
 
 // ─── Artículos personalizados ──────────────────────────────────────────────────
 function renderCustomItems() {
@@ -371,20 +407,17 @@ function recalc() {
   const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
   const costo         = costoPorViaje * viajes;
 
-  // Barra de ocupación
   $occFill.style.width = pctUI + '%';
   $occFill.className   = 'occupancy-fill' + (pct >= 100 ? ' over' : pct >= 80 ? ' warning' : '');
   $occPct.textContent  = Math.round(pct) + '%';
   $occPct.classList.toggle('ocupacion-excedida', pct > 100);
   $occBar.setAttribute('aria-valuenow', Math.round(pctUI));
 
-  // Fila de viajes (visible solo cuando se necesita más de uno)
   if ($viajesRow && $statViajes) {
     $viajesRow.hidden = viajes <= 1;
     $statViajes.textContent = viajes;
   }
 
-  // Alerta exceso — ahora informa la cantidad de viajes
   if ($alertExc) {
     const excede = capacidad > 0 && totalVol > capacidad;
     $alertExc.classList.toggle('hidden', !excede);
@@ -395,10 +428,8 @@ function recalc() {
     }
   }
 
-  // Validación tarifa = 0
   if ($tarifaWarn) $tarifaWarn.hidden = tarifa > 0;
 
-  // Stats resumen
   $statVol.textContent   = totalVol.toFixed(2) + ' m³';
   $statCosto.textContent = formatCLP(costo);
   $statDist.textContent  = distancia + ' km';
@@ -409,7 +440,6 @@ function recalc() {
 
   $totalPrice.textContent = formatCLP(costo);
 
-  // Summary bar — pct muestra viajes cuando hay más de uno
   $sbarVol.textContent   = totalVol.toFixed(2) + ' m³';
   $sbarPct.textContent   = viajes > 1 ? `${viajes} vj.` : Math.round(pct) + '%';
   $sbarTotal.textContent = formatCLP(costo);
@@ -468,8 +498,9 @@ async function compartir() {
   });
 
   const cliente = ($inputCliente?.value || '').trim();
+  const origen  = ($inputOrigen?.value  || 'Santiago').trim();
   const destino = ($inputDestino?.value || '').trim();
-  const ruta    = destino ? `Santiago → ${destino}` : '';
+  const ruta    = destino ? `${origen} → ${destino}` : '';
 
   const texto = [
     '🚛 COTIZACIÓN FLETE.APP',
@@ -509,7 +540,6 @@ function copiarPortapapeles(texto) {
 
 // ─── Event listeners ──────────────────────────────────────────────────────────
 
-// Tabs catálogo
 $tabs.forEach(tab => {
   tab.addEventListener('click', () => {
     $tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
@@ -520,7 +550,6 @@ $tabs.forEach(tab => {
   });
 });
 
-// Botones +/− catálogo
 $list.addEventListener('click', e => {
   const btn = e.target.closest('.btn-qty');
   if (!btn) return;
@@ -529,7 +558,6 @@ $list.addEventListener('click', e => {
   changeQty(id, delta);
 });
 
-// Botones +/−, eliminar artículos personalizados
 $customList?.addEventListener('click', e => {
   const removeBtn = e.target.closest('.btn-remove-custom');
   if (removeBtn) {
@@ -549,26 +577,21 @@ $customList?.addEventListener('click', e => {
   recalc();
 });
 
-// Agregar artículo personalizado
 $btnAddCustom?.addEventListener('click', addCustomItem);
 $customName?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomItem(); } });
 $customVol?.addEventListener('keydown',  e => { if (e.key === 'Enter') { e.preventDefault(); addCustomItem(); } });
 
-// Campos de configuración
 [$cfgTarifa, $cfgDist, $cfgCap].forEach(input => {
   input.addEventListener('input', () => { recalc(); saveConfig(); });
 });
 
-// Botones compartir
 $btnShare.addEventListener('click', compartir);
 $btnCompartir?.addEventListener('click', compartir);
 
-// Costos adicionales
 [$cfgBencina, $cfgRend, $cfgPeajes].forEach(input => {
   input?.addEventListener('input', () => { recalc(); saveConfig(); });
 });
 
-// Perfil — sincroniza valores a config card
 $profNombre?.addEventListener('input', () => {
   updateAvatar($profNombre.value);
   saveProfile();
@@ -588,31 +611,24 @@ $profNombre?.addEventListener('input', () => {
   });
 });
 
-// Nav
 $navCotizar?.addEventListener('click', () => showView('cotizar'));
 $navPerfil?.addEventListener('click',  () => showView('perfil'));
 
-// Historial — reenviar
 $historialList?.addEventListener('click', e => {
-  const btn = e.target.closest('.hcard-btn');
-  if (!btn) return;
-  reshare(parseInt(btn.dataset.id, 10));
+  const deleteBtn = e.target.closest('.hcard-btn-delete');
+  if (deleteBtn) {
+    deleteHistory(parseInt(deleteBtn.dataset.delete, 10));
+    return;
+  }
+  const reshareBtn = e.target.closest('.hcard-btn');
+  if (reshareBtn) reshare(parseInt(reshareBtn.dataset.id, 10));
 });
 
-// O/D — destino auto-llena distancia y muestra hint
-function applyKmHint(value) {
-  const km = KM_DESDE_SANTIAGO[normalizeCity(value)];
-  if (km !== undefined) {
-    $cfgDist.value = km;
-    if ($odKmHint && $odKmValue) {
-      $odKmValue.textContent = km.toLocaleString('es-CL');
-      $odKmHint.hidden = false;
-    }
-    recalc();
-  } else if ($odKmHint) {
-    $odKmHint.hidden = true;
-  }
-}
+// O/D
+$inputOrigen?.addEventListener('change', () => {
+  if ($inputDestino?.value) applyKmHint($inputDestino.value);
+  saveConfig();
+});
 
 $inputDestino?.addEventListener('change', () => {
   $inputDestino.classList.toggle('placeholder', !$inputDestino.value);
@@ -620,21 +636,30 @@ $inputDestino?.addEventListener('change', () => {
   saveConfig();
 });
 
-// Limpiar todo
+// Limpiar todo — resetea artículos, destino, cliente y distancia
 $btnLimpiar?.addEventListener('click', () => {
   CATALOG.forEach(item => { qty[item.id] = 0; });
   customItems = [];
   customIdCtr = 0;
+
+  if ($inputDestino) {
+    $inputDestino.value = '';
+    $inputDestino.classList.add('placeholder');
+  }
+  if ($inputCliente) $inputCliente.value = '';
+  if ($cfgDist)      $cfgDist.value = '0';
+  if ($odKmHint)     $odKmHint.hidden = true;
+
   renderCustomItems();
   render();
   recalc();
+  saveConfig();
 });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 loadConfig();
 loadProfile();
 
-if ($inputOrigen) $inputOrigen.value = 'Santiago';
 if ($inputDestino) {
   $inputDestino.classList.toggle('placeholder', !$inputDestino.value);
   if ($inputDestino.value) applyKmHint($inputDestino.value);
