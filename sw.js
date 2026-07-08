@@ -1,5 +1,5 @@
 // FleteApp — Service Worker
-const CACHE_NAME = 'fleteapp-v3';
+const CACHE_NAME = 'fleteapp-v4';
 
 const ASSETS = [
   '/fletes-app/',

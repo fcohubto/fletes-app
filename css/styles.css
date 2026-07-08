@@ -506,7 +506,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── PERFIL HEADER (volver) ─────────────────────────────────────────────────── */
 .perfil-header {
-  padding: 0 var(--sp-5);
+  padding: 0 var(--sp-5) var(--sp-6);
   margin-top: 4px;
 }
 
