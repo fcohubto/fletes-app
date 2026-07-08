@@ -43,10 +43,10 @@
   --text-sm:   0.75rem;
   --text-base: 0.875rem;
   --text-md:   1rem;
-  --text-lg:   1.125rem;
-  --text-xl:   1.375rem;
-  --text-2xl:  1.5rem;
-  --text-3xl:  2rem;
+  --text-lg:   1.25rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  2.25rem;
 
   /* Espaciado */
   --sp-1: 0.25rem;
@@ -84,7 +84,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: var(--fw-base);
   line-height: var(--lh-base);
   height: 100%;
@@ -145,7 +145,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .logo {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: var(--fw-black);
   font-size: var(--text-3xl);
   letter-spacing: 1.5px;
@@ -170,7 +170,7 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: var(--fw-black);
   font-size: var(--text-base);
   color: #fff;
@@ -193,11 +193,11 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ─── O/D CARD ───────────────────────────────────────────────────────────────── */
 .od-card {
-  margin: 0 var(--sp-4) var(--sp-4);
+  margin: 20px var(--sp-4) var(--sp-4);
   background: var(--bg);
   border-radius: var(--r-lg);
   box-shadow: var(--neu-up);
-  padding: var(--sp-1) var(--sp-4);
+  padding: var(--sp-4) var(--sp-4);
   display: flex;
   flex-direction: column;
 }
@@ -206,7 +206,7 @@ input[type=number] { -moz-appearance: textfield; }
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-3) 0;
+  padding: var(--sp-2) 0;
 }
 
 .od-marker {
@@ -286,27 +286,74 @@ input[type=number] { -moz-appearance: textfield; }
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 .od-select.placeholder { color: var(--sub); font-weight: var(--fw-base); }
 .od-select option { color: initial; background: initial; font-weight: 400; }
 
-.od-km-hint {
+.od-row {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--sp-1);
-  padding: 0 var(--sp-1) var(--sp-3);
+  align-items: stretch;
+}
+
+.od-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.od-col-divider {
+  width: 2px;
+  flex-shrink: 0;
+  margin: 0 var(--sp-4);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--sub) 0px, var(--sub) 4px,
+    transparent 4px, transparent 8px
+  );
+  opacity: 0.5;
+}
+
+.od-col-stats {
+  gap: var(--sp-5);
+  padding: 0;
+}
+
+.od-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: var(--sp-2) 0;
+}
+
+.od-stat label {
   font-size: var(--text-sm);
   font-weight: var(--fw-bold);
-  color: var(--accent);
-  opacity: 0.85;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sub);
 }
-.od-km-hint[hidden] { display: none; }
-.od-km-value {
-  font-family: 'Barlow Condensed', sans-serif;
+
+.od-stat-value {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.od-stat-value input {
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-md);
-  font-weight: var(--fw-black);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  background: none;
+  border: none;
+  outline: none;
+  width: auto;
+  min-width: 1.5ch;
+  max-width: 100%;
 }
 
 /* ─── CONFIG CARD ────────────────────────────────────────────────────────────── */
@@ -358,22 +405,23 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .config-sym {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: var(--fw-black);
-  font-size: var(--text-lg);
+  font-size: var(--text-sm);
   color: var(--accent);
   opacity: 0.6;
   flex-shrink: 0;
 }
 
 .config-field input {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: var(--text-3xl);
   font-weight: var(--fw-black);
   color: var(--accent);
   text-align: center;
-  width: 80px;
-  min-width: 0;
+  width: auto;
+  min-width: 1.5ch;
+  max-width: 100%;
 }
 
 .config-divider {
@@ -381,6 +429,36 @@ input[type=number] { -moz-appearance: textfield; }
   background: linear-gradient(to bottom, transparent, var(--sd), transparent);
   margin: var(--sp-3) 0;
   flex-shrink: 0;
+}
+
+.config-field.money input {
+  font-size: var(--text-2xl);
+  width: 70px;
+}
+
+/* ─── TRUCK SUMMARY (defaults de Perfil, solo lectura) ─────────────────────────── */
+.truck-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-3) var(--sp-4) 0;
+  padding: 0 var(--sp-2);
+}
+
+.truck-summary-text {
+  font-size: var(--text-sm);
+  color: var(--sub);
+}
+
+.truck-summary-edit {
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  background: none;
+  border: none;
+  padding: 0;
+  white-space: nowrap;
 }
 
 /* ─── CONFIG EXTRA ───────────────────────────────────────────────────────────── */
@@ -416,26 +494,69 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .config-extra-field input {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-2xl);
   font-weight: var(--fw-black);
   color: var(--text);
   text-align: center;
-  width: 70px;
-  min-width: 0;
+  width: auto;
+  min-width: 1.5ch;
+  max-width: 100%;
+}
+
+/* ─── PERFIL HEADER (volver) ─────────────────────────────────────────────────── */
+.perfil-header {
+  padding: 0 var(--sp-5);
+  margin-top: 4px;
+}
+
+.perfil-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-md);
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  background: none;
+  border: none;
+  padding: var(--sp-1) 0;
+}
+
+/* ─── TOAST (confirmación de acciones) ───────────────────────────────────────── */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%) translateY(8px);
+  background: var(--text);
+  color: var(--bg);
+  font-size: var(--text-base);
+  font-weight: var(--fw-bold);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-md);
+  box-shadow: var(--neu-sm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 50;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ─── SECTION LABELS ─────────────────────────────────────────────────────────── */
 .section-label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: var(--text-sm);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: var(--text-md);
   font-weight: var(--fw-black);
   letter-spacing: 1.4px;
   text-transform: uppercase;
   color: var(--sub);
   padding: 0 var(--sp-5);
   margin-top: var(--sp-7);
-  margin-bottom: var(--sp-3);
+  margin-bottom: var(--sp-7);
 }
 .section-label.top-gap { margin-top: 2.5rem; }
 
@@ -443,7 +564,7 @@ input[type=number] { -moz-appearance: textfield; }
 .tabs {
   display: flex;
   gap: var(--sp-2);
-  padding: 0 var(--sp-4) var(--sp-4);
+  padding: 0 var(--sp-4) var(--sp-6);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -451,8 +572,8 @@ input[type=number] { -moz-appearance: textfield; }
 
 .tab {
   flex-shrink: 0;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: var(--text-base);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: var(--text-sm);
   font-weight: var(--fw-bold);
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -493,7 +614,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .article-icon {
-  font-size: 1.375rem;
+  font-size: var(--text-xl);
   width: 42px;
   height: 42px;
   display: flex;
@@ -514,7 +635,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .article-name {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: var(--fw-bold);
   color: var(--text);
   white-space: nowrap;
@@ -524,7 +645,7 @@ input[type=number] { -moz-appearance: textfield; }
 .article-card.selected .article-name { color: var(--accent); }
 
 .article-volume {
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   color: var(--sub);
 }
 
@@ -561,7 +682,7 @@ input[type=number] { -moz-appearance: textfield; }
   min-width: 28px;
   padding: 0 var(--sp-1);
   text-align: center;
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-md);
   font-weight: var(--fw-black);
   color: var(--mid);
@@ -608,7 +729,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .occupancy-pct {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-lg);
   font-weight: var(--fw-black);
   color: var(--accent);
@@ -649,7 +770,7 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .summary-row-value {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-xl);
   font-weight: var(--fw-black);
   color: var(--text);
@@ -684,10 +805,10 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-md);
   box-shadow: var(--neu-in);
   padding: var(--sp-3) var(--sp-4);
-  font-size: 1rem;
+  font-size: var(--text-md);
   font-weight: var(--fw-mid);
   color: var(--text);
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 #input-cliente::placeholder { color: var(--sub); font-weight: var(--fw-base); }
 #input-cliente:focus { box-shadow: var(--neu-in), 0 0 0 2px rgba(26,86,196,0.2); }
@@ -723,28 +844,11 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .btn-total-price {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-3xl);
   font-weight: var(--fw-black);
   color: #fff;
   line-height: var(--lh-tight);
-}
-
-.btn-share {
-  width: 62px;
-  background: var(--bg);
-  border-radius: var(--r-lg);
-  box-shadow: var(--neu-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--mid);
-  flex-shrink: 0;
-  transition: box-shadow 0.15s, color 0.15s;
-}
-.btn-share:active {
-  box-shadow: var(--neu-in-sm);
-  color: var(--accent);
 }
 
 /* ─── ACTION SECONDARY ───────────────────────────────────────────────────────── */
@@ -758,7 +862,7 @@ input[type=number] { -moz-appearance: textfield; }
   background: transparent;
   color: var(--sub);
   font-size: var(--text-sm);
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   padding: var(--sp-2) var(--sp-4);
   letter-spacing: 0.3px;
   text-decoration: underline;
@@ -798,13 +902,13 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 .sbar-value {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: var(--text-lg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: var(--text-md);
   font-weight: var(--fw-black);
   color: var(--text);
   line-height: 1;
 }
-.sbar-value.accent { color: var(--accent); font-size: var(--text-xl); }
+.sbar-value.accent { color: var(--accent); font-size: var(--text-md); }
 
 .sbar-divider {
   width: 1px;
@@ -859,7 +963,7 @@ input[type=number] { -moz-appearance: textfield; }
 .nav-dot { display: none; }
 
 .nav-label {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-sm);
   font-weight: var(--fw-black);
   letter-spacing: 0.6px;
@@ -929,7 +1033,7 @@ input[type=number] { -moz-appearance: textfield; }
   margin-top: 2px;
 }
 .hcard-stat { font-size: var(--text-sm); color: var(--sub); flex: 1; }
-.hcard-costo { font-family: 'Barlow Condensed', sans-serif; font-size: var(--text-xl); font-weight: var(--fw-black); color: var(--accent); }
+.hcard-costo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: var(--text-xl); font-weight: var(--fw-black); color: var(--accent); }
 
 .hcard-btn {
   font-size: var(--text-sm);
@@ -992,7 +1096,7 @@ input[type=number] { -moz-appearance: textfield; }
 .viajes-row[hidden] { display: none; }
 .viajes-row .summary-row-label { font-weight: var(--fw-bold); color: var(--warn); }
 .viajes-value {
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: var(--text-xl);
   font-weight: var(--fw-black);
   color: var(--warn);
@@ -1023,8 +1127,8 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-md);
   box-shadow: var(--neu-in-sm);
   padding: var(--sp-3) var(--sp-3);
-  font-size: 1rem;
-  font-family: 'Barlow', sans-serif;
+  font-size: var(--text-md);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   color: var(--text);
 }
 .custom-item-form input[type="text"]::placeholder { color: var(--sub); }
@@ -1036,8 +1140,8 @@ input[type=number] { -moz-appearance: textfield; }
   border-radius: var(--r-md);
   box-shadow: var(--neu-in-sm);
   padding: var(--sp-3) var(--sp-2);
-  font-size: 1rem;
-  font-family: 'Barlow', sans-serif;
+  font-size: var(--text-md);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   text-align: center;
   color: var(--text);
 }
@@ -1051,7 +1155,7 @@ input[type=number] { -moz-appearance: textfield; }
   color: #fff;
   font-size: var(--text-xl);
   font-weight: var(--fw-black);
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;

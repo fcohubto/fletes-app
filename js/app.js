@@ -43,14 +43,11 @@ const $cfgCap         = document.getElementById('cfg-capacidad');
 const $occFill        = document.getElementById('occupancy-fill');
 const $occPct         = document.getElementById('occupancy-pct');
 const $occBar         = document.querySelector('.occupancy-bar');
-const $statVol        = document.getElementById('stat-volume');
-const $statCosto      = document.getElementById('stat-costo');
 const $statDist       = document.getElementById('stat-distancia');
 const $statViajes     = document.getElementById('stat-viajes');
 const $viajesRow      = document.getElementById('viajes-row');
 const $sumItems       = document.getElementById('summary-items');
 const $totalPrice     = document.getElementById('btn-total-price');
-const $btnShare       = document.querySelector('.btn-share');
 const $btnCompartir   = document.getElementById('btn-compartir');
 const $sbarVol        = document.getElementById('sbar-volume');
 const $sbarPct        = document.getElementById('sbar-pct');
@@ -77,11 +74,13 @@ const $viewPerfil     = document.getElementById('view-perfil');
 const $summaryBar     = document.querySelector('.summary-bar');
 const $inputOrigen    = document.getElementById('input-origen');
 const $inputDestino   = document.getElementById('input-destino');
-const $odKmHint       = document.getElementById('od-km-hint');
-const $odKmValue      = document.getElementById('od-km-value');
 const $customName     = document.getElementById('custom-name');
 const $customVol      = document.getElementById('custom-vol');
 const $btnAddCustom   = document.getElementById('btn-add-custom');
+const $truckSummaryText = document.getElementById('truck-summary-text');
+const $btnEditarCamion  = document.getElementById('btn-editar-camion');
+const $btnVolverPerfil  = document.getElementById('btn-volver-perfil');
+const $toast            = document.getElementById('toast');
 
 // ─── Persistencia ─────────────────────────────────────────────────────────────
 const CONFIG_KEY = 'fleteapp-config';
@@ -158,9 +157,9 @@ function saveQuote() {
   if (!allSel.length) return;
 
   const { tarifa, distancia, capacidad } = getConfig();
-  const precioBencina = parseFloat($cfgBencina?.value) || 0;
+  const precioBencina = getBencina();
   const rendimiento   = parseFloat($cfgRend?.value)    || 0;
-  const peajes        = parseFloat($cfgPeajes?.value)  || 0;
+  const peajes        = getPeajes();
   const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
 
   let volumen = 0;
@@ -293,31 +292,84 @@ function showView(view) {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const formatCLP = n => '$' + Math.round(n).toLocaleString('es-CL');
 
+// Feedback visual breve tras guardar un cambio
+let toastTimer = null;
+function showToast(msg) {
+  if (!$toast) return;
+  $toast.textContent = msg;
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $toast.classList.remove('show'), 1600);
+}
+
+// Miles con punto (formato CLP) para inputs de texto editables
+const formatMiles = digits => digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+// Tope de dígitos por campo — evita valores absurdos y que el layout se rompa
+const DIGIT_LIMIT = { peajes: 7, tarifa: 6, bencina: 4, distancia: 4, capacidad: 3, rendimiento: 2 };
+
+// Campo con formato de moneda (puntos de miles), recortado a un máximo de dígitos
+function formatCurrencyInput(el, maxDigits, label) {
+  if (!el) return;
+  const raw = el.value.replace(/\D/g, '');
+  if (raw.length > maxDigits) showToast(`${label}: máximo $${formatMiles('9'.repeat(maxDigits))}`);
+  const digits = raw.slice(0, maxDigits);
+  el.value = digits ? formatMiles(digits) : '';
+}
+
+// Campo numérico simple (sin moneda), recortado a un máximo de dígitos
+function clampDigits(el, maxDigits, label) {
+  if (!el) return;
+  const raw = String(el.value).replace(/\D/g, '');
+  if (raw.length > maxDigits) {
+    showToast(`${label}: máximo ${'9'.repeat(maxDigits)}`);
+    el.value = raw.slice(0, maxDigits);
+  }
+}
+
+function formatPeajesInput() { formatCurrencyInput($cfgPeajes, DIGIT_LIMIT.peajes, 'Peajes'); }
+function getPeajes() { return parseFloat(($cfgPeajes?.value || '0').replace(/\./g, '')) || 0; }
+
+function formatTarifaInput() { formatCurrencyInput($profTarifa, DIGIT_LIMIT.tarifa, 'Tarifa/km'); }
+function getTarifa() { return parseFloat(($cfgTarifa?.value || '0').replace(/\./g, '')) || 0; }
+
+function formatBencinaInput() { formatCurrencyInput($profBencina, DIGIT_LIMIT.bencina, '$/L bencina'); }
+function getBencina() { return parseFloat(($cfgBencina?.value || '0').replace(/\./g, '')) || 0; }
+
+// Ancho del input según su contenido — evita que los valores largos se corten
+function autosizeStatInput(el) {
+  if (!el) return;
+  el.size = Math.max(String(el.value).length, 1);
+}
+
 const getConfig = () => ({
-  tarifa:    parseFloat($cfgTarifa.value) || 0,
+  tarifa:    getTarifa(),
   distancia: parseFloat($cfgDist.value)  || 0,
   capacidad: parseFloat($cfgCap.value)   || 1,
 });
 
-// ─── Km hint (solo funciona cuando origen es Santiago) ────────────────────────
+// ─── Resumen de camión (defaults de Perfil, solo lectura en Cotizar) ──────────
+function updateTruckSummary() {
+  if (!$truckSummaryText) return;
+  const tarifa    = getTarifa();
+  const capacidad = parseFloat($cfgCap.value)        || 0;
+  const bencina   = getBencina();
+  const partes = [`$${tarifa.toLocaleString('es-CL')}/km`, `${capacidad} m³`];
+  if (bencina > 0) partes.push(`$${bencina.toLocaleString('es-CL')}/L`);
+  $truckSummaryText.textContent = partes.join(' · ');
+}
+
+// ─── Auto-completar distancia (solo funciona cuando origen es Santiago) ───────
 function applyKmHint(destino) {
   const origenNorm = normalizeCity($inputOrigen?.value || 'Santiago');
   const esDesde    = origenNorm === 'santiago';
 
-  if (!destino || !esDesde) {
-    if ($odKmHint) $odKmHint.hidden = true;
-    return;
-  }
+  if (!destino || !esDesde) return;
+
   const km = KM_DESDE_SANTIAGO[normalizeCity(destino)];
   if (km !== undefined) {
     $cfgDist.value = km;
-    if ($odKmHint && $odKmValue) {
-      $odKmValue.textContent = km.toLocaleString('es-CL');
-      $odKmHint.hidden = false;
-    }
     recalc();
-  } else if ($odKmHint) {
-    $odKmHint.hidden = true;
   }
 }
 
@@ -408,9 +460,9 @@ function recalc() {
   const pct   = capacidad > 0 ? (totalVol / capacidad) * 100 : 0;
   const pctUI = Math.min(pct, 100);
 
-  const precioBencina = parseFloat($cfgBencina?.value) || 0;
+  const precioBencina = getBencina();
   const rendimiento   = parseFloat($cfgRend?.value)    || 0;
-  const peajes        = parseFloat($cfgPeajes?.value)  || 0;
+  const peajes        = getPeajes();
   const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
   const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
   const costo         = costoPorViaje * viajes;
@@ -438,8 +490,6 @@ function recalc() {
 
   if ($tarifaWarn) $tarifaWarn.hidden = tarifa > 0;
 
-  $statVol.textContent   = totalVol.toFixed(2) + ' m³';
-  $statCosto.textContent = formatCLP(costo);
   $statDist.textContent  = distancia + ' km';
 
   $sumItems.textContent = totalItems === 1
@@ -454,6 +504,8 @@ function recalc() {
 
   $summaryBar?.classList.toggle('warning', pct >= 80 && pct < 100);
   $summaryBar?.classList.toggle('over',    pct >= 100);
+
+  updateTruckSummary();
 }
 
 // ─── Gestión de cantidad (catálogo) ──────────────────────────────────────────
@@ -492,9 +544,9 @@ async function compartir() {
   allSel.forEach(item => { totalVol += item.vol * qty[item.id]; });
 
   const viajes        = capacidad > 0 && totalVol > capacidad ? Math.ceil(totalVol / capacidad) : 1;
-  const precioBencina = parseFloat($cfgBencina?.value) || 0;
+  const precioBencina = getBencina();
   const rendimiento   = parseFloat($cfgRend?.value)    || 0;
-  const peajes        = parseFloat($cfgPeajes?.value)  || 0;
+  const peajes        = getPeajes();
   const costoBencina  = rendimiento > 0 ? (distancia / rendimiento) * precioBencina : 0;
   const costoPorViaje = (tarifa * distancia) + costoBencina + peajes;
   const costo         = costoPorViaje * viajes;
@@ -590,43 +642,82 @@ $btnAddCustom?.addEventListener('click', addCustomItem);
 $customName?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomItem(); } });
 $customVol?.addEventListener('keydown',  e => { if (e.key === 'Enter') { e.preventDefault(); addCustomItem(); } });
 
-[$cfgTarifa, $cfgDist, $cfgCap].forEach(input => {
+[$cfgTarifa, $cfgCap].forEach(input => {
   input.addEventListener('input', () => { recalc(); saveConfig(); });
 });
+$cfgDist?.addEventListener('input', () => {
+  clampDigits($cfgDist, DIGIT_LIMIT.distancia, 'Distancia');
+  autosizeStatInput($cfgDist);
+  recalc();
+  saveConfig();
+});
 
-$btnShare.addEventListener('click', compartir);
 $btnCompartir?.addEventListener('click', compartir);
 
-[$cfgBencina, $cfgRend, $cfgPeajes].forEach(input => {
+[$cfgBencina, $cfgRend].forEach(input => {
   input?.addEventListener('input', () => { recalc(); saveConfig(); });
+});
+
+$cfgPeajes?.addEventListener('input', () => {
+  formatPeajesInput();
+  autosizeStatInput($cfgPeajes);
+  recalc();
+  saveConfig();
 });
 
 $profNombre?.addEventListener('input', () => {
   updateAvatar($profNombre.value);
   saveProfile();
 });
+$profNombre?.addEventListener('change', () => showToast('Nombre guardado'));
+
+$profTarifa?.addEventListener('input', () => {
+  formatTarifaInput();
+  autosizeStatInput($profTarifa);
+  if ($cfgTarifa) $cfgTarifa.value = $profTarifa.value;
+  saveProfile();
+  recalc();
+  saveConfig();
+});
+$profTarifa?.addEventListener('change', () => showToast('Tarifa guardada'));
+
+$profBencina?.addEventListener('input', () => {
+  formatBencinaInput();
+  autosizeStatInput($profBencina);
+  if ($cfgBencina) $cfgBencina.value = $profBencina.value;
+  saveProfile();
+  recalc();
+  saveConfig();
+});
+$profBencina?.addEventListener('change', () => showToast('Precio de bencina guardado'));
 
 [
-  [$profTarifa,      $cfgTarifa],
-  [$profCapacidad,   $cfgCap],
-  [$profBencina,     $cfgBencina],
-  [$profRendimiento, $cfgRend],
-].forEach(([src, dst]) => {
+  [$profCapacidad,   $cfgCap,  DIGIT_LIMIT.capacidad,   'Capacidad',    'Capacidad guardada'],
+  [$profRendimiento, $cfgRend, DIGIT_LIMIT.rendimiento, 'Rendimiento',  'Rendimiento guardado'],
+].forEach(([src, dst, maxDigits, label, msg]) => {
   src?.addEventListener('input', () => {
+    clampDigits(src, maxDigits, label);
     if (dst) dst.value = src.value;
+    autosizeStatInput(src);
     saveProfile();
     recalc();
     saveConfig();
   });
+  src?.addEventListener('change', () => showToast(msg));
 });
 
 $navCotizar?.addEventListener('click', () => showView('cotizar'));
 $navPerfil?.addEventListener('click',  () => showView('perfil'));
+$btnEditarCamion?.addEventListener('click', () => showView('perfil'));
+$btnVolverPerfil?.addEventListener('click', () => showView('cotizar'));
 
 $historialList?.addEventListener('click', e => {
   const deleteBtn = e.target.closest('.hcard-btn-delete');
   if (deleteBtn) {
-    deleteHistory(parseInt(deleteBtn.dataset.delete, 10));
+    if (confirm('¿Eliminar esta cotización del historial? No se puede deshacer.')) {
+      deleteHistory(parseInt(deleteBtn.dataset.delete, 10));
+      showToast('Cotización eliminada');
+    }
     return;
   }
   const reshareBtn = e.target.closest('.hcard-btn');
@@ -657,7 +748,6 @@ $btnLimpiar?.addEventListener('click', () => {
   }
   if ($inputCliente) $inputCliente.value = '';
   if ($cfgDist)      $cfgDist.value = '0';
-  if ($odKmHint)     $odKmHint.hidden = true;
 
   renderCustomItems();
   render();
@@ -673,6 +763,25 @@ if ($inputDestino) {
   $inputDestino.classList.toggle('placeholder', !$inputDestino.value);
   if ($inputDestino.value) applyKmHint($inputDestino.value);
 }
+
+clampDigits($cfgDist, DIGIT_LIMIT.distancia, 'Distancia');
+formatPeajesInput();
+autosizeStatInput($cfgDist);
+autosizeStatInput($cfgPeajes);
+
+formatTarifaInput();
+if ($cfgTarifa && $profTarifa) $cfgTarifa.value = $profTarifa.value;
+autosizeStatInput($profTarifa);
+
+clampDigits($profCapacidad, DIGIT_LIMIT.capacidad, 'Capacidad');
+autosizeStatInput($profCapacidad);
+
+formatBencinaInput();
+if ($cfgBencina && $profBencina) $cfgBencina.value = $profBencina.value;
+autosizeStatInput($profBencina);
+
+clampDigits($profRendimiento, DIGIT_LIMIT.rendimiento, 'Rendimiento');
+autosizeStatInput($profRendimiento);
 
 render();
 renderCustomItems();
