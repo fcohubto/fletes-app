@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FleteApp — Break Operativo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --bg:           #0D0B09;
+      --frame-bg:     #121009;
+      --border:       #2A2520;
+      --border-soft:  #1E1B18;
+      --text-primary: #EDE9E3;
+      --text-sec:     #9A948C;   /* 6.9:1 — piso para texto secundario */
+      --text-muted:   #524D48;   /* SOLO bordes/decorativos — NUNCA texto */
+      --accent:       #C8A97A;
+      --accent-dim:   rgba(200,169,122,0.12);
+      --danger:       #C06040;
+      --danger-dim:   rgba(192,96,64,0.12);
+      --ok:           #6AAF80;
+      --ok-dim:       rgba(106,175,128,0.12);
+      --nav-h:        48px;
+
+      /* Tipografía — 14px mínimo absoluto en pantalla */
+      --t-label: 0.875rem;   /* 14px */
+      --t-body:  0.875rem;   /* 14px */
+      --t-ui:    1rem;       /* 16px */
+      --t-sub:   1.25rem;    /* 20px */
+      --t-h2:    1.75rem;    /* 28px */
+      --t-h1:    4rem;       /* 64px */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Barlow', sans-serif;
+    }
+
+    /* ─── SCROLL ─────────────────────────────── */
+    .scroll-wrap {
+      display: flex;
+      height: 100vh;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: var(--nav-h);
+    }
+    .scroll-wrap::-webkit-scrollbar { height: 2px; }
+    .scroll-wrap::-webkit-scrollbar-track { background: var(--bg); }
+    .scroll-wrap::-webkit-scrollbar-thumb { background: var(--border); }
+
+    /* ─── FRAME ──────────────────────────────── */
+    .frame {
+      flex-shrink: 0;
+      width: 100vw;
+      height: calc(100vh - var(--nav-h));
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 56px 0;
+      border-right: 1px solid var(--border-soft);
+    }
+
+    .frame-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .frame-num {
+      font-size: var(--t-label);
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+    }
+
+    .frame-tag {
+      font-size: var(--t-label);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    .frame-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--t-h1);
+      font-weight: 700;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 36px;
+    }
+
+    .frame-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 40px;
+    }
+    .frame-body::-webkit-scrollbar { width: 3px; }
+    .frame-body::-webkit-scrollbar-track { background: transparent; }
+    .frame-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ─── LAYOUT HELPERS ─────────────────────── */
+    .cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      flex: 1;
+    }
+    .cols-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+      flex: 1;
+    }
+    .col { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ─── SECTION LABEL ──────────────────────── */
+    .sec {
+      font-size: var(--t-label);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
+
+    /* ─── DIVIDER ────────────────────────────── */
+    .hr { width: 100%; height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* ─── BODY TEXT ──────────────────────────── */
+    .body {
+      font-size: var(--t-body);
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+    .body-sec {
+      font-size: var(--t-body);
+      line-height: 1.6;
+      color: var(--text-sec);
+    }
+
+    /* ─── ITEM LIST ──────────────────────────── */
+    .item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .item-list li {
+      font-size: var(--t-body);
+      line-height: 1.5;
+      color: var(--text-primary);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .item-list li:last-child { border-bottom: none; }
+    .item-list li::before {
+      content: "—";
+      color: var(--text-muted);
+      flex-shrink: 0;
+      font-size: var(--t-label);
+    }
+    .item-list.done li::before { content: "✓"; color: var(--ok); }
+    .item-list.pending li::before { content: "○"; color: var(--text-sec); }
+    .item-list.blocked li::before { content: "✕"; color: var(--danger); }
+
+    /* ─── DATA ROW ───────────────────────────── */
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .data-row:last-child { border-bottom: none; }
+    .data-label { font-size: var(--t-body); color: var(--text-sec); }
+    .data-value { font-size: var(--t-body); font-weight: 600; color: var(--text-primary); text-align: right; }
+    .data-value.accent { color: var(--accent); }
+    .data-value.ok { color: var(--ok); }
+    .data-value.danger { color: var(--danger); }
+
+    /* ─── BIG STAT ───────────────────────────── */
+    .stat-block { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+    }
+    .stat-num.accent { color: var(--accent); }
+    .stat-label {
+      font-size: var(--t-label);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+    }
+
+    /* ─── TAG / BADGE ────────────────────────── */
+    .tag-inline {
+      display: inline-block;
+      font-size: var(--t-label);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      color: var(--text-sec);
+    }
+    .tag-inline.ok    { border-color: var(--ok);     color: var(--ok);     background: var(--ok-dim); }
+    .tag-inline.warn  { border-color: var(--accent);  color: var(--accent); background: var(--accent-dim); }
+    .tag-inline.gap   { border-color: var(--danger);  color: var(--danger); background: var(--danger-dim); }
+
+    /* ─── PERSONA CARD ───────────────────────── */
+    .persona {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .persona-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--t-h2);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    /* ─── TIMELINE ───────────────────────────── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 120px 20px 1fr;
+      gap: 0 16px;
+      position: relative;
+    }
+    .tl-date {
+      font-size: var(--t-label);
+      color: var(--text-sec);
+      padding: 10px 0;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .tl-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tl-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      margin-top: 14px;
+      flex-shrink: 0;
+    }
+    .tl-dot.active { background: var(--accent); }
+    .tl-dot.pending { background: var(--border); border: 1px solid var(--text-sec); }
+    .tl-connector {
+      width: 1px;
+      flex: 1;
+      background: var(--border);
+      min-height: 12px;
+    }
+    .tl-content {
+      padding: 8px 0 16px;
+    }
+    .tl-version {
+      font-size: var(--t-body);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .tl-desc {
+      font-size: var(--t-label);
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    /* ─── COLOR SWATCH ───────────────────────── */
+    .swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+    .swatch-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+    .swatch-hex {
+      font-size: var(--t-label);
+      color: var(--text-sec);
+      font-family: monospace;
+    }
+
+    /* ─── COMPONENT TAG ──────────────────────── */
+    .comp-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .comp-tag {
+      font-size: var(--t-label);
+      font-family: monospace;
+      color: var(--text-sec);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    /* ─── USER JOURNEY ──────────────────────── */
+    .jny-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    .jny-stages {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .jny-stage {
+      padding: 12px 16px 14px;
+      border-right: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .jny-stage:last-child { border-right: none; background: var(--danger-dim); }
+    .jny-step {
+      font-size: var(--t-label);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--text-sec);
+    }
+    .jny-stage:last-child .jny-step { color: var(--danger); }
+    .jny-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      line-height: 1.05;
+    }
+    .jny-stage:last-child .jny-name { color: var(--danger); }
+    .jny-stage-desc {
+      font-size: var(--t-label);
+      color: var(--text-sec);
+      line-height: 1.4;
+    }
+
+    .jny-emotion {
+      position: relative;
+      height: 180px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to bottom,
+        rgba(106,175,128,0.05) 0%, transparent 35%,
+        transparent 65%, rgba(192,96,64,0.05) 100%);
+    }
+    .jny-col-lines {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      pointer-events: none;
+    }
+    .jny-col-line { border-right: 1px solid var(--border-soft); }
+    .jny-col-line:last-child { border-right: none; background: var(--danger-dim); }
+    .jny-curve-svg {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: visible;
+    }
+    .jny-bubbles {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      pointer-events: none;
+    }
+    .jny-bubble { padding: 10px 12px; display: flex; flex-direction: column; }
+    .jny-bubble.top  { justify-content: flex-start; }
+    .jny-bubble.bot  { justify-content: flex-end; }
+    .bubble-card {
+      background: var(--border-soft);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 7px 10px;
+      font-size: var(--t-label);
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .bubble-card.gap {
+      font-style: normal;
+      border-color: var(--danger);
+      background: var(--danger-dim);
+    }
+
+    .jny-opps {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      flex: 1;
+    }
+    .jny-opp {
+      padding: 14px 16px;
+      border-right: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .jny-opp:last-child { border-right: none; background: var(--danger-dim); }
+    .jny-opp-label {
+      font-size: var(--t-label);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .jny-opp:last-child .jny-opp-label { color: var(--danger); border-color: rgba(192,96,64,0.4); }
+    .jny-opp-items { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .jny-opp-items li {
+      font-size: var(--t-label);
+      color: var(--text-primary);
+      line-height: 1.45;
+      padding-left: 14px;
+      position: relative;
+    }
+    .jny-opp-items li::before { content: "·"; position: absolute; left: 4px; color: var(--text-sec); }
+    .jny-opp:last-child .jny-opp-items li { color: var(--danger); }
+    .jny-opp:last-child .jny-opp-items li::before { color: var(--danger); }
+
+    /* ─── EMPTY PLACEHOLDER ──────────────────── */
+    .frame-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed var(--border);
+      border-radius: 3px;
+      color: var(--text-sec);
+      font-size: var(--t-label);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ─── NAV BAR ────────────────────────────── */
+    .nav-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      z-index: 200;
+    }
+    .nav-product {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-sec);
+    }
+    .nav-center { display: flex; align-items: center; gap: 20px; }
+    .nav-counter {
+      font-size: var(--t-label);
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-sec);
+      min-width: 48px;
+      text-align: center;
+    }
+    .nav-dots { display: flex; gap: 7px; align-items: center; }
+    .nav-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      border: none; padding: 0;
+      transition: background 0.18s, transform 0.18s;
+    }
+    .nav-dot.active { background: var(--text-primary); transform: scale(1.4); }
+    .nav-arrows { display: flex; gap: 8px; }
+    .nav-arrow {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-sec);
+      width: 28px; height: 28px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+    .nav-arrow:hover { border-color: var(--text-sec); color: var(--text-primary); }
+    .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+    .nav-progress {
+      position: fixed;
+      bottom: var(--nav-h); left: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+      z-index: 201;
+    }
+  </style>
+</head>
+<body>
+
+<div class="scroll-wrap" id="scroll-wrap">
+
+  <!-- ══════════════════════════════════════════
+       FRAME 01 — PORTADA / MINICONTEXTO
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="1">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 01</span>
+      <span class="frame-tag">Intro</span>
+    </div>
+    <h1 class="frame-title">Visión General</h1>
+    <div class="frame-body">
+      <div class="cols-2">
+
+        <div class="col">
+          <p class="sec">Producto</p>
+          <div class="stat-block">
+            <span class="stat-num accent">FleteApp</span>
+            <span class="stat-label">Cotizador profesional de transporte</span>
+          </div>
+          <div class="hr"></div>
+          <div class="data-row">
+            <span class="data-label">Versión activa</span>
+            <span class="data-value">v2.0</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Estado</span>
+            <span class="data-value"><span class="tag-inline warn">Stand By</span></span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Plataforma</span>
+            <span class="data-value">PWA mobile-first</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Stack</span>
+            <span class="data-value">Vanilla HTML / CSS / JS</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Persistencia</span>
+            <span class="data-value">localStorage</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Hosting</span>
+            <span class="data-value">GitHub Pages</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Deploy</span>
+            <span class="data-value accent">fcohubto.github.io/fletes-app</span>
+          </div>
+        </div>
+
+        <div class="col">
+          <p class="sec">Contexto</p>
+          <p class="body">
+            Herramienta diseñada para transportistas independientes que cotizan
+            de palabra o a ojo. FleteApp convierte ese proceso en un cálculo
+            estructurado con output compartible por WhatsApp.
+          </p>
+          <div class="hr"></div>
+          <p class="sec">Responsable</p>
+          <div class="data-row">
+            <span class="data-label">Autor</span>
+            <span class="data-value">Francisco Orellana</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Framework</span>
+            <span class="data-value">OLIVA — Olivacraft</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">v2.0 iniciado</span>
+            <span class="data-value">2026-06-03</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Última sesión</span>
+            <span class="data-value">2026-06-25</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Break operativo</p>
+          <p class="body-sec">Creado 2026-06-26 · v0.2<br>Análisis disparado por aparición de competidor iziPro en Región Metropolitana.<br>Actualizado 2026-07-09 — potencial de alianzas para reunión con PM socia.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 02 — QUÉ ES / PARA QUIÉNES
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="2">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 02</span>
+      <span class="frame-tag">Producto</span>
+    </div>
+    <h1 class="frame-title">Definición del Producto</h1>
+    <div class="frame-body">
+      <div class="cols-2">
+
+        <div class="col">
+          <p class="sec">Qué es</p>
+          <p class="body">
+            Calculadora que convierte artículos en volumen (m³), calcula la
+            ocupación del camión y genera el precio total considerando tarifa
+            por km, combustible y peajes. Produce un texto de cotización
+            listo para enviar por WhatsApp.
+          </p>
+          <div class="hr"></div>
+          <p class="sec">Qué hace</p>
+          <ul class="item-list">
+            <li>Selección de artículos por categoría (60+ ítems)</li>
+            <li>Cálculo de volumen en m³ por ítem</li>
+            <li>% de ocupación del camión y viajes necesarios</li>
+            <li>Precio total: tarifa/km + bencina + peajes</li>
+            <li>Output de cotización compartible vía navigator.share</li>
+            <li>Historial de cotizaciones en localStorage</li>
+            <li>Perfil del transportista persistente</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="sec">Qué NO es</p>
+          <ul class="item-list blocked">
+            <li>Marketplace para buscar transportistas</li>
+            <li>Plataforma para el cliente final</li>
+            <li>Sistema de pago o reserva</li>
+            <li>Aplicación nativa (es PWA)</li>
+          </ul>
+        </div>
+
+        <div class="col">
+          <p class="sec">Para quiénes</p>
+          <div class="persona">
+            <div class="persona-name">El Transportista<br>Independiente</div>
+            <div class="hr" style="margin:0"></div>
+            <ul class="item-list">
+              <li>Dueño de camión o furgón propio</li>
+              <li>Opera sin intermediario ni marketplace</li>
+              <li>Cotiza directamente con el cliente</li>
+              <li>Usa WhatsApp para cerrar trabajos</li>
+              <li>Cubre Chile completo (47 ciudades)</li>
+            </ul>
+            <div class="hr" style="margin:0"></div>
+            <p class="body-sec">Hipótesis de perfil — pendiente validación cuantitativa.<br>Validación cualitativa: 3+ usuarios reales, 2026-06-25.</p>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Posición competitiva</p>
+          <p class="body-sec">
+            iziPro (competitor) opera para el cliente final en RM con precio fijo.
+            FleteApp opera para el transportista en Chile completo con precio configurable.
+            Son lados opuestos de la misma transacción.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 03 — KPI / BENEFICIOS / USUARIO
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="3">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 03</span>
+      <span class="frame-tag">Valor</span>
+    </div>
+    <h1 class="frame-title">Propuesta de Valor</h1>
+    <div class="frame-body">
+      <div class="cols-3">
+
+        <div class="col">
+          <p class="sec">Beneficios del usuario</p>
+          <ul class="item-list">
+            <li>Cotización calculada en menos de 2 minutos</li>
+            <li>Cubre todos los costos reales del viaje</li>
+            <li>Sabe exactamente si necesita 1 o más viajes</li>
+            <li>Output con formato profesional para el cliente</li>
+            <li>Sin registro, sin cuenta, sin suscripción</li>
+            <li>Funciona offline (PWA con Service Worker)</li>
+            <li>47 ciudades de Chile precargadas</li>
+          </ul>
+        </div>
+
+        <div class="col">
+          <p class="sec">KPI de producto</p>
+          <p class="body-sec" style="margin-bottom:12px">Métricas que el app calcula internamente. Sin analytics aún — no hay datos de uso real.</p>
+          <div class="data-row">
+            <span class="data-label">Artículos en catálogo</span>
+            <span class="data-value accent">60+</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Categorías</span>
+            <span class="data-value">8</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Ciudades cubiertas</span>
+            <span class="data-value">47</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Variables de costo</span>
+            <span class="data-value">4</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Usuarios validados</span>
+            <span class="data-value ok">3+</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Analytics instalado</span>
+            <span class="data-value danger">No</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Retención medida</span>
+            <span class="data-value danger">No</span>
+          </div>
+        </div>
+
+        <div class="col">
+          <p class="sec">Perfil usuario (hipótesis)</p>
+          <div class="data-row">
+            <span class="data-label">Rol</span>
+            <span class="data-value">Transportista independiente</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Rango etario</span>
+            <span class="data-value">35 – 55 años</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Vehículo</span>
+            <span class="data-value">Camión 10 – 25 m³</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Comunicación</span>
+            <span class="data-value">WhatsApp</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Cotización actual</span>
+            <span class="data-value">De palabra o calculadora</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Preguntas sin responder</p>
+          <ul class="item-list pending">
+            <li>¿Usan Compartir después de calcular?</li>
+            <li>¿Vuelven solos sin recordatorio?</li>
+            <li>¿Reemplazan calculadora + WhatsApp?</li>
+            <li>¿Cuántas cotizaciones/semana hace cada uno?</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 04 — USER JOURNEY
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="4">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 04</span>
+      <span class="frame-tag">Experiencia</span>
+    </div>
+    <h1 class="frame-title">Viaje del Usuario</h1>
+    <div class="frame-body">
+      <div class="jny-wrap">
+
+        <!-- ── Etapas ── -->
+        <div class="jny-stages">
+          <div class="jny-stage">
+            <span class="jny-step">01</span>
+            <span class="jny-name">Necesidad</span>
+            <span class="jny-stage-desc">El cliente pregunta cuánto cuesta mover sus cosas</span>
+          </div>
+          <div class="jny-stage">
+            <span class="jny-step">02</span>
+            <span class="jny-name">Configuración</span>
+            <span class="jny-stage-desc">Ingresa tarifa, distancia y capacidad del camión</span>
+          </div>
+          <div class="jny-stage">
+            <span class="jny-step">03</span>
+            <span class="jny-name">Inventario</span>
+            <span class="jny-stage-desc">Selecciona artículos por categoría o agrega uno personalizado</span>
+          </div>
+          <div class="jny-stage">
+            <span class="jny-step">04</span>
+            <span class="jny-name">Resumen</span>
+            <span class="jny-stage-desc">Ve volumen, % de ocupación, viajes necesarios y costo total</span>
+          </div>
+          <div class="jny-stage">
+            <span class="jny-step">05</span>
+            <span class="jny-name">Cotización</span>
+            <span class="jny-stage-desc">Genera el texto y comparte por WhatsApp o portapapeles</span>
+          </div>
+          <div class="jny-stage">
+            <span class="jny-step">GAP</span>
+            <span class="jny-name">Post-envío</span>
+            <span class="jny-stage-desc">La cotización sale de la app. No hay seguimiento.</span>
+          </div>
+        </div>
+
+        <!-- ── Curva de experiencia ── -->
+        <div class="jny-emotion">
+          <div class="jny-col-lines">
+            <div class="jny-col-line"></div>
+            <div class="jny-col-line"></div>
+            <div class="jny-col-line"></div>
+            <div class="jny-col-line"></div>
+            <div class="jny-col-line"></div>
+            <div class="jny-col-line"></div>
+          </div>
+          <svg class="jny-curve-svg" viewBox="0 0 1200 180" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="cfill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C8A97A" stop-opacity="0.1"/>
+                <stop offset="100%" stop-color="#C8A97A" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M100,100 C180,100 220,118 300,118 C380,118 420,82 500,82 C580,82 620,52 700,52 C780,52 820,38 900,38 C980,38 1022,148 1100,148 L1100,180 L100,180 Z"
+                  fill="url(#cfill)"/>
+            <path d="M100,100 C180,100 220,118 300,118 C380,118 420,82 500,82 C580,82 620,52 700,52 C780,52 820,38 900,38 C980,38 1022,148 1100,148"
+                  stroke="#C8A97A" stroke-width="1.5" fill="none" opacity="0.6"/>
+            <circle cx="100"  cy="100" r="5" fill="#EDE9E3" stroke="#0D0B09" stroke-width="2"/>
+            <circle cx="300"  cy="118" r="5" fill="#EDE9E3" stroke="#0D0B09" stroke-width="2"/>
+            <circle cx="500"  cy="82"  r="5" fill="#EDE9E3" stroke="#0D0B09" stroke-width="2"/>
+            <circle cx="700"  cy="52"  r="5" fill="#C8A97A" stroke="#0D0B09" stroke-width="2"/>
+            <circle cx="900"  cy="38"  r="5" fill="#C8A97A" stroke="#0D0B09" stroke-width="2"/>
+            <circle cx="1100" cy="148" r="6" fill="#C06040" stroke="#0D0B09" stroke-width="2"/>
+          </svg>
+          <div class="jny-bubbles">
+            <div class="jny-bubble top">
+              <div class="bubble-card">"¿Cuánto le cobro por la mudanza?"</div>
+            </div>
+            <div class="jny-bubble bot">
+              <div class="bubble-card">"Primero tengo que configurar mi camión..."</div>
+            </div>
+            <div class="jny-bubble top" style="padding-top:20px">
+              <div class="bubble-card">"Voy marcando todo lo que tiene que mover"</div>
+            </div>
+            <div class="jny-bubble bot" style="padding-bottom:20px">
+              <div class="bubble-card">"Necesita 2 viajes. Total: $85.000"</div>
+            </div>
+            <div class="jny-bubble bot" style="padding-bottom:30px">
+              <div class="bubble-card">"Le mando la cotización por WhatsApp"</div>
+            </div>
+            <div class="jny-bubble top">
+              <div class="bubble-card gap">"¿Lo vio? ¿Aceptó? No tengo cómo saber."</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Oportunidades ── -->
+        <div class="jny-opps">
+          <div class="jny-opp">
+            <span class="jny-opp-label">Oportunidad</span>
+            <ul class="jny-opp-items">
+              <li>Onboarding para primer uso</li>
+              <li>Guardar perfil del transportista</li>
+            </ul>
+          </div>
+          <div class="jny-opp">
+            <span class="jny-opp-label">Oportunidad</span>
+            <ul class="jny-opp-items">
+              <li>Guardar rutas frecuentes</li>
+              <li>Autocompletar config de viajes anteriores</li>
+            </ul>
+          </div>
+          <div class="jny-opp">
+            <span class="jny-opp-label">Oportunidad</span>
+            <ul class="jny-opp-items">
+              <li>Búsqueda en catálogo de artículos</li>
+              <li>Plantillas por tipo de mudanza (1D, 2D, casa)</li>
+              <li>Artículos favoritos</li>
+            </ul>
+          </div>
+          <div class="jny-opp">
+            <span class="jny-opp-label">Oportunidad</span>
+            <ul class="jny-opp-items">
+              <li>Desglose de costos más visible</li>
+              <li>Alerta si rentabilidad es baja</li>
+            </ul>
+          </div>
+          <div class="jny-opp">
+            <span class="jny-opp-label">Oportunidad</span>
+            <ul class="jny-opp-items">
+              <li>PDF con logo del transportista</li>
+              <li>Link de cotización compartible</li>
+              <li>Copia editable antes de enviar</li>
+            </ul>
+          </div>
+          <div class="jny-opp">
+            <span class="jny-opp-label">Gap crítico</span>
+            <ul class="jny-opp-items">
+              <li>Confirmación de recepción al cliente</li>
+              <li>Estado: vista / aceptada / rechazada</li>
+              <li>Cierre del servicio dentro de la app</li>
+              <li>Seguimiento post-cotización</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 05 — FLUJO DE USO
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="5">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 05</span>
+      <span class="frame-tag">Arquitectura</span>
+    </div>
+    <h1 class="frame-title">Arquitectura de la App</h1>
+    <div class="frame-body">
+
+      <svg viewBox="0 0 1280 490" width="100%" style="display:block; flex-shrink:0"
+           xmlns="http://www.w3.org/2000/svg" font-family="Barlow, sans-serif">
+        <defs>
+          <marker id="ia-nav" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5 Z" fill="#9A948C"/>
+          </marker>
+          <marker id="ia-acc" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5 Z" fill="#C8A97A"/>
+          </marker>
+          <marker id="ia-acc-r" markerWidth="7" markerHeight="5" refX="1" refY="2.5" orient="auto-start-reverse">
+            <path d="M7,0 L0,2.5 L7,5 Z" fill="#C8A97A"/>
+          </marker>
+          <marker id="ia-danger" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5 Z" fill="#C06040"/>
+          </marker>
+          <marker id="ia-data" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5 Z" fill="#524D48"/>
+          </marker>
+        </defs>
+
+        <!-- ── SCREEN: VISTA COTIZAR (hero) ───────────────── -->
+        <rect x="295" y="160" width="185" height="14" rx="6" fill="#C8A97A" opacity="0.18"/>
+        <rect x="295" y="160" width="185" height="125" rx="6" fill="#121009" stroke="#C8A97A" stroke-width="1.5"/>
+        <text x="387" y="188" text-anchor="middle"
+              font-family="'Barlow Condensed', sans-serif" font-size="16" font-weight="700"
+              fill="#C8A97A" letter-spacing="1.5">VISTA COTIZAR</text>
+        <line x1="312" y1="196" x2="462" y2="196" stroke="#2A2520" stroke-width="1"/>
+        <text x="312" y="214" font-size="14" fill="#9A948C">· O/D Card · 47 ciudades</text>
+        <text x="312" y="232" font-size="14" fill="#9A948C">· Config camión + Extras</text>
+        <text x="312" y="250" font-size="14" fill="#9A948C">· Artículos (60+ · 8 cat.)</text>
+        <text x="312" y="268" font-size="14" fill="#9A948C">· Summary Card · CTA</text>
+
+        <!-- ── SCREEN: VISTA PERFIL (secondary) ──────────── -->
+        <rect x="835" y="165" width="165" height="12" rx="5" fill="#9A948C" opacity="0.12"/>
+        <rect x="835" y="165" width="165" height="110" rx="6" fill="#121009" stroke="#9A948C" stroke-width="1"/>
+        <text x="917" y="191" text-anchor="middle"
+              font-family="'Barlow Condensed', sans-serif" font-size="15" font-weight="700"
+              fill="#EDE9E3" letter-spacing="1.5">VISTA PERFIL</text>
+        <line x1="852" y1="199" x2="982" y2="199" stroke="#2A2520" stroke-width="1"/>
+        <text x="852" y="217" font-size="14" fill="#9A948C">· Perfil transportista</text>
+        <text x="852" y="235" font-size="14" fill="#9A948C">· Config camión</text>
+        <text x="852" y="253" font-size="14" fill="#9A948C">· Historial</text>
+
+        <!-- ── INPUT NODES (left → Vista Cotizar) ────────── -->
+        <rect x="48" y="162" width="150" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="123" y="185" text-anchor="middle" font-size="14" fill="#EDE9E3">O/D Card · 47 ciudades</text>
+
+        <rect x="48" y="245" width="150" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="123" y="268" text-anchor="middle" font-size="14" fill="#EDE9E3">Tarifa · Distancia · m³</text>
+
+        <rect x="48" y="328" width="150" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="123" y="351" text-anchor="middle" font-size="14" fill="#EDE9E3">Bencina · Peajes</text>
+
+        <!-- ── TOP NODE: Catálogo ─────────────────────────── -->
+        <rect x="307" y="72" width="160" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="387" y="95" text-anchor="middle" font-size="14" fill="#EDE9E3">Catálogo · 60+ artículos</text>
+
+        <!-- ── TOP RIGHT: localStorage ───────────────────── -->
+        <rect x="858" y="74" width="120" height="36" rx="4" fill="#121009" stroke="#524D48" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="918" y="97" text-anchor="middle" font-size="14" fill="#9A948C">localStorage</text>
+
+        <!-- ── OUTPUT CHAIN ────────────────────────────────── -->
+        <rect x="307" y="380" width="160" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="387" y="403" text-anchor="middle" font-size="14" fill="#EDE9E3">Summary Card</text>
+
+        <!-- Generar cotización (action pill) -->
+        <rect x="305" y="446" width="164" height="38" rx="19" fill="rgba(200,169,122,0.1)" stroke="#C8A97A" stroke-width="1.5"/>
+        <text x="387" y="470" text-anchor="middle" font-size="14" font-weight="600" fill="#C8A97A">Generar cotización</text>
+
+        <!-- navigator.share -->
+        <rect x="108" y="447" width="148" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="182" y="470" text-anchor="middle" font-size="14" fill="#EDE9E3">navigator.share</text>
+
+        <!-- GAP node (dashed danger) -->
+        <rect x="488" y="446" width="158" height="38" rx="4" fill="rgba(192,96,64,0.07)" stroke="#C06040" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <text x="567" y="470" text-anchor="middle" font-size="14" fill="#C06040">GAP · Cliente externo</text>
+
+        <!-- ── VISTA PERFIL RIGHT NODES ────────────────────── -->
+        <rect x="1060" y="180" width="155" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="1137" y="203" text-anchor="middle" font-size="14" fill="#EDE9E3">Datos transportista</text>
+
+        <rect x="1060" y="258" width="155" height="36" rx="4" fill="#1A1714" stroke="#2A2520" stroke-width="1"/>
+        <text x="1137" y="281" text-anchor="middle" font-size="14" fill="#EDE9E3">Config camión</text>
+
+        <rect x="1060" y="336" width="155" height="36" rx="4" fill="#1A1714" stroke="#524D48" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="1137" y="359" text-anchor="middle" font-size="14" fill="#9A948C">Historial</text>
+
+        <!-- ── ARROWS ────────────────────────────────────────── -->
+        <!-- Left inputs → Vista Cotizar -->
+        <path d="M198,180 C248,180 272,202 295,207" fill="none" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <path d="M198,263 C248,263 272,237 295,232" fill="none" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <path d="M198,346 C248,346 272,272 295,260" fill="none" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <!-- Catálogo top → Vista Cotizar -->
+        <line x1="387" y1="108" x2="387" y2="160" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <!-- Vista Cotizar → Summary -->
+        <line x1="387" y1="285" x2="387" y2="380" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <!-- Summary → Generar -->
+        <line x1="387" y1="416" x2="387" y2="446" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <!-- Generar → Share (left) -->
+        <path d="M305,465 L256,465" fill="none" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <!-- Generar → GAP (right, danger dashed) -->
+        <path d="M469,465 L488,465" fill="none" stroke="#C06040" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#ia-danger)"/>
+
+        <!-- Bottom nav bidirectional (accent) -->
+        <path d="M480,248 C620,248 715,235 835,235" fill="none" stroke="#C8A97A" stroke-width="1.1"
+              marker-start="url(#ia-acc-r)" marker-end="url(#ia-acc)"/>
+        <text x="657" y="230" text-anchor="middle" font-size="13" fill="#C8A97A" opacity="0.65">bottom nav</text>
+
+        <!-- localStorage → Vista Perfil (dashed data) -->
+        <path d="M918,110 C918,138 916,152 916,165" fill="none" stroke="#524D48" stroke-width="1.1" stroke-dasharray="4 3" marker-end="url(#ia-data)"/>
+
+        <!-- Vista Perfil → right nodes -->
+        <line x1="1000" y1="198" x2="1060" y2="198" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <path d="M1000,233 C1032,233 1060,267 1060,276" fill="none" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <path d="M1000,248 C1040,248 1060,340 1060,354" fill="none" stroke="#524D48" stroke-width="1.1" stroke-dasharray="4 3" marker-end="url(#ia-data)"/>
+
+        <!-- ── LEGEND ─────────────────────────────────────────── -->
+        <line x1="900" y1="395" x2="928" y2="395" stroke="#9A948C" stroke-width="1.1" marker-end="url(#ia-nav)"/>
+        <text x="936" y="399" font-size="13" fill="#9A948C">Navegación</text>
+        <line x1="900" y1="416" x2="928" y2="416" stroke="#C8A97A" stroke-width="1.1" marker-end="url(#ia-acc)"/>
+        <text x="936" y="420" font-size="13" fill="#9A948C">Navegación bidireccional</text>
+        <line x1="900" y1="437" x2="928" y2="437" stroke="#524D48" stroke-width="1.1" stroke-dasharray="4 3" marker-end="url(#ia-data)"/>
+        <text x="936" y="441" font-size="13" fill="#9A948C">Datos · persistencia</text>
+        <line x1="900" y1="458" x2="928" y2="458" stroke="#C06040" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#ia-danger)"/>
+        <text x="936" y="462" font-size="13" fill="#C06040">GAP · sin implementar</text>
+
+      </svg>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 05 — BACKLOG / HECHO / RESEARCH
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="6">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 06</span>
+      <span class="frame-tag">Estado</span>
+    </div>
+    <h1 class="frame-title">Estado del Proyecto</h1>
+    <div class="frame-body">
+      <div class="cols-3">
+
+        <div class="col">
+          <p class="sec">Completado</p>
+          <ul class="item-list done">
+            <li>SPA funcional con dark mode</li>
+            <li>Catálogo 60+ artículos · 8 categorías</li>
+            <li>Cálculo m³ por artículo y totales</li>
+            <li>% ocupación del camión en tiempo real</li>
+            <li>Viajes múltiples cuando supera capacidad</li>
+            <li>Tarifa/km + bencina + peajes</li>
+            <li>Distancias automáticas desde Santiago</li>
+            <li>Artículo personalizado con volumen libre</li>
+            <li>Historial en localStorage</li>
+            <li>Perfil del transportista persistente</li>
+            <li>PWA — manifest + Service Worker v3</li>
+            <li>iOS hardening (viewport-fit, safe-area)</li>
+            <li>Inputs 16px para evitar auto-zoom iOS</li>
+            <li>Share text enriquecido con ocupación</li>
+            <li>Validación con 3+ usuarios reales</li>
+            <li>Design audit Figma (438 errores detectados)</li>
+            <li>Tokens v3 definidos: paleta ámbar, Jakarta</li>
+          </ul>
+        </div>
+
+        <div class="col">
+          <p class="sec">Pendiente (backlog)</p>
+          <ul class="item-list pending">
+            <li>Variables Figma Light/Dark (11 colores)</li>
+            <li>Componentes base en Figma con variables</li>
+            <li>Pantallas completas en Figma</li>
+            <li>Redesign v3.0 en código desde Figma</li>
+            <li>Analytics — medir uso real de Compartir</li>
+            <li>Onboarding primera vez en la app</li>
+            <li>Pantalla de cotización enviada</li>
+            <li>Modelo de negocio definido</li>
+            <li>Acceso directo al historial desde inicio</li>
+            <li>Reposicionamiento frente a iziPro</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="sec">Decisiones tomadas</p>
+          <ul class="item-list">
+            <li>Core value = artículos → volumen → ocupación → cotización. No la distancia.</li>
+            <li>El texto compartido ES el producto — mecanismo de adopción.</li>
+            <li>Sin features nuevas sin datos de uso primero.</li>
+            <li>Redesign desde Figma — no parchear el CSS actual.</li>
+          </ul>
+        </div>
+
+        <div class="col">
+          <p class="sec">Research y fuentes</p>
+          <div class="data-row">
+            <span class="data-label">Validación cualitativa</span>
+            <span class="data-value ok">3+ usuarios · 2026-06-25</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Design audit</span>
+            <span class="data-value">Figma · 438 errores · 2026-06-25</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Análisis competidor</span>
+            <span class="data-value">iziPro · 2026-06-26</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Feedback estratégico</span>
+            <span class="data-value">GPT · 2026-06-03</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Hallazgos clave</p>
+          <ul class="item-list">
+            <li>iziPro solo cubre RM — FleteApp es nacional</li>
+            <li>iziPro = B2C, FleteApp = herramienta del transportista. No compiten directamente hoy.</li>
+            <li>Riesgo real: si iziPro consolida demanda, reduce mercado del transportista independiente</li>
+            <li>Oportunidad: FleteApp como herramienta anti-comisión</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="sec">Fuentes pendientes</p>
+          <ul class="item-list pending">
+            <li>Analytics real (comportamiento en app)</li>
+            <li>Entrevistas a profundidad (n ≥ 10)</li>
+            <li>Benchmark de herramientas similares</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 06 — GOALS + KPI + COMERCIAL
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="7">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 07</span>
+      <span class="frame-tag">Comercial</span>
+    </div>
+    <h1 class="frame-title">Estrategia Comercial</h1>
+    <div class="frame-body">
+      <div class="cols-3">
+
+        <div class="col">
+          <p class="sec">Goal del producto</p>
+          <p class="body" style="font-size:1.125rem; line-height:1.5; margin-bottom: 8px;">
+            Ser la herramienta profesional del transportista independiente que trabaja directo con su cliente, sin marketplace, sin comisión.
+          </p>
+          <p class="body-sec">Hipótesis de posicionamiento — no validada con demanda real.</p>
+          <div class="hr"></div>
+          <p class="sec">KPI a medir (pendiente implementar)</p>
+          <div class="data-row">
+            <span class="data-label">Transportistas activos / mes</span>
+            <span class="data-value danger">Sin datos</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Cotizaciones generadas / semana</span>
+            <span class="data-value danger">Sin datos</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">% que usan Compartir</span>
+            <span class="data-value danger">Sin datos</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Retención semana 2</span>
+            <span class="data-value danger">Sin datos</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Tiempo promedio por cotización</span>
+            <span class="data-value danger">Sin datos</span>
+          </div>
+          <p class="body-sec" style="margin-top:12px">Sin analytics instalado. Toda decisión de features se está tomando sin base cuantitativa. Esto es un riesgo operativo directo.</p>
+        </div>
+
+        <div class="col">
+          <p class="sec">Modelo comercial</p>
+          <div class="data-row">
+            <span class="data-label">Modelo actual</span>
+            <span class="data-value danger">Sin monetización</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Precio actual</span>
+            <span class="data-value danger">Gratis / sin cobro</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Modelo definido</span>
+            <span class="data-value danger">No</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Opciones de monetización (a evaluar)</p>
+          <ul class="item-list pending">
+            <li>Freemium — base gratis, features pro de pago</li>
+            <li>Suscripción mensual ($X/mes por transportista)</li>
+            <li>Licencia para pequeñas empresas de transporte</li>
+            <li>White-label para cooperativas de fletes</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="sec">Condición para activar modelo</p>
+          <p class="body-sec">
+            No tiene sentido definir monetización sin datos de retención y uso de Compartir.
+            Primera prioridad: instalar analytics y medir comportamiento real durante 4 semanas.
+            Decisión de modelo: después de esos datos.
+          </p>
+        </div>
+
+        <div class="col">
+          <p class="sec">Alianzas potenciales <span class="tag-inline warn" style="margin-left:6px">Supuestos a validar</span></p>
+          <p class="body-sec" style="margin-bottom:8px">
+            Categorías de partnership plausibles por el perfil del usuario. Ninguna tiene contacto
+            iniciado ni validación — son hipótesis de exploración, no negociaciones en curso.
+          </p>
+          <ul class="item-list pending">
+            <li>Cooperativas / gremios de transportistas — canal de distribución masivo</li>
+            <li>Aseguradoras de carga — cross-sell sobre viajes ya cotizados en la app</li>
+            <li>Estaciones de servicio — descuento por volumen a cambio de visibilidad</li>
+            <li>Talleres mecánicos y repuestos — mantenimiento de flota</li>
+            <li>Logística B2B / mudanzas corporativas — demanda agregada hacia transportistas</li>
+            <li>Fintech de combustible o peajes — financiamiento o factoring</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="sec">Condición para activar alianzas</p>
+          <p class="body-sec">
+            Mismo criterio que el modelo comercial: sin base de usuarios activos y sin datos de uso,
+            ninguna alianza tiene tracción real que ofrecer a una contraparte. Validar demanda primero.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 07 — ROADMAP / CONTINUIDAD / OLIVA OS
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="8">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 08</span>
+      <span class="frame-tag">Roadmap</span>
+    </div>
+    <h1 class="frame-title">Hoja de Ruta</h1>
+    <div class="frame-body">
+      <div class="cols-2">
+
+        <div class="col">
+          <p class="sec">Historial de versiones</p>
+          <div class="timeline">
+            <div class="tl-item">
+              <span class="tl-date">Pre-v2</span>
+              <div class="tl-line"><div class="tl-dot active"></div><div class="tl-connector"></div></div>
+              <div class="tl-content">
+                <p class="tl-version">v1.0 — SPA funcional</p>
+                <p class="tl-desc">Dark mode, historial básico, 8 categorías. Base funcional sin diseño definido.</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <span class="tl-date">2026-06-03</span>
+              <div class="tl-line"><div class="tl-dot active"></div><div class="tl-connector"></div></div>
+              <div class="tl-content">
+                <p class="tl-version">v2.0 — Neumorfismo + Share</p>
+                <p class="tl-desc">Rediseño completo, O/D card, viajes múltiples, artículo personalizado, iOS hardening, share text enriquecido.</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <span class="tl-date">2026-06-25</span>
+              <div class="tl-line"><div class="tl-dot active"></div><div class="tl-connector"></div></div>
+              <div class="tl-content">
+                <p class="tl-version">v2.0 Stand By — Validación + Audit</p>
+                <p class="tl-desc">3+ usuarios validados. Design audit en Figma: 438 errores. Tokens v3 definidos (ámbar, Jakarta Sans). Redesign pausado por prioridad comercial.</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <span class="tl-date">Pendiente</span>
+              <div class="tl-line"><div class="tl-dot pending"></div><div class="tl-connector"></div></div>
+              <div class="tl-content">
+                <p class="tl-version">v3.0 — Redesign Figma → Código</p>
+                <p class="tl-desc">Variables Light/Dark en Figma → componentes → pantallas completas → traducción a código limpio.</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <span class="tl-date">Futuro</span>
+              <div class="tl-line"><div class="tl-dot pending"></div></div>
+              <div class="tl-content">
+                <p class="tl-version">v4.0 — Analytics + Modelo</p>
+                <p class="tl-desc">Instalar analytics → medir 4 semanas → definir modelo de negocio → activar features pro.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <p class="sec">Siguiente paso exacto</p>
+          <p class="body">
+            Abrir Figma → Local Variables → crear colección <code style="font-family:monospace;font-size:13px;color:var(--accent)">Color System</code> con modos Light y Dark → ingresar las 11 variables manualmente (sin Tokens Studio — no hay plan Pro).
+          </p>
+          <p class="body-sec" style="margin-top:8px">Ver tabla completa en <code style="font-family:monospace;font-size:13px">design-log.html</code> Paso 02.</p>
+          <div class="hr"></div>
+          <p class="sec">Continuidad del proyecto</p>
+          <div class="data-row">
+            <span class="data-label">Archivo de estado</span>
+            <span class="data-value">project-continuity.md</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Design log</span>
+            <span class="data-value">design-log.html</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Repo</span>
+            <span class="data-value">github.com/fcohubto/fletes-app</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Deploy</span>
+            <span class="data-value">fcohubto.github.io/fletes-app</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">OLIVA OS — Sesiones registradas</p>
+          <div class="data-row">
+            <span class="data-label">2026-06-03</span>
+            <span class="data-value">v2.0 — neumorfismo + iOS</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">2026-06-25</span>
+            <span class="data-value">Validación + design audit</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">2026-06-26</span>
+            <span class="data-value">Break operativo · análisis iziPro</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">2026-07-09</span>
+            <span class="data-value">Alianzas potenciales · reunión PM socia</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FRAME 08 — UI KIT / COMPONENTES / SECCIONES
+  ══════════════════════════════════════════ -->
+  <section class="frame" data-frame="9">
+    <div class="frame-meta">
+      <span class="frame-num">Frame 09</span>
+      <span class="frame-tag">Diseño</span>
+    </div>
+    <h1 class="frame-title">Sistema de Diseño</h1>
+    <div class="frame-body">
+      <div class="cols-3">
+
+        <div class="col">
+          <p class="sec">Tokens — v2.0 actual</p>
+          <div class="data-row">
+            <span class="data-label">Tipografía</span>
+            <span class="data-value">Barlow + Barlow Condensed</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Estilo visual</span>
+            <span class="data-value">Neumorfismo light</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Superficie base</span>
+            <span class="data-value" style="font-family:monospace">#E8EBF2</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Sombra oscura</span>
+            <span class="data-value" style="font-family:monospace">#C3C8D4</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Sombra clara</span>
+            <span class="data-value" style="font-family:monospace">#FFFFFF</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Acento</span>
+            <span class="data-value" style="font-family:monospace">#1A56C4</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec" style="margin-bottom:12px">Paleta actual</p>
+          <div class="swatch-row">
+            <div class="swatch"><div class="swatch-dot" style="background:#E8EBF2"></div><span class="swatch-hex">bg</span></div>
+            <div class="swatch"><div class="swatch-dot" style="background:#C3C8D4"></div><span class="swatch-hex">sd</span></div>
+            <div class="swatch"><div class="swatch-dot" style="background:#1A2340"></div><span class="swatch-hex">text</span></div>
+            <div class="swatch"><div class="swatch-dot" style="background:#1A56C4"></div><span class="swatch-hex">acc</span></div>
+            <div class="swatch"><div class="swatch-dot" style="background:#0D8B6A"></div><span class="swatch-hex">ok</span></div>
+            <div class="swatch"><div class="swatch-dot" style="background:#C43232"></div><span class="swatch-hex">danger</span></div>
+          </div>
+        </div>
+
+        <div class="col">
+          <p class="sec">Tokens — v3.0 definidos (pendiente)</p>
+          <div class="data-row">
+            <span class="data-label">Tipografía</span>
+            <span class="data-value">Plus Jakarta Sans</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Paleta</span>
+            <span class="data-value">Ámbar cálido — 11 colores</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Modos</span>
+            <span class="data-value">Light + Dark</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Variables en Figma</span>
+            <span class="data-value danger">Pendiente</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Design audit</span>
+            <span class="data-value">438 errores detectados</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Espaciado</p>
+          <p class="body-sec" style="font-family:monospace; font-size:13px; line-height:1.8">
+            --sp-1: 4px &nbsp; --sp-2: 8px<br>
+            --sp-3: 12px &nbsp;--sp-4: 16px<br>
+            --sp-5: 20px &nbsp;--sp-6: 24px<br>
+            --sp-8: 32px &nbsp;--sp-10: 40px
+          </p>
+        </div>
+
+        <div class="col">
+          <p class="sec">Componentes existentes</p>
+          <div class="comp-list">
+            <span class="comp-tag">od-card</span>
+            <span class="comp-tag">config-card</span>
+            <span class="comp-tag">config-extra</span>
+            <span class="comp-tag">tabs</span>
+            <span class="comp-tag">article-item</span>
+            <span class="comp-tag">custom-item-form</span>
+            <span class="comp-tag">summary-card</span>
+            <span class="comp-tag">occupancy-bar</span>
+            <span class="comp-tag">summary-row</span>
+            <span class="comp-tag">cliente-row</span>
+            <span class="comp-tag">action-row</span>
+            <span class="comp-tag">summary-bar</span>
+            <span class="comp-tag">bottom-nav</span>
+            <span class="comp-tag">historial-list</span>
+            <span class="comp-tag">historial-item</span>
+            <span class="comp-tag">avatar</span>
+          </div>
+          <div class="hr"></div>
+          <p class="sec">Secciones de la app</p>
+          <ul class="item-list">
+            <li>Header — brand + avatar/perfil</li>
+            <li>Vista Cotizar — flujo completo</li>
+            <li>Vista Perfil — datos + camión + combustible + historial</li>
+            <li>Summary bar — fija durante cotización</li>
+            <li>Bottom nav — Cotizar / Perfil</li>
+          </ul>
+          <div class="hr"></div>
+          <p class="sec">Radios de borde</p>
+          <p class="body-sec" style="font-family:monospace; font-size:13px; line-height:1.8">
+            --r-sm: 10px &nbsp;--r-md: 14px<br>
+            --r-lg: 20px &nbsp;--r-xl: 26px
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── Barra de progreso ───────────────────── -->
+<div class="nav-progress" id="progress"></div>
+
+<!-- ── Nav bar ────────────────────────────── -->
+<nav class="nav-bar">
+  <span class="nav-product">FleteApp · Break Operativo</span>
+  <div class="nav-center">
+    <div class="nav-arrows">
+      <button class="nav-arrow" id="btn-prev" aria-label="Anterior">&#8592;</button>
+      <button class="nav-arrow" id="btn-next" aria-label="Siguiente">&#8594;</button>
+    </div>
+    <div class="nav-dots" id="nav-dots"></div>
+    <span class="nav-counter" id="nav-counter">1 / 8</span>
+  </div>
+  <span class="nav-product">v0.2 · 2026-07-09</span>
+</nav>
+
+<script>
+  const wrap    = document.getElementById('scroll-wrap');
+  const dotsEl  = document.getElementById('nav-dots');
+  const counter = document.getElementById('nav-counter');
+  const progress= document.getElementById('progress');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const frames  = document.querySelectorAll('.frame');
+  const total   = frames.length;
+
+  frames.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', `Frame ${i + 1}`);
+    d.dataset.index = i;
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(index) {
+    wrap.scrollTo({ left: index * wrap.offsetWidth, behavior: 'smooth' });
+  }
+
+  function currentIndex() {
+    return Math.round(wrap.scrollLeft / wrap.offsetWidth);
+  }
+
+  function update() {
+    const idx = currentIndex();
+    dotsEl.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+    counter.textContent = `${idx + 1} / ${total}`;
+    btnPrev.disabled = idx === 0;
+    btnNext.disabled = idx === total - 1;
+    progress.style.width = (total > 1 ? (idx / (total - 1)) * 100 : 100) + '%';
+  }
+
+  wrap.addEventListener('scroll', update, { passive: true });
+  btnPrev.addEventListener('click', () => goTo(Math.max(currentIndex() - 1, 0)));
+  btnNext.addEventListener('click', () => goTo(Math.min(currentIndex() + 1, total - 1)));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goTo(Math.min(currentIndex() + 1, total - 1));
+    if (e.key === 'ArrowLeft')  goTo(Math.max(currentIndex() - 1, 0));
+  });
+
+  update();
+</script>
+
+</body>
+</html>
