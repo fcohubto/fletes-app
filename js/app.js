@@ -339,7 +339,9 @@ function getBencina() { return parseFloat(($cfgBencina?.value || '0').replace(/\
 // Ancho del input según su contenido — evita que los valores largos se corten
 function autosizeStatInput(el) {
   if (!el) return;
-  el.size = Math.max(String(el.value).length, 1);
+  // ch = ancho del glyph "0" en la fuente actual — consistente entre navegadores,
+  // a diferencia del atributo size en inputs number/text (Safari lo calcula muy distinto a Chrome)
+  el.style.width = (Math.max(String(el.value).length, 1) + 0.6) + 'ch';
 }
 
 const getConfig = () => ({
@@ -710,6 +712,10 @@ $navCotizar?.addEventListener('click', () => showView('cotizar'));
 $navPerfil?.addEventListener('click',  () => showView('perfil'));
 $btnEditarCamion?.addEventListener('click', () => showView('perfil'));
 $btnVolverPerfil?.addEventListener('click', () => showView('cotizar'));
+$avatar?.addEventListener('click', () => showView('perfil'));
+$avatar?.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showView('perfil'); }
+});
 
 $historialList?.addEventListener('click', e => {
   const deleteBtn = e.target.closest('.hcard-btn-delete');
