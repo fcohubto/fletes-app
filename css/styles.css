@@ -72,7 +72,13 @@
 }
 
 /* ─── RESET ──────────────────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
 * { touch-action: manipulation; }
 
 html {
@@ -92,6 +98,13 @@ body {
   justify-content: center;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea, select {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 button {
