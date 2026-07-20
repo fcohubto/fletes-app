@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FleteApp — Design Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────── */
+    :root {
+      --bg:        #E8EBF2;
+      --sd:        #C3C8D4;
+      --sl:        #FFFFFF;
+      --accent:    #1A56C4;
+      --accent2:   #2B72E8;
+      --text:      #1A2340;
+      --mid:       #5A6580;
+      --sub:       #8A95B0;
+      --ok:        #0D8B6A;
+      --separator: rgba(0,0,0,0.08);
+
+      --neu-up: 6px 6px 16px var(--sd), -6px -6px 16px var(--sl);
+      --neu-sm: 3px 3px 8px var(--sd),  -3px -3px 8px var(--sl);
+
+      --r-sm: 10px;
+      --r-md: 14px;
+      --r-lg: 20px;
+
+      --text-xs:   0.625rem;
+      --text-sm:   0.75rem;
+      --text-base: 0.875rem;
+      --text-md:   1rem;
+      --text-lg:   1.25rem;
+      --text-xl:   1.5rem;
+      --text-2xl:  1.75rem;
+      --text-3xl:  2.25rem;
+
+      --sp-2: 0.5rem;
+      --sp-3: 0.75rem;
+      --sp-4: 1rem;
+      --sp-5: 1.25rem;
+      --sp-6: 1.5rem;
+      --sp-8: 2rem;
+      --sp-10: 2.5rem;
+      --sp-12: 3rem;
+
+      --fw-base:  400;
+      --fw-mid:   500;
+      --fw-bold:  600;
+      --fw-black: 700;
+      --lh-base:    1.5;
+      --lh-relaxed: 1.65;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #1C1917;
+        --sd:        #141210;
+        --sl:        #2E2A26;
+        --accent:    #4A80E8;
+        --accent2:   #6A9CF0;
+        --text:      #F0EDE8;
+        --mid:       #B0A28E;
+        --sub:       #9E8E7E;
+        --ok:        #2ECC8A;
+        --separator: rgba(255,255,255,0.07);
+      }
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Barlow', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--fw-base);
+      line-height: var(--lh-relaxed);
+      min-height: 100vh;
+      padding: var(--sp-8) var(--sp-4);
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────── */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────────── */
+    .log-header {
+      margin-bottom: var(--sp-12);
+    }
+
+    .log-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+
+    .log-badge {
+      font-size: var(--text-xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(26,86,196,0.09);
+      padding: 3px var(--sp-3);
+      border-radius: 4px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .log-badge { background: rgba(74,128,232,0.12); }
+    }
+
+    .log-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--text-xs);
+      font-weight: var(--fw-black);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sub);
+    }
+
+    .log-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--text-3xl);
+      font-weight: var(--fw-black);
+      line-height: var(--lh-base);
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .log-title span {
+      color: var(--accent);
+    }
+
+    .log-meta {
+      margin-top: var(--sp-4);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-6);
+      font-size: var(--text-base);
+      color: var(--mid);
+    }
+
+    .log-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .log-meta-label {
+      font-size: var(--text-xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sub);
+    }
+
+    .log-meta-value {
+      font-size: var(--text-base);
+      font-weight: var(--fw-mid);
+      color: var(--text);
+    }
+
+    /* ─── TIMELINE ────────────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 20px;
+      bottom: 20px;
+      width: 2px;
+      background: var(--separator);
+    }
+
+    /* ─── STEP ────────────────────────────────────────────────── */
+    .step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: var(--sp-5);
+      padding-bottom: var(--sp-8);
+    }
+
+    .step:last-child {
+      padding-bottom: 0;
+    }
+
+    /* Node */
+    .step-node {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 2px;
+    }
+
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: var(--neu-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--fw-black);
+      color: var(--sub);
+      flex-shrink: 0;
+    }
+
+    /* Status variants */
+    .step.is-done .step-dot {
+      color: var(--ok);
+    }
+
+    .step.is-active .step-dot {
+      background: var(--accent);
+      box-shadow: 0 4px 16px rgba(26,86,196,0.35);
+      color: #fff;
+    }
+
+    .step.is-end .step-dot {
+      background: var(--bg);
+      box-shadow: var(--neu-sm);
+      color: var(--accent);
+    }
+
+    /* Card */
+    .step-card {
+      background: var(--bg);
+      border-radius: var(--r-md);
+      box-shadow: var(--neu-up);
+      padding: var(--sp-5) var(--sp-6);
+    }
+
+    .step.is-active .step-card {
+      border-left: 3px solid var(--accent);
+    }
+
+    .step.is-done .step-card {
+      opacity: 0.85;
+    }
+
+    .step.is-end .step-card {
+      border-left: 3px solid var(--ok);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--sp-4);
+      margin-bottom: var(--sp-3);
+      flex-wrap: wrap;
+    }
+
+    .step-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--text-xl);
+      font-weight: var(--fw-black);
+      line-height: 1.2;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .step-status {
+      font-size: var(--text-xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sub);
+      white-space: nowrap;
+    }
+
+    .step.is-done .step-status  { color: var(--ok); }
+    .step.is-active .step-status { color: var(--accent); }
+    .step.is-end .step-status   { color: var(--ok); }
+
+    .step-date {
+      font-size: var(--text-xs);
+      font-weight: var(--fw-mid);
+      color: var(--sub);
+      margin-bottom: var(--sp-3);
+      letter-spacing: 0.04em;
+    }
+
+    .step-body {
+      font-size: var(--text-base);
+      color: var(--mid);
+      line-height: var(--lh-relaxed);
+    }
+
+    .step-body p + p {
+      margin-top: var(--sp-3);
+    }
+
+    .step-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-2);
+      margin-top: var(--sp-4);
+    }
+
+    .tag {
+      font-size: var(--text-xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mid);
+      border: 1px solid var(--separator);
+      padding: 2px var(--sp-3);
+      border-radius: 4px;
+    }
+
+    /* ─── PENDING PLACEHOLDER ─────────────────────────────────── */
+    .step.is-pending .step-card {
+      box-shadow: var(--neu-sm);
+      opacity: 0.55;
+    }
+
+    .step.is-pending .step-dot {
+      opacity: 0.45;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+    .log-footer {
+      margin-top: var(--sp-12);
+      padding-top: var(--sp-6);
+      border-top: 1px solid var(--separator);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--sp-4);
+    }
+
+    .footer-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--fw-black);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sub);
+    }
+
+    .footer-note {
+      font-size: var(--text-base);
+      color: var(--sub);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="log-header">
+      <div class="log-eyebrow">
+        <span class="log-badge">Design Log</span>
+        <span class="log-brand">FLETE.APP · OLIVA Framework</span>
+      </div>
+      <h1 class="log-title">De wireframe a<br><span>MVP 1 en Figma</span></h1>
+      <div class="log-meta">
+        <div class="log-meta-item">
+          <span class="log-meta-label">Inicio</span>
+          <span class="log-meta-value">Junio 2026</span>
+        </div>
+        <div class="log-meta-item">
+          <span class="log-meta-label">Objetivo</span>
+          <span class="log-meta-value">MVP 1 — Design System + Figma</span>
+        </div>
+        <div class="log-meta-item">
+          <span class="log-meta-label">Registro</span>
+          <span class="log-meta-value">Primer framework oficial OLIVA</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Timeline ───────────────────────────────────────────── -->
+    <div class="timeline">
+
+      <!-- 00 · Punto de partida -->
+      <div class="step is-done">
+        <div class="step-node">
+          <div class="step-dot">✓</div>
+        </div>
+        <div class="step-card">
+          <div class="step-header">
+            <h2 class="step-title">Wireframe High-Fi v2.0</h2>
+            <span class="step-status">Completado</span>
+          </div>
+          <p class="step-date">Junio 2026</p>
+          <div class="step-body">
+            <p>Versión neumórfica construida y validada. Cotizador funcional con 46 ciudades chilenas, cálculo de viajes múltiples, artículos personalizados, historial y texto de cotización por WhatsApp.</p>
+            <p>Validado con 3 usuarios con relación directa. Producto funcional confirmado. Etapa de validación cerrada.</p>
+          </div>
+          <div class="step-tags">
+            <span class="tag">Neumorfismo</span>
+            <span class="tag">Validado</span>
+            <span class="tag">PWA</span>
+            <span class="tag">index.html</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 01 · Auditoría -->
+      <div class="step is-done">
+        <div class="step-node">
+          <div class="step-dot">✓</div>
+        </div>
+        <div class="step-card">
+          <div class="step-header">
+            <h2 class="step-title">Auditoría del sistema actual</h2>
+            <span class="step-status">Completado</span>
+          </div>
+          <p class="step-date">25 junio 2026</p>
+          <div class="step-body">
+            <p>Se importó el <code>index.html</code> a Figma con el plugin <strong>HTML to Figma</strong>, obteniendo frames con nombres y estructura de auto layout heredada del código.</p>
+            <p>Se ejecutó <strong>Design Lint</strong> sobre el frame completo: <strong>438 errores</strong>. El número no requiere análisis adicional — es evidencia directa de que el sistema carece de consistencia de tokens, estilos y componentes.</p>
+            <p><em>Insight crítico:</em> el diseño debe partir desde lógica Figma, no al revés. No se limpia el código existente — se diseña desde cero en Figma y se traduce.</p>
+          </div>
+          <div class="step-tags">
+            <span class="tag">HTML to Figma</span>
+            <span class="tag">Design Lint</span>
+            <span class="tag">438 errores</span>
+            <span class="tag">Decisión confirmada</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 · Design System -->
+      <div class="step is-active">
+        <div class="step-node">
+          <div class="step-dot">02</div>
+        </div>
+        <div class="step-card">
+          <div class="step-header">
+            <h2 class="step-title">Design System en Figma</h2>
+            <span class="step-status">En proceso</span>
+          </div>
+          <p class="step-date">25 junio 2026</p>
+          <div class="step-body">
+            <p>Tokens Studio configurado con dos colecciones: <strong>Color System</strong> (11 variables · modos Light y Dark) y <strong>Typography</strong> (8 tokens compuestos · Plus Jakarta Sans).</p>
+            <p>Paleta ámbar cálido como acento único. Superficies neumórficas en temperatura cálida para ambos modos. Azul eliminado — no representaba el mundo físico del transporte.</p>
+            <p>Pendiente: construir componentes base usando los tokens como única fuente de valores.</p>
+          </div>
+          <div class="step-tags">
+            <span class="tag">Tokens Studio</span>
+            <span class="tag">11 colores · 2 modos</span>
+            <span class="tag">8 tipografías</span>
+            <span class="tag">Plus Jakarta Sans</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 · Auto Layout -->
+      <div class="step is-pending">
+        <div class="step-node">
+          <div class="step-dot">03</div>
+        </div>
+        <div class="step-card">
+          <div class="step-header">
+            <h2 class="step-title">Auto Layout &amp; Biblioteca</h2>
+            <span class="step-status">Pendiente</span>
+          </div>
+          <div class="step-body">
+            <p>Construir la biblioteca de componentes en Figma con Auto Layout. Cada pieza adaptable, consistente y desacoplada.</p>
+          </div>
+          <div class="step-tags">
+            <span class="tag">Figma</span>
+            <span class="tag">Auto Layout</span>
+            <span class="tag">Biblioteca</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 · Pantallas -->
+      <div class="step is-pending">
+        <div class="step-node">
+          <div class="step-dot">04</div>
+        </div>
+        <div class="step-card">
+          <div class="step-header">
+            <h2 class="step-title">Pantallas completas en Figma</h2>
+            <span class="step-status">Pendiente</span>
+          </div>
+          <div class="step-body">
+            <p>Ensamblar las vistas usando los componentes de la biblioteca. Resultado: diseño entregable, no boceto.</p>
+          </div>
+          <div class="step-tags">
+            <span class="tag">Figma</span>
+            <span class="tag">Pantallas</span>
+            <span class="tag">Full design</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 05 · MVP 1 -->
+      <div class="step is-end">
+        <div class="step-node">
+          <div class="step-dot">→</div>
+        </div>
+        <div class="step-card">
+          <div class="step-header">
+            <h2 class="step-title">MVP 1 — Código limpio</h2>
+            <span class="step-status">Objetivo final</span>
+          </div>
+          <div class="step-body">
+            <p>Traducir el diseño Figma a código. Design system como fuente de verdad. Sin mezclas, sin deuda visual. El producto que debería haber sido desde el inicio.</p>
+          </div>
+          <div class="step-tags">
+            <span class="tag">Design System</span>
+            <span class="tag">Código limpio</span>
+            <span class="tag">MVP 1</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /timeline -->
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer class="log-footer">
+      <span class="footer-brand">OLIVA · Olivacraft</span>
+      <span class="footer-note">Primer framework de proceso registrado</span>
+    </footer>
+
+  </div>
+</body>
+</html>

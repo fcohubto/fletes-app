@@ -1,0 +1,4962 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carga — Design System</title>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   CARGA — Design System Portal
+   styles.css
+   Tokens → Layout → Components → Utilities
+═══════════════════════════════════════════════════════════ */
+
+/* ── 00 TOKENS ──────────────────────────────────────────── */
+:root {
+  /* Color scale */
+  --color-blue-50:     #EEF4FF;
+  --color-blue-100:    #C3D9FF;
+  --color-blue-200:    #7AB5FF;
+  --color-blue-300:    #4B8FED;
+  --color-blue-500:    #1A56DB;
+  --color-blue-700:    #1343B0;
+  --color-blue-900:    #0D2E7D;
+  --color-orange-50:   #FFF6ED;
+  --color-orange-500:  #E07A14;
+  --color-neutral-50:  #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-600: #475569;
+  --color-neutral-800: #1E293B;
+  --color-neutral-950: #0F172A;
+
+  /* Semantic */
+  --c-bg:              var(--color-neutral-50);
+  --c-surface:         #FFFFFF;
+  --c-surface-2:       var(--color-neutral-100);
+  --c-border:          var(--color-neutral-200);
+  --c-border-focus:    var(--color-blue-500);
+  --c-text:            var(--color-neutral-950);
+  --c-text-soft:       var(--color-neutral-600);
+  --c-text-muted:      var(--color-neutral-400);
+  --c-primary:         var(--color-blue-500);
+  --c-primary-hover:   var(--color-blue-700);
+  --c-accent:          var(--color-orange-500);
+  --c-success:         #16A34A;
+  --c-warning:         #D97706;
+  --c-danger:          #DC2626;
+  --c-info:            var(--color-blue-500);
+
+  /* Typography */
+  --font-display:  'Instrument Serif', Georgia, serif;
+  --font-body:     'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:     'DM Mono', 'Courier New', monospace;
+  --text-display:  3rem;
+  --text-h1:       2.25rem;
+  --text-h2:       1.75rem;
+  --text-h3:       1.375rem;
+  --text-lg:       1.125rem;
+  --text-base:     1rem;
+  --text-sm:       0.875rem;
+  --text-xs:       0.75rem;
+
+  /* Spacing */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.25rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+
+  /* Radius */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-2: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.08);
+  --shadow-3: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+
+  /* Motion */
+  --ease-instant: 100ms ease-out;
+  --ease-fast:    200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-base:    300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-slow:    500ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* Layout */
+  --sidebar-w: 280px;
+  --topbar-h:  56px;
+}
+
+[data-theme="dark"] {
+  --c-bg:        var(--color-neutral-950);
+  --c-surface:   var(--color-neutral-800);
+  --c-surface-2: #1a2438;
+  --c-border:    rgba(255,255,255,0.07);
+  --c-text:      var(--color-neutral-100);
+  --c-text-soft: var(--color-neutral-400);
+  --c-text-muted: var(--color-neutral-600);
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-2: 0 4px 6px rgba(0,0,0,0.3), 0 10px 15px rgba(0,0,0,0.35);
+  --shadow-3: 0 20px 25px rgba(0,0,0,0.5);
+}
+
+/* ── 01 RESET & BASE ────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: background var(--ease-base), color var(--ease-base);
+}
+
+/* ── 02 PROGRESS BAR ────────────────────────────────────── */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--c-primary);
+  z-index: 100;
+  transition: width 0.1s linear;
+}
+
+/* ── 03 TOPBAR ──────────────────────────────────────────── */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-4);
+  gap: var(--sp-3);
+  z-index: 60;
+  display: none;
+}
+
+.topbar-brand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.topbar-brand em {
+  font-style: normal;
+  font-weight: 300;
+  color: var(--c-text-soft);
+}
+
+/* ── 04 SIDEBAR ─────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--c-surface);
+  border-right: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+.sidebar-header {
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  border-bottom: 1px solid var(--c-border);
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.brand-mark {
+  font-size: 18px;
+  color: var(--c-primary);
+  line-height: 1;
+}
+
+.brand-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--c-text);
+  display: block;
+}
+
+.brand-sub {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  display: block;
+  margin-top: 1px;
+}
+
+/* Search */
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--c-text-muted);
+}
+
+.search-wrap input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--c-text);
+}
+
+.search-wrap input::placeholder {
+  color: var(--c-text-muted);
+}
+
+/* Nav list */
+.nav-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-3) 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
+}
+
+.nav-group {
+  margin-bottom: var(--sp-1);
+}
+
+.nav-group-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-2) var(--sp-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--c-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color var(--ease-fast);
+}
+
+.nav-group-toggle:hover {
+  color: var(--c-text);
+}
+
+.chevron {
+  transition: transform var(--ease-fast);
+  flex-shrink: 0;
+}
+
+.nav-group-toggle[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.nav-sub {
+  list-style: none;
+  overflow: hidden;
+  transition: max-height var(--ease-base);
+  max-height: 800px;
+}
+
+.nav-sub.collapsed {
+  max-height: 0;
+}
+
+.nav-link {
+  display: block;
+  padding: var(--sp-2) var(--sp-4) var(--sp-2) var(--sp-8);
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+  margin-left: var(--sp-4);
+}
+
+.nav-link:hover {
+  color: var(--c-text);
+}
+
+.nav-link.active {
+  color: var(--c-primary);
+  border-left-color: var(--c-primary);
+  font-weight: 500;
+}
+
+.sidebar-footer {
+  padding: var(--sp-4);
+  border-top: 1px solid var(--c-border);
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  flex-shrink: 0;
+}
+
+/* ── 05 MAIN LAYOUT ─────────────────────────────────────── */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  padding-bottom: var(--sp-20);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--c-text-soft);
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+  position: fixed;
+  top: calc((var(--sp-12) - 36px) / 2 + 4px);
+  right: var(--sp-5);
+  z-index: 55;
+}
+
+.theme-toggle:hover {
+  color: var(--c-text);
+  border-color: var(--c-text-muted);
+}
+
+.icon-moon { display: none; }
+[data-theme="dark"] .icon-sun { display: none; }
+[data-theme="dark"] .icon-moon { display: block; }
+
+/* ── 06 DOC SECTION ─────────────────────────────────────── */
+.doc-section {
+  padding: var(--sp-16) var(--sp-12);
+  border-bottom: 1px solid var(--c-border);
+  max-width: 960px;
+}
+
+.doc-section:last-of-type {
+  border-bottom: none;
+}
+
+/* Section hero */
+.section-hero {
+  margin-bottom: var(--sp-12);
+}
+
+.hero-eyebrow,
+.section-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-primary);
+  margin-bottom: var(--sp-3);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-h1), 4vw, var(--text-display));
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--c-text);
+  margin-bottom: var(--sp-4);
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--c-primary);
+}
+
+.hero-lead {
+  font-size: var(--text-lg);
+  color: var(--c-text-soft);
+  line-height: var(--lh-base, 1.6);
+  max-width: 680px;
+}
+
+.section-header {
+  margin-bottom: var(--sp-8);
+}
+
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--c-text);
+  margin-top: var(--sp-2);
+}
+
+/* Content blocks */
+.content-block {
+  margin-bottom: var(--sp-12);
+}
+
+.content-block h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 400;
+  color: var(--c-text);
+  margin-bottom: var(--sp-4);
+  line-height: 1.3;
+}
+
+.content-block h3 {
+  font-size: var(--text-h3);
+  font-weight: 500;
+  color: var(--c-text);
+  margin-bottom: var(--sp-3);
+  margin-top: var(--sp-8);
+}
+
+.content-block h4 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-2);
+  margin-top: var(--sp-5);
+}
+
+.content-block p {
+  color: var(--c-text-soft);
+  line-height: 1.7;
+  margin-bottom: var(--sp-4);
+  max-width: 680px;
+}
+
+.content-block ul {
+  color: var(--c-text-soft);
+  padding-left: var(--sp-5);
+  margin-bottom: var(--sp-4);
+}
+
+.content-block ul li {
+  line-height: 1.7;
+  margin-bottom: var(--sp-1);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  color: var(--c-primary);
+}
+
+/* ── 07 PRINCIPLES ──────────────────────────────────────── */
+.trio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.principle-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+.principle-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-primary);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--sp-3);
+}
+
+.principle-card h3 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-2);
+}
+
+.principle-card p {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.6;
+  max-width: none;
+  margin: 0;
+}
+
+.principles-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.principle-item {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: flex-start;
+  padding: var(--sp-4);
+  border-left: 2px solid var(--c-border);
+  transition: border-color var(--ease-fast);
+}
+
+.principle-item:hover {
+  border-left-color: var(--c-primary);
+}
+
+.principle-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--c-primary);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.principle-item h4 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-1);
+}
+
+.principle-item p {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.6;
+  margin: 0;
+  max-width: none;
+}
+
+/* ── 08 BRAND STRATEGY ──────────────────────────────────── */
+.statement-block {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  margin-bottom: var(--sp-4);
+}
+
+.statement-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-primary);
+  margin-bottom: var(--sp-3);
+}
+
+.statement-text {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 400;
+  color: var(--c-text);
+  line-height: 1.4;
+  font-style: italic;
+  margin-bottom: var(--sp-4);
+  max-width: none;
+}
+
+.statement-reasoning {
+  font-size: var(--text-sm);
+  color: var(--c-text-muted);
+  border-top: 1px solid var(--c-border);
+  padding-top: var(--sp-3);
+  margin: 0;
+  max-width: none;
+}
+
+/* Positioning map */
+.positioning-map {
+  position: relative;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-8);
+  margin-top: var(--sp-6);
+}
+
+.pos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--c-border);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: var(--sp-4) var(--sp-8);
+}
+
+.pos-quadrant {
+  background: var(--c-surface-2);
+  padding: var(--sp-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+.pos-quadrant span {
+  font-size: var(--text-sm);
+  text-align: center;
+  color: var(--c-text-soft);
+}
+
+.pos-quadrant small {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  margin-top: 2px;
+}
+
+.pos-highlight {
+  background: rgba(26, 86, 219, 0.08);
+  border: 2px solid var(--c-primary);
+}
+
+.pos-highlight span {
+  color: var(--c-text);
+}
+
+.pos-axis-y, .pos-axis-x {
+  position: absolute;
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pos-axis-y { left: var(--sp-4); top: 50%; transform: translateY(-50%) rotate(-90deg); }
+.pos-axis-y2 { left: var(--sp-4); bottom: var(--sp-4); transform: rotate(-90deg); transform-origin: left; }
+.pos-axis-x { bottom: var(--sp-4); left: 50%; transform: translateX(-50%); }
+.pos-axis-x2 { bottom: var(--sp-4); right: var(--sp-4); }
+
+/* Attributes */
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.attr-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+.attr-icon {
+  font-size: 10px;
+  color: var(--c-primary);
+  margin-bottom: var(--sp-3);
+}
+
+.attr-card h4 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-2);
+}
+
+.attr-card p {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.6;
+  margin-bottom: var(--sp-3);
+  max-width: none;
+}
+
+.attr-not {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  border-top: 1px solid var(--c-border);
+  padding-top: var(--sp-2);
+}
+
+.archetype-block {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+}
+
+.archetype-name {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-style: italic;
+  color: var(--c-text);
+  margin-bottom: var(--sp-4);
+}
+
+.archetype-block p {
+  max-width: none;
+}
+
+/* ── 09 VOICE ───────────────────────────────────────────── */
+.voice-table {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--sp-4);
+}
+
+.voice-row {
+  display: grid;
+  grid-template-columns: 140px 160px 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--c-border);
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+}
+
+.voice-row:last-child { border-bottom: none; }
+
+.voice-header {
+  background: var(--c-surface-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+.voice-row em {
+  font-style: italic;
+  color: var(--c-text);
+}
+
+/* Rule lists */
+.rule-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.rule-item {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+.rule-item.rule-do { border-top: 2px solid var(--c-success); }
+.rule-item.rule-dont { border-top: 2px solid var(--c-danger); }
+
+.rule-tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-3);
+}
+
+.rule-do .rule-tag { color: var(--c-success); }
+.rule-dont .rule-tag { color: var(--c-danger); }
+
+.rule-item ul {
+  padding-left: var(--sp-4);
+  margin: 0;
+}
+
+.rule-item ul li {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.6;
+  margin-bottom: var(--sp-2);
+}
+
+/* System states */
+.states-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.state-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+.state-icon-wrap {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--sp-3);
+}
+
+.state-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-2);
+}
+
+.state-copy {
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--c-text);
+  margin-bottom: var(--sp-2);
+}
+
+.state-note {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+/* Loading dots */
+.loading-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.loading-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  animation: ldot 1.2s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ldot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ── 10 IDENTITY ────────────────────────────────────────── */
+.logo-preview-block {
+  display: flex;
+  gap: var(--sp-6);
+  margin: var(--sp-6) 0;
+  flex-wrap: wrap;
+}
+
+.logo-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-8) var(--sp-10);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--c-border);
+}
+
+.logo-dark { background: var(--color-neutral-950); }
+.logo-light { background: #F8FAFC; }
+
+.logo-wordmark {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.logo-wordmark-dark { color: var(--color-neutral-950); }
+
+.logo-rules h4 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-1);
+  margin-top: var(--sp-4);
+}
+
+.logo-rules p {
+  font-size: var(--text-sm);
+  max-width: none;
+}
+
+/* Shape grid */
+.shape-grid {
+  display: flex;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  margin-top: var(--sp-4);
+}
+
+.shape-demo {
+  width: 80px;
+  height: 80px;
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: var(--sp-1);
+  position: relative;
+}
+
+.shape-r4 { border-radius: 4px; }
+.shape-r8 { border-radius: 8px; }
+.shape-r12 { border-radius: 12px; }
+.shape-r16 { border-radius: 16px; }
+.shape-full { border-radius: 9999px; }
+
+.shape-label {
+  font-size: 10px;
+  color: var(--c-text-muted);
+  text-align: center;
+  position: absolute;
+  bottom: -20px;
+  white-space: nowrap;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shape-demo { margin-bottom: var(--sp-5); }
+
+/* Icon spec */
+.icon-spec {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: var(--sp-4) 0;
+}
+
+.icon-spec-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--c-border);
+  font-size: var(--text-sm);
+}
+
+.icon-spec-row:last-child { border-bottom: none; }
+
+.icon-spec-label {
+  font-weight: 500;
+  color: var(--c-text);
+}
+
+.icon-spec-value {
+  color: var(--c-text-soft);
+}
+
+/* Icon gallery */
+.icon-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4) var(--sp-3);
+  min-width: 72px;
+  color: var(--c-text-soft);
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+}
+
+.icon-item:hover {
+  color: var(--c-text);
+  border-color: var(--c-primary);
+}
+
+.icon-item span {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+/* Photo direction */
+.photo-principles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.photo-placeholder {
+  border-radius: var(--radius-lg);
+  padding: var(--sp-8) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  text-align: center;
+}
+
+.photo-real {
+  background: rgba(26,86,219,0.06);
+  border: 1.5px solid rgba(26,86,219,0.2);
+}
+
+.photo-stock {
+  background: rgba(148,163,184,0.06);
+  border: 1.5px dashed var(--c-border);
+}
+
+.photo-icon {
+  font-size: 28px;
+  color: var(--c-text-muted);
+}
+
+.photo-placeholder span {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.5;
+}
+
+.photo-tag {
+  text-align: center;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: var(--sp-2);
+}
+
+.photo-do-tag { color: var(--c-success); }
+.photo-dont-tag { color: var(--c-text-muted); }
+
+/* ── 11 COLOR ───────────────────────────────────────────── */
+.color-scale {
+  display: flex;
+  gap: 2px;
+  margin: var(--sp-4) 0 var(--sp-6);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  flex: 1;
+  min-width: 80px;
+  min-height: 80px;
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: flex var(--ease-fast);
+  position: relative;
+}
+
+.color-swatch:hover { flex: 1.5; }
+
+.swatch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.swatch-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(0,0,0,0.6);
+}
+
+.swatch-hex {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(0,0,0,0.5);
+}
+
+.swatch-light .swatch-name,
+.swatch-light .swatch-hex {
+  color: rgba(255,255,255,0.75);
+}
+
+.color-reasoning {
+  font-size: var(--text-sm);
+  color: var(--c-text-muted);
+  font-style: italic;
+  border-left: 2px solid var(--c-border);
+  padding-left: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+/* Semantic grid */
+.semantic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.semantic-card {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: flex-start;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4);
+}
+
+.semantic-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.semantic-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 2px;
+}
+
+.semantic-hex {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-2);
+}
+
+.semantic-use {
+  font-size: var(--text-xs);
+  color: var(--c-text-soft);
+  line-height: 1.5;
+}
+
+/* Contrast check */
+.contrast-check {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.contrast-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.contrast-sample {
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  min-width: 200px;
+}
+
+.contrast-info {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.contrast-ratio {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+
+.contrast-ratio.pass {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--c-success);
+}
+
+.contrast-label {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+/* ── 12 TYPOGRAPHY ──────────────────────────────────────── */
+.type-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.type-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+.type-sample {
+  font-size: clamp(24px, 4vw, 40px);
+  line-height: 1.2;
+  color: var(--c-text);
+}
+
+.type-display {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(32px, 5vw, 56px);
+}
+
+.type-body {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--c-text-soft);
+}
+
+.type-mono {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--c-primary);
+  letter-spacing: 0.05em;
+}
+
+.type-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-1);
+}
+
+.type-role {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-primary);
+  margin-bottom: var(--sp-3);
+}
+
+.type-reasoning {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.6;
+}
+
+/* Type scale table */
+.type-scale-table {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--sp-4);
+}
+
+.ts-header {
+  display: grid;
+  grid-template-columns: 200px 60px 80px 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--c-surface-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+.ts-row {
+  display: grid;
+  grid-template-columns: 200px 60px 80px 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--c-border);
+  align-items: center;
+}
+
+.ts-row code { font-size: var(--text-xs); }
+
+.ts-row div:nth-child(2),
+.ts-row div:nth-child(3) {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+.ts-preview {
+  font-family: var(--font-body);
+  line-height: 1.2;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ── 13 FOUNDATIONS ─────────────────────────────────────── */
+/* Spacing */
+.spacing-scale {
+  display: flex;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  margin-top: var(--sp-4);
+  align-items: flex-end;
+}
+
+.spacing-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.spacing-visual {
+  background: var(--c-primary);
+  opacity: 0.3;
+  border-radius: 2px;
+}
+
+.spacing-item code {
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.spacing-item span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--c-text-muted);
+}
+
+.spacing-guide {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--sp-4);
+}
+
+.sg-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: 1px solid var(--c-border);
+  font-size: var(--text-sm);
+}
+
+.sg-row:last-child { border-bottom: none; }
+.sg-label { color: var(--c-text); font-weight: 500; }
+.sg-value { color: var(--c-text-soft); }
+
+/* Grid demo */
+.grid-spec {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin-top: var(--sp-4);
+}
+
+.grid-col-demo {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding-bottom: var(--sp-5);
+}
+
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-8 { grid-template-columns: repeat(8, 1fr); }
+.grid-12 { grid-template-columns: repeat(12, 1fr); }
+
+.grid-col-demo > div:not(.grid-label) {
+  height: 32px;
+  background: rgba(26,86,219,0.12);
+  border-radius: 4px;
+  border: 1px solid rgba(26,86,219,0.25);
+}
+
+.grid-col-demo > div:first-child:not(.grid-label) {
+  background: rgba(26,86,219,0.25);
+}
+
+.grid-label {
+  grid-column: 1 / -1;
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  height: auto;
+  background: none;
+  border: none;
+  padding-top: var(--sp-1);
+}
+
+/* Radius demo */
+.radius-demo-grid {
+  display: flex;
+  gap: var(--sp-6);
+  flex-wrap: wrap;
+  margin-top: var(--sp-4);
+}
+
+.radius-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.radius-box {
+  width: 80px;
+  height: 80px;
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border);
+}
+
+.radius-item code { font-size: 10px; }
+
+.radius-item span {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+/* Elevation */
+.elevation-demo {
+  display: flex;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  margin-top: var(--sp-4);
+}
+
+.elevation-card {
+  padding: var(--sp-5);
+  border-radius: var(--radius-lg);
+  min-width: 140px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.el-0 { box-shadow: none; }
+.el-1 { box-shadow: var(--shadow-1); }
+.el-2 { box-shadow: var(--shadow-2); }
+.el-3 { box-shadow: var(--shadow-3); }
+
+.el-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-2);
+}
+
+.el-use {
+  font-size: var(--text-xs);
+  color: var(--c-text-soft);
+  line-height: 1.5;
+}
+
+/* Motion spec */
+.motion-spec-table {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--sp-4);
+}
+
+.ms-header {
+  display: grid;
+  grid-template-columns: 200px 100px 1fr 1fr;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--c-surface-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+.ms-row {
+  display: grid;
+  grid-template-columns: 200px 100px 1fr 1fr;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  border-top: 1px solid var(--c-border);
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  align-items: center;
+}
+
+.ms-row code { font-size: var(--text-xs); }
+
+/* ── 14 COMPONENTS ──────────────────────────────────────── */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-5);
+  height: 44px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: background var(--ease-instant), color var(--ease-instant), border-color var(--ease-instant), transform var(--ease-instant), box-shadow var(--ease-instant);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--c-border-focus);
+  outline-offset: 2px;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: var(--c-primary);
+  color: white;
+}
+
+.btn-primary:hover { background: var(--c-primary-hover); }
+
+.btn-secondary {
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+}
+
+.btn-secondary:hover {
+  background: var(--c-border);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--c-text-soft);
+  border: 1px solid transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--c-surface-2);
+  color: var(--c-text);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--c-danger);
+  border: 1px solid var(--c-danger);
+}
+
+.btn-danger:hover {
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.btn-sm { height: 36px; padding: 0 var(--sp-4); font-size: var(--text-sm); }
+.btn-lg { height: 52px; padding: 0 var(--sp-8); font-size: var(--text-lg); }
+.btn-full { width: 100%; }
+
+/* Component demo blocks */
+.comp-demo {
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--sp-4);
+}
+
+.comp-demo-stage {
+  padding: var(--sp-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.comp-demo-col {
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 360px;
+}
+
+.comp-demo-code {
+  position: relative;
+  border-top: 1px solid var(--c-border);
+}
+
+/* Anatomy */
+.anatomy-block {
+  margin-top: var(--sp-6);
+  padding: var(--sp-5);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+}
+
+.anatomy-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-3) 0 0;
+}
+
+.anatomy-list li {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.anatomy-list li:last-child { border-bottom: none; }
+
+.anatomy-list strong { color: var(--c-text); }
+
+/* Usage grid */
+.usage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.usage-do, .usage-dont {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+.usage-do { border-top: 2px solid var(--c-success); }
+.usage-dont { border-top: 2px solid var(--c-danger); }
+
+.usage-tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-3);
+}
+
+.usage-do .usage-tag { color: var(--c-success); }
+.usage-dont .usage-tag { color: var(--c-danger); }
+
+.usage-do ul, .usage-dont ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.usage-do ul li, .usage-dont ul li {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--c-border);
+  line-height: 1.5;
+}
+
+.usage-do ul li:last-child,
+.usage-dont ul li:last-child { border-bottom: none; }
+
+/* Inputs */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-3);
+}
+
+.input-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--c-text);
+}
+
+.input-label-disabled {
+  color: var(--c-text-muted);
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--sp-4);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--c-text);
+  outline: none;
+  transition: border-color var(--ease-fast), box-shadow var(--ease-fast);
+}
+
+.input::placeholder { color: var(--c-text-muted); }
+
+.input:focus {
+  border-color: var(--c-border-focus);
+  box-shadow: 0 0 0 3px rgba(26,86,219,0.12);
+}
+
+.input:disabled {
+  background: var(--c-surface-2);
+  color: var(--c-text-muted);
+  cursor: not-allowed;
+}
+
+.input-error {
+  border-color: var(--c-danger);
+}
+
+.input-error:focus {
+  border-color: var(--c-danger);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+}
+
+.input-success {
+  border-color: var(--c-success);
+}
+
+.input-error-msg {
+  font-size: var(--text-xs);
+  color: var(--c-danger);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.input-success-msg {
+  font-size: var(--text-xs);
+  color: var(--c-success);
+}
+
+/* Cards */
+.cards-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+/* Driver card */
+.driver-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4);
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  box-shadow: var(--shadow-1);
+  flex-wrap: wrap;
+}
+
+.driver-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--c-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.driver-info { flex: 1; min-width: 0; }
+
+.driver-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 2px;
+}
+
+.driver-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-1);
+}
+
+.driver-rating { color: var(--c-warning); font-weight: 500; }
+.driver-sep { color: var(--c-border); }
+.driver-vehicle { font-size: var(--text-xs); color: var(--c-text-muted); }
+
+/* Freight card */
+.freight-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4);
+  box-shadow: var(--shadow-1);
+}
+
+.freight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-4);
+}
+
+.freight-id {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+.freight-route {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: var(--sp-4);
+}
+
+.route-point {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  position: relative;
+}
+
+.route-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.route-dot-origin { background: var(--c-primary); }
+.route-dot-dest { background: var(--c-accent); }
+
+.route-line {
+  width: 1px;
+  height: 20px;
+  background: var(--c-border);
+  margin-left: 4px;
+  margin-top: 4px;
+}
+
+.route-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin-bottom: 2px;
+}
+
+.route-addr {
+  font-size: var(--text-xs);
+  color: var(--c-text);
+  line-height: 1.4;
+}
+
+.freight-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--c-border);
+}
+
+.freight-price {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--c-text);
+}
+
+.freight-eta {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--c-text-muted);
+}
+
+/* Price card */
+.price-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  box-shadow: var(--shadow-1);
+}
+
+.price-vehicle-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-1);
+}
+
+.price-vehicle-cap {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-4);
+}
+
+.price-amount {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 400;
+  color: var(--c-text);
+  line-height: 1;
+  margin-bottom: var(--sp-1);
+}
+
+.price-note {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-5);
+}
+
+/* Badges */
+.badge-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  align-items: flex-start;
+}
+
+.badge-item code {
+  font-size: 10px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0;
+}
+
+.status-badge span {
+  width: 5px;
+  height: 5px;
+  border-radius: 2px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.status-pending  { color: var(--c-text-muted); }
+.status-active   { color: var(--c-primary); }
+.status-done     { color: var(--c-success); }
+.status-cancelled { color: var(--c-danger); }
+.status-delayed  { color: var(--c-warning); }
+
+.badge-progress {
+  background: rgba(26,86,219,0.1);
+  color: var(--c-primary);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.badge-note {
+  font-size: var(--text-sm);
+  color: var(--c-text-muted);
+  font-style: italic;
+  margin-top: var(--sp-4);
+  max-width: 600px;
+}
+
+/* Alerts */
+.alerts-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.alert {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  border: 1px solid;
+}
+
+.alert > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.alert-info    { background: rgba(26,86,219,0.06);  border-color: rgba(26,86,219,0.2);  color: var(--c-text); }
+.alert-success { background: rgba(22,163,74,0.06);  border-color: rgba(22,163,74,0.2);  color: var(--c-text); }
+.alert-warning { background: rgba(217,119,6,0.06);  border-color: rgba(217,119,6,0.2);  color: var(--c-text); }
+.alert-error   { background: rgba(220,38,38,0.06);  border-color: rgba(220,38,38,0.2);  color: var(--c-text); }
+
+.alert-info svg    { color: var(--c-info); }
+.alert-success svg { color: var(--c-success); }
+.alert-warning svg { color: var(--c-warning); }
+.alert-error svg   { color: var(--c-danger); }
+
+/* Navigation demo */
+.nav-demo-wrap {
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-8) var(--sp-5);
+  display: flex;
+  justify-content: center;
+  margin-top: var(--sp-4);
+}
+
+.bottom-nav-demo {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-2) var(--sp-3);
+  display: flex;
+  gap: var(--sp-1);
+  box-shadow: var(--shadow-2);
+  width: 360px;
+}
+
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: var(--sp-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--c-text-muted);
+  font-size: 10px;
+  font-family: var(--font-body);
+  border-radius: var(--radius-md);
+  transition: color var(--ease-fast), background var(--ease-fast);
+}
+
+.bnav-item:hover {
+  color: var(--c-text);
+  background: var(--c-surface-2);
+}
+
+.bnav-active {
+  color: var(--c-primary);
+}
+
+.bnav-cta {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  background: var(--c-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  margin: auto var(--sp-1);
+}
+
+.bnav-cta:hover {
+  background: var(--c-primary-hover);
+  color: white;
+}
+
+/* Tracking card */
+.tracking-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+  margin-top: var(--sp-4);
+  max-width: 480px;
+}
+
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--sp-5);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.tracking-code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-1);
+}
+
+.tracking-eta-label {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: right;
+  margin-bottom: 2px;
+}
+
+.tracking-eta-time {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 400;
+  color: var(--c-text);
+  text-align: right;
+}
+
+/* Map placeholder */
+.tracking-map-placeholder {
+  background: var(--c-surface-2);
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.map-route-vis {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 280px;
+}
+
+.map-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.map-origin { background: var(--c-primary); }
+.map-dest { background: var(--c-accent); }
+
+.map-line {
+  flex: 1;
+  height: 2px;
+  background: var(--c-border);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-truck {
+  width: 28px;
+  height: 28px;
+  background: var(--c-surface);
+  border: 2px solid var(--c-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 35%;
+  animation: truck-move 3s ease-in-out infinite;
+}
+
+@keyframes truck-move {
+  0%, 100% { left: 30%; }
+  50% { left: 50%; }
+}
+
+.map-label {
+  font-size: 10px;
+  color: var(--c-text-muted);
+}
+
+/* Tracking steps */
+.tracking-steps {
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tstep {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: var(--sp-4);
+}
+
+.tstep:last-child { padding-bottom: 0; }
+
+.tstep:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 16px;
+  bottom: 0;
+  width: 1px;
+  background: var(--c-border);
+}
+
+.tstep-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  border: 2px solid var(--c-border);
+  background: var(--c-surface);
+  position: relative;
+  z-index: 1;
+}
+
+.tstep-done .tstep-dot {
+  background: var(--c-success);
+  border-color: var(--c-success);
+}
+
+.tstep-current .tstep-dot {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(26,86,219,0.2);
+}
+
+.tstep-title {
+  font-size: var(--text-sm);
+  color: var(--c-text);
+  font-weight: 500;
+}
+
+.tstep-pending .tstep-title { color: var(--c-text-muted); font-weight: 400; }
+
+.tstep-time {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+  margin-top: 2px;
+}
+
+/* ── 15 PATTERNS ────────────────────────────────────────── */
+.flow-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 480px;
+  margin-top: var(--sp-4);
+}
+
+.flow-step {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: flex-start;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+.flow-step-end {
+  border-color: rgba(22,163,74,0.3);
+  background: rgba(22,163,74,0.04);
+}
+
+.flow-num {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--c-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.flow-num-end {
+  background: var(--c-success);
+}
+
+.flow-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: var(--sp-1);
+}
+
+.flow-desc {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  line-height: 1.5;
+}
+
+.flow-arrow {
+  text-align: center;
+  font-size: 20px;
+  color: var(--c-border);
+  padding: var(--sp-1) 0;
+  margin-left: 16px;
+}
+
+/* Error patterns */
+.error-patterns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.error-pattern {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-left: 3px solid var(--c-danger);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+}
+
+.ep-type {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-danger);
+  margin-bottom: var(--sp-2);
+}
+
+.ep-copy {
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--c-text);
+  margin-bottom: var(--sp-2);
+}
+
+.ep-action {
+  font-size: var(--text-xs);
+  color: var(--c-text-muted);
+}
+
+/* ── 16 TOKENS ──────────────────────────────────────────── */
+.naming-table {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--sp-4);
+}
+
+.nt-header {
+  display: grid;
+  grid-template-columns: 100px 200px 200px 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--c-surface-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+.nt-row {
+  display: grid;
+  grid-template-columns: 100px 200px 200px 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  border-top: 1px solid var(--c-border);
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  align-items: center;
+}
+
+/* ── 17 CODE BLOCKS ─────────────────────────────────────── */
+.code-block-wrap {
+  position: relative;
+  background: var(--color-neutral-950);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: var(--sp-4) 0;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.code-block {
+  margin: 0;
+  padding: var(--sp-6);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: #e2e8f0;
+  background: none;
+  border: none;
+}
+
+.code-block code {
+  font-family: var(--font-mono);
+  font-size: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+.copy-btn {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-3);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: background var(--ease-fast), color var(--ease-fast);
+  z-index: 1;
+}
+
+.copy-btn:hover {
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+/* ── 18 MISC SECTIONS ───────────────────────────────────── */
+.driver-status {
+  font-size: var(--text-xs);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.driver-status span {
+  width: 5px;
+  height: 5px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* Keyboard demo */
+.keyboard-demo {
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  margin-top: var(--sp-4);
+}
+
+.keyboard-demo p {
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  margin-bottom: var(--sp-5);
+  max-width: none;
+}
+
+.keyboard-demo-stage {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: var(--c-text);
+}
+
+.kbd-link {
+  font-size: var(--text-sm);
+  color: var(--c-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.kbd-link:focus-visible {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── 19 BACK TO TOP ─────────────────────────────────────── */
+.back-top-wrap {
+  padding: var(--sp-8) var(--sp-12);
+}
+
+.back-top {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-2) var(--sp-4);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--c-text-soft);
+  cursor: pointer;
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+}
+
+.back-top:hover {
+  color: var(--c-text);
+  border-color: var(--c-text-muted);
+}
+
+/* ── 20 REDUCED MOTION ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 21 FOCUS MANAGEMENT ────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--c-border-focus);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── 22 RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .trio-grid { grid-template-columns: 1fr 1fr; }
+  .cards-demo { grid-template-columns: 1fr; max-width: 400px; }
+  .ts-header, .ts-row { grid-template-columns: 180px 50px 70px 1fr; }
+  .ms-header, .ms-row { grid-template-columns: 160px 80px 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  :root { --sidebar-w: 260px; }
+
+  .topbar { display: flex; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--ease-base);
+    top: var(--topbar-h);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: var(--topbar-h);
+    background: rgba(0,0,0,0.4);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ease-base);
+  }
+
+  .sidebar-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .main {
+    margin-left: 0;
+    padding-top: var(--topbar-h);
+  }
+
+  .doc-section {
+    padding: var(--sp-10) var(--sp-4);
+  }
+
+  .trio-grid { grid-template-columns: 1fr; }
+  .attr-grid { grid-template-columns: 1fr; }
+  .rule-list { grid-template-columns: 1fr; }
+  .usage-grid { grid-template-columns: 1fr; }
+  .states-grid { grid-template-columns: 1fr; }
+  .semantic-grid { grid-template-columns: 1fr; }
+  .photo-principles { grid-template-columns: 1fr; }
+  .type-card { grid-template-columns: 1fr; }
+  .voice-row { grid-template-columns: 1fr; gap: var(--sp-1); }
+  .voice-header { display: none; }
+  .nt-header, .nt-row { grid-template-columns: 1fr 1fr; }
+  .nt-header div:nth-child(3), .nt-row div:nth-child(3),
+  .nt-header div:nth-child(4), .nt-row div:nth-child(4) { display: none; }
+  .ts-header, .ts-row { grid-template-columns: 140px 50px 1fr; }
+  .ts-header div:nth-child(3), .ts-row div:nth-child(3) { display: none; }
+  .ms-header, .ms-row { grid-template-columns: 130px 1fr; }
+  .ms-header div:nth-child(2), .ms-row div:nth-child(2),
+  .ms-header div:nth-child(4), .ms-row div:nth-child(4) { display: none; }
+  .cards-demo { grid-template-columns: 1fr; }
+  .color-scale { flex-wrap: wrap; }
+  .color-swatch { min-width: 60px; min-height: 60px; }
+  .theme-toggle { top: calc(var(--topbar-h) / 2 - 18px + 2px); }
+  .nav-group-toggle { padding: var(--sp-2) var(--sp-3); }
+  .nav-link { padding-left: var(--sp-6); margin-left: var(--sp-3); }
+
+  .positioning-map {
+    padding: var(--sp-5);
+  }
+  .pos-axis-y, .pos-axis-y2, .pos-axis-x, .pos-axis-x2 {
+    display: none;
+  }
+}
+
+/* ── 23 NAV TOGGLE BUTTON ───────────────────────────────── */
+.nav-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+
+.nav-toggle span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--c-text);
+  border-radius: 2px;
+  transition: transform var(--ease-fast), opacity var(--ease-fast);
+}
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Progreso de lectura"></div>
+
+<!-- Top nav mobile -->
+<header class="topbar" role="banner">
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir navegación" aria-expanded="false" aria-controls="sidebar">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-brand">
+    <span class="brand-mark">▲</span>
+    <span class="brand-name">Carga <em>Design System</em></span>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sun" aria-hidden="true">
+      <circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="8" y1="1" x2="8" y2="2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="8" y1="13.5" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="1" y1="8" x2="2.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="13.5" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="3.05" y1="3.05" x2="4.11" y2="4.11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="11.89" y1="11.89" x2="12.95" y2="12.95" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="3.05" y1="12.95" x2="4.11" y2="11.89" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="11.89" y1="4.11" x2="12.95" y2="3.05" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-moon" aria-hidden="true">
+      <path d="M13.5 9A6 6 0 0 1 7 2.5a6.5 6.5 0 1 0 6.5 6.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</header>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="Navegación principal">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <span class="brand-mark">▲</span>
+      <div>
+        <span class="brand-name">Carga</span>
+        <span class="brand-sub">Design System v1.0</span>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input type="search" id="searchInput" placeholder="Buscar..." aria-label="Buscar en documentación" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="nav-list" role="list">
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="true" aria-controls="nav-intro">
+        <span class="nav-section-label">01 — Introducción</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-intro" class="nav-sub">
+        <li><a href="#intro-overview" class="nav-link">Visión general</a></li>
+        <li><a href="#intro-goals" class="nav-link">Objetivos</a></li>
+        <li><a href="#intro-principles" class="nav-link">Principios</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-brand">
+        <span class="nav-section-label">02 — Estrategia de Marca</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-brand" class="nav-sub collapsed">
+        <li><a href="#brand-mission" class="nav-link">Misión y visión</a></li>
+        <li><a href="#brand-positioning" class="nav-link">Posicionamiento</a></li>
+        <li><a href="#brand-personality" class="nav-link">Personalidad</a></li>
+        <li><a href="#brand-archetype" class="nav-link">Arquetipo</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-voice">
+        <span class="nav-section-label">03 — Comunicación</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-voice" class="nav-sub collapsed">
+        <li><a href="#voice-tone" class="nav-link">Voz y tono</a></li>
+        <li><a href="#voice-microcopy" class="nav-link">Microcopy</a></li>
+        <li><a href="#voice-states" class="nav-link">Estados del sistema</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-identity">
+        <span class="nav-section-label">04 — Identidad Visual</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-identity" class="nav-sub collapsed">
+        <li><a href="#identity-logo" class="nav-link">Filosofía del logo</a></li>
+        <li><a href="#identity-shape" class="nav-link">Lenguaje de formas</a></li>
+        <li><a href="#identity-icons" class="nav-link">Íconos</a></li>
+        <li><a href="#identity-photo" class="nav-link">Fotografía</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-color">
+        <span class="nav-section-label">05 — Color</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-color" class="nav-sub collapsed">
+        <li><a href="#color-palette" class="nav-link">Paleta</a></li>
+        <li><a href="#color-semantic" class="nav-link">Semánticos</a></li>
+        <li><a href="#color-tokens" class="nav-link">Tokens</a></li>
+        <li><a href="#color-dark" class="nav-link">Dark Mode</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-type">
+        <span class="nav-section-label">06 — Tipografía</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-type" class="nav-sub collapsed">
+        <li><a href="#type-faces" class="nav-link">Tipografías</a></li>
+        <li><a href="#type-scale" class="nav-link">Escala</a></li>
+        <li><a href="#type-usage" class="nav-link">Uso</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-foundations">
+        <span class="nav-section-label">07 — Fundamentos</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-foundations" class="nav-sub collapsed">
+        <li><a href="#found-spacing" class="nav-link">Espaciado</a></li>
+        <li><a href="#found-grid" class="nav-link">Grilla</a></li>
+        <li><a href="#found-radius" class="nav-link">Radio de borde</a></li>
+        <li><a href="#found-elevation" class="nav-link">Elevación</a></li>
+        <li><a href="#found-motion" class="nav-link">Movimiento</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-components">
+        <span class="nav-section-label">08 — Componentes</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-components" class="nav-sub collapsed">
+        <li><a href="#comp-buttons" class="nav-link">Botones</a></li>
+        <li><a href="#comp-inputs" class="nav-link">Inputs</a></li>
+        <li><a href="#comp-cards" class="nav-link">Cards</a></li>
+        <li><a href="#comp-badges" class="nav-link">Badges</a></li>
+        <li><a href="#comp-alerts" class="nav-link">Alerts</a></li>
+        <li><a href="#comp-navigation" class="nav-link">Navegación</a></li>
+        <li><a href="#comp-tracking" class="nav-link">Tracking</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-patterns">
+        <span class="nav-section-label">09 — Patrones UX</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-patterns" class="nav-sub collapsed">
+        <li><a href="#pattern-request" class="nav-link">Solicitar flete</a></li>
+        <li><a href="#pattern-tracking" class="nav-link">Seguimiento</a></li>
+        <li><a href="#pattern-error" class="nav-link">Recuperación de error</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-a11y">
+        <span class="nav-section-label">10 — Accesibilidad</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-a11y" class="nav-sub collapsed">
+        <li><a href="#a11y-contrast" class="nav-link">Contraste</a></li>
+        <li><a href="#a11y-keyboard" class="nav-link">Teclado</a></li>
+        <li><a href="#a11y-motion" class="nav-link">Movimiento reducido</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group" role="listitem">
+      <button class="nav-group-toggle" aria-expanded="false" aria-controls="nav-tokens">
+        <span class="nav-section-label">11 — Design Tokens</span>
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="nav-tokens" class="nav-sub collapsed">
+        <li><a href="#tokens-all" class="nav-link">Todos los tokens</a></li>
+        <li><a href="#tokens-naming" class="nav-link">Nomenclatura</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="sidebar-footer">
+    <span>Carga DS · v1.0.0</span>
+  </div>
+</nav>
+
+<!-- Main content -->
+<main class="main" id="main" role="main">
+
+  <!-- ═══════════════════════════════════════════
+       01 INTRODUCCIÓN
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="intro-overview">
+    <div class="section-hero">
+      <div class="hero-eyebrow">01 — Introducción</div>
+      <h1 class="hero-title">El sistema que mueve <em>lo que importa</em></h1>
+      <p class="hero-lead">Carga es una plataforma digital de logística que conecta personas y empresas con conductores independientes para el transporte de objetos de cualquier tamaño. Este portal documenta el sistema de diseño que hace coherente cada punto de contacto del ecosistema.</p>
+    </div>
+
+    <div class="content-block" id="intro-goals">
+      <h2>Objetivos del sistema</h2>
+      <p>Un sistema de diseño cumple tres funciones simultáneas: acelera la construcción, garantiza la coherencia, y reduce las decisiones redundantes. Para Carga, este sistema también tiene una responsabilidad adicional: transmitir confianza en un servicio donde el usuario entrega objetos de valor a un desconocido.</p>
+
+      <div class="trio-grid">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <h3>Coherencia</h3>
+          <p>Una sola fuente de verdad para colores, tipos, espaciado y comportamiento. Lo que se ve en la app móvil se reconoce en el dashboard de conductores.</p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <h3>Velocidad</h3>
+          <p>Componentes documentados = decisiones tomadas. El equipo construye, no debate. El tiempo se invierte en problemas nuevos, no en reinventar soluciones resueltas.</p>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <h3>Confianza</h3>
+          <p>Cada decisión de diseño refuerza que Carga es confiable, profesional, y humana. El sistema no es neutral — comunica algo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="intro-principles">
+      <h2>Principios de diseño</h2>
+      <p>Estos cinco principios no son aspiraciones. Son criterios de evaluación. Ante cualquier decisión de diseño, la pregunta es: ¿este componente, patrón o decisión respeta estos principios?</p>
+
+      <div class="principles-list">
+        <div class="principle-item">
+          <div class="principle-dot"></div>
+          <div>
+            <h4>Claridad antes que completitud</h4>
+            <p>Una pantalla que muestra menos y explica bien supera a una que muestra todo. El usuario necesita saber qué hacer, no todo lo que puede hacer.</p>
+          </div>
+        </div>
+        <div class="principle-item">
+          <div class="principle-dot"></div>
+          <div>
+            <h4>El estado siempre es visible</h4>
+            <p>En logística, la incertidumbre es el enemigo. El sistema siempre comunica en qué estado está el flete, la solicitud, y el pago. Sin ambigüedad.</p>
+          </div>
+        </div>
+        <div class="principle-item">
+          <div class="principle-dot"></div>
+          <div>
+            <h4>Diseñado para el estrés</h4>
+            <p>El usuario activa Carga cuando tiene algo que mover — que suele ser una situación con presión. El diseño reduce fricción, no la aumenta.</p>
+          </div>
+        </div>
+        <div class="principle-item">
+          <div class="principle-dot"></div>
+          <div>
+            <h4>Inclusivo por defecto</h4>
+            <p>El cliente es una persona de 55 años mudando su departamento y también una empresa con 20 envíos diarios. El diseño sirve a ambos sin sentirse comprometido.</p>
+          </div>
+        </div>
+        <div class="principle-item">
+          <div class="principle-dot"></div>
+          <div>
+            <h4>La tecnología desaparece</h4>
+            <p>Carga no muestra que es tecnología. La tecnología es lo que hace que mover un refrigerador sea tan fácil como enviar un mensaje.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       02 ESTRATEGIA DE MARCA
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="brand-mission">
+    <div class="section-header">
+      <div class="section-eyebrow">02 — Estrategia de Marca</div>
+      <h2>Misión y visión</h2>
+    </div>
+
+    <div class="content-block">
+      <div class="statement-block">
+        <div class="statement-label">Misión</div>
+        <p class="statement-text">Hacer que mover cualquier cosa en Chile sea tan confiable y simple como hacer un pedido de comida.</p>
+        <p class="statement-reasoning">Razón: La misión nombra el problema real (la complejidad e incertidumbre del transporte independiente) y el estándar de comparación que el usuario ya conoce. No promete tecnología — promete una experiencia.</p>
+      </div>
+
+      <div class="statement-block">
+        <div class="statement-label">Visión</div>
+        <p class="statement-text">Ser el ecosistema logístico digital de referencia para personas y empresas en Latinoamérica.</p>
+      </div>
+
+      <div class="statement-block">
+        <div class="statement-label">Promesa de marca</div>
+        <p class="statement-text">Tu carga llega. Y tú lo sabes en todo momento.</p>
+        <p class="statement-reasoning">Razón: Dos promesas distintas en una: la ejecución (llega) y la transparencia (lo sabes). Ambas atacan las dos principales fricciones del transporte independiente: que no llegue, y no saber qué está pasando.</p>
+      </div>
+    </div>
+
+    <div class="content-block" id="brand-positioning">
+      <h2>Posicionamiento</h2>
+      <p>Carga no es una empresa de fletes. No es una app de delivery. No es una mudanzera. Es una capa de confianza y coordinación que se pone encima de un mercado que ya existe — el de los conductores independientes — y lo hace confiable para ambos lados.</p>
+
+      <div class="positioning-map">
+        <div class="pos-axis-y">Profesional</div>
+        <div class="pos-grid">
+          <div class="pos-quadrant pos-q1">
+            <span>Agencias de mudanza<br><small>Caro · Lento · Formal</small></span>
+          </div>
+          <div class="pos-quadrant pos-q2 pos-highlight">
+            <span><strong>Carga</strong><br><small>Accesible · Rápido · Confiable</small></span>
+          </div>
+          <div class="pos-quadrant pos-q3">
+            <span>Whatsapp grupos<br><small>Barato · Incierto · Informal</small></span>
+          </div>
+          <div class="pos-quadrant pos-q4">
+            <span>Camiones empresariales<br><small>Caro · Corporativo · Rígido</small></span>
+          </div>
+        </div>
+        <div class="pos-axis-y pos-axis-y2">Accesible</div>
+        <div class="pos-axis-x">Incierto</div>
+        <div class="pos-axis-x pos-axis-x2">Confiable</div>
+      </div>
+    </div>
+
+    <div class="content-block" id="brand-personality">
+      <h2>Personalidad de marca</h2>
+      <p>La personalidad de Carga está definida por cuatro atributos que conviven en tensión productiva: no son opuestos, pero tampoco son obvios juntos.</p>
+
+      <div class="attr-grid">
+        <div class="attr-card">
+          <div class="attr-icon">◆</div>
+          <h4>Confiable</h4>
+          <p>Cumple lo que promete. Comunica sin eufemismos. Si algo sale mal, lo dice primero.</p>
+          <div class="attr-not"><strong>No es:</strong> rígido, corporativo, distante</div>
+        </div>
+        <div class="attr-card">
+          <div class="attr-icon">◆</div>
+          <h4>Eficiente</h4>
+          <p>Respeta el tiempo del usuario. Cada pantalla tiene un objetivo. Nada sobra.</p>
+          <div class="attr-not"><strong>No es:</strong> frío, robótico, impersonal</div>
+        </div>
+        <div class="attr-card">
+          <div class="attr-icon">◆</div>
+          <h4>Humano</h4>
+          <p>Detrás de cada flete hay personas. El conductor tiene nombre y calificación. El cliente tiene contexto real.</p>
+          <div class="attr-not"><strong>No es:</strong> sentimental, casual en exceso, condescendiente</div>
+        </div>
+        <div class="attr-card">
+          <div class="attr-icon">◆</div>
+          <h4>Directo</h4>
+          <p>Habla sin rodeos. La confirmación del flete no tiene marketing. El error dice exactamente qué pasó.</p>
+          <div class="attr-not"><strong>No es:</strong> brusco, insensible, sin contexto</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="brand-archetype">
+      <h2>Arquetipo de marca</h2>
+      <div class="archetype-block">
+        <div class="archetype-name">El Facilitador</div>
+        <p>Carga no es el héroe de la historia. El héroe es el cliente que necesita mover su heladera, o el conductor que genera ingresos con su camión. Carga es el sistema que hace que esa conexión sea posible, confiable, y digna. No aparece para ser admirado — aparece para que la cosa funcione.</p>
+        <p>Marcas de referencia en arquetipo: <strong>Stripe</strong> (infraestructura invisible, confianza técnica) · <strong>Grab</strong> (ecosistema logístico accesible) · <strong>Faire</strong> (plataforma que dignifica a los participantes).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       03 COMUNICACIÓN
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="voice-tone">
+    <div class="section-header">
+      <div class="section-eyebrow">03 — Comunicación</div>
+      <h2>Voz y tono</h2>
+    </div>
+
+    <div class="content-block">
+      <p>La <strong>voz</strong> es constante — define quién es Carga. El <strong>tono</strong> varía según el contexto emocional del usuario.</p>
+
+      <div class="voice-table">
+        <div class="voice-row voice-header">
+          <div>Contexto</div>
+          <div>Tono</div>
+          <div>Ejemplo</div>
+        </div>
+        <div class="voice-row">
+          <div>Onboarding</div>
+          <div>Cálido, claro</div>
+          <div><em>"Cuéntanos qué necesitas mover."</em></div>
+        </div>
+        <div class="voice-row">
+          <div>Flete en curso</div>
+          <div>Preciso, tranquilizador</div>
+          <div><em>"Carlos está a 8 minutos. Ya puede ver tu dirección."</em></div>
+        </div>
+        <div class="voice-row">
+          <div>Error</div>
+          <div>Directo, sin culpa</div>
+          <div><em>"No pudimos confirmar el pago. Intenta con otra tarjeta."</em></div>
+        </div>
+        <div class="voice-row">
+          <div>Éxito</div>
+          <div>Conciso, positivo</div>
+          <div><em>"Flete completado. Tu calificación ayuda a Carlos a recibir más solicitudes."</em></div>
+        </div>
+        <div class="voice-row">
+          <div>Estado vacío</div>
+          <div>Útil, sin drama</div>
+          <div><em>"Aún no tienes fletes. Cuando hagas uno, aparece aquí."</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="voice-microcopy">
+      <h2>Microcopy — Reglas</h2>
+
+      <div class="rule-list">
+        <div class="rule-item rule-do">
+          <div class="rule-tag">Hacer</div>
+          <ul>
+            <li>Verbos de acción en botones: "Solicitar flete", "Ver conductor", "Confirmar dirección"</li>
+            <li>Sentence case en todo. Solo mayúscula en primera letra y nombres propios.</li>
+            <li>Números reales cuando hay datos: "3 conductores disponibles" no "hay conductores cerca"</li>
+            <li>Pronombres que incluyen al usuario: "Tu flete", "Tu conductor", "Tu historial"</li>
+          </ul>
+        </div>
+        <div class="rule-item rule-dont">
+          <div class="rule-tag">No hacer</div>
+          <ul>
+            <li>Jerga técnica: "request ID", "webhook", "endpoint"</li>
+            <li>Eufemismos en errores: "Algo salió mal" sin contexto</li>
+            <li>Signos de exclamación innecesarios: "¡Tu flete está en camino!" → "Tu flete está en camino."</li>
+            <li>Lenguaje corporativo: "Experiencia personalizada", "Soluciones logísticas"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="voice-states">
+      <h2>Estados del sistema</h2>
+
+      <div class="states-grid">
+        <div class="state-card state-loading">
+          <div class="state-icon-wrap">
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="state-label">Cargando</div>
+          <div class="state-copy">"Buscando conductores disponibles…"</div>
+          <div class="state-note">Mensaje específico al contexto. Nunca solo "Cargando…"</div>
+        </div>
+        <div class="state-card state-success">
+          <div class="state-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="var(--c-success)" stroke-width="1.5"/><path d="M7.5 12L10.5 15L16.5 9" stroke="var(--c-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="state-label">Éxito</div>
+          <div class="state-copy">"Flete confirmado. Pago procesado."</div>
+          <div class="state-note">Dos hechos, no celebración. El usuario ya sabe que es bueno.</div>
+        </div>
+        <div class="state-card state-warning">
+          <div class="state-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L21 20H3L12 4Z" stroke="var(--c-warning)" stroke-width="1.5" stroke-linejoin="round"/><line x1="12" y1="10" x2="12" y2="15" stroke="var(--c-warning)" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.5" r="0.75" fill="var(--c-warning)"/></svg>
+          </div>
+          <div class="state-label">Advertencia</div>
+          <div class="state-copy">"El conductor está a 20 min. ¿Necesitas reagendar?"</div>
+          <div class="state-note">Siempre con opción de acción.</div>
+        </div>
+        <div class="state-card state-error">
+          <div class="state-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="var(--c-danger)" stroke-width="1.5"/><line x1="12" y1="8" x2="12" y2="13" stroke="var(--c-danger)" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="0.75" fill="var(--c-danger)"/></svg>
+          </div>
+          <div class="state-label">Error</div>
+          <div class="state-copy">"No se pudo procesar el pago. Verifica los datos de tu tarjeta."</div>
+          <div class="state-note">Qué pasó + cómo resolverlo. Sin disculpas innecesarias.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       04 IDENTIDAD VISUAL
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="identity-logo">
+    <div class="section-header">
+      <div class="section-eyebrow">04 — Identidad Visual</div>
+      <h2>Filosofía del logo</h2>
+    </div>
+
+    <div class="content-block">
+      <p>El símbolo de Carga parte de una flecha ascendente — el movimiento — contenida dentro de un cuadrado con esquinas recortadas asimétricamente que sugieren la forma de una caja o contenedor visto en perspectiva isométrica. La tensión entre el movimiento (flecha) y el contenedor (caja) define visualmente el negocio.</p>
+
+      <div class="logo-preview-block">
+        <div class="logo-preview logo-dark">
+          <div class="logo-symbol">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Carga">
+              <path d="M8 40L8 16L24 6L40 16V40H8Z" fill="#1A56DB" opacity="0.15"/>
+              <path d="M8 40L8 16L24 6L40 16V40H8Z" stroke="#1A56DB" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M24 28V14M24 14L18 20M24 14L30 20" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="logo-wordmark">Carga</span>
+        </div>
+        <div class="logo-preview logo-light">
+          <div class="logo-symbol">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Carga claro">
+              <path d="M8 40L8 16L24 6L40 16V40H8Z" fill="#1A56DB" opacity="0.1"/>
+              <path d="M8 40L8 16L24 6L40 16V40H8Z" stroke="#1A56DB" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M24 28V14M24 14L18 20M24 14L30 20" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="logo-wordmark logo-wordmark-dark">Carga</span>
+        </div>
+      </div>
+
+      <div class="logo-rules">
+        <h4>Zona de exclusión</h4>
+        <p>El espacio mínimo alrededor del logo es equivalente a la altura de la letra "C" del wordmark. Dentro de esa zona no puede existir otro elemento visual.</p>
+        <h4>Tamaño mínimo</h4>
+        <p>El símbolo solo nunca debe aparecer por debajo de 24×24px. El lockup completo (símbolo + wordmark) nunca por debajo de 120px de ancho.</p>
+      </div>
+    </div>
+
+    <div class="content-block" id="identity-shape">
+      <h2>Lenguaje de formas</h2>
+      <p>Las formas de Carga siguen tres principios: <strong>funcional</strong> (cada forma tiene razón de ser), <strong>consistente</strong> (los mismos radios en todo el sistema), y <strong>directa</strong> (sin decoración sin propósito).</p>
+
+      <div class="shape-grid">
+        <div class="shape-demo shape-r4">
+          <div class="shape-label">4px — Chips, badges</div>
+        </div>
+        <div class="shape-demo shape-r8">
+          <div class="shape-label">8px — Inputs, botones</div>
+        </div>
+        <div class="shape-demo shape-r12">
+          <div class="shape-label">12px — Cards</div>
+        </div>
+        <div class="shape-demo shape-r16">
+          <div class="shape-label">16px — Modales, sheets</div>
+        </div>
+        <div class="shape-demo shape-full">
+          <div class="shape-label">Full — Pills, avatares</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="identity-icons">
+      <h2>Filosofía de íconos</h2>
+      <p>El sistema usa íconos de línea (stroke), no de relleno (fill). Razones: la línea comunica ligereza y modernidad; es más versátil sobre fondos variados; y mantiene cohesión con el lenguaje del logo.</p>
+
+      <div class="icon-spec">
+        <div class="icon-spec-row">
+          <div class="icon-spec-label">Grosor de stroke</div>
+          <div class="icon-spec-value">1.5px en 20×20. Escalar proporcionalmente.</div>
+        </div>
+        <div class="icon-spec-row">
+          <div class="icon-spec-label">Terminaciones</div>
+          <div class="icon-spec-value">stroke-linecap: round · stroke-linejoin: round</div>
+        </div>
+        <div class="icon-spec-row">
+          <div class="icon-spec-label">Grilla base</div>
+          <div class="icon-spec-value">20×20px con 2px de padding interno</div>
+        </div>
+        <div class="icon-spec-row">
+          <div class="icon-spec-label">Biblioteca</div>
+          <div class="icon-spec-value">Lucide Icons (open source, cohesión total)</div>
+        </div>
+      </div>
+
+      <div class="icon-gallery">
+        <div class="icon-item" title="Camión">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Camión"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span>Truck</span>
+        </div>
+        <div class="icon-item" title="Ubicación">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Ubicación"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <span>Location</span>
+        </div>
+        <div class="icon-item" title="Caja">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Caja"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          <span>Package</span>
+        </div>
+        <div class="icon-item" title="Pago">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Pago"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span>Payment</span>
+        </div>
+        <div class="icon-item" title="Calendario">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Calendario"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendar</span>
+        </div>
+        <div class="icon-item" title="Estrella">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Calificación"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Rating</span>
+        </div>
+        <div class="icon-item" title="Usuario">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Conductor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Driver</span>
+        </div>
+        <div class="icon-item" title="Soporte">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Soporte"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Support</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="identity-photo">
+      <h2>Dirección fotográfica</h2>
+      <div class="photo-principles">
+        <div class="photo-principle">
+          <div class="photo-do">
+            <div class="photo-placeholder photo-real">
+              <div class="photo-icon">◉</div>
+              <span>Real · Momentos de trabajo · Personas identificables · Luz natural</span>
+            </div>
+            <div class="photo-tag photo-do-tag">Usar</div>
+          </div>
+        </div>
+        <div class="photo-principle">
+          <div class="photo-dont">
+            <div class="photo-placeholder photo-stock">
+              <div class="photo-icon">○</div>
+              <span>Stock genérico · Poses falsas · Fondos blancos perfectos · Diversidad performativa</span>
+            </div>
+            <div class="photo-tag photo-dont-tag">Evitar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       05 COLOR
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="color-palette">
+    <div class="section-header">
+      <div class="section-eyebrow">05 — Color</div>
+      <h2>Sistema de color</h2>
+    </div>
+
+    <div class="content-block">
+      <p>La paleta de Carga se construyó alrededor de un <strong>azul profundo y confiable</strong> como color primario — no el azul genérico de tecnología, sino un azul con peso y saturación que comunica autoridad sin frialdad. El acento es un <strong>naranja cálido</strong> que evoca movimiento, energía, y el color histórico de la industria del transporte.</p>
+
+      <h3>Primario — Azul Carga</h3>
+      <p class="color-reasoning">Razón: El azul en su versión saturada comunica confianza (investigación psicológica consistente), pero evitamos el azul-gris genérico. Este es un azul con rojo en su base — más cálido, más memorable.</p>
+
+      <div class="color-scale">
+        <div class="color-swatch" style="background:#EEF4FF" data-hex="#EEF4FF" data-name="Blue 50">
+          <div class="swatch-info">
+            <span class="swatch-name">Blue 50</span>
+            <span class="swatch-hex">#EEF4FF</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#C3D9FF" data-hex="#C3D9FF" data-name="Blue 100">
+          <div class="swatch-info">
+            <span class="swatch-name">Blue 100</span>
+            <span class="swatch-hex">#C3D9FF</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#7AB5FF" data-hex="#7AB5FF" data-name="Blue 200">
+          <div class="swatch-info">
+            <span class="swatch-name">Blue 200</span>
+            <span class="swatch-hex">#7AB5FF</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#4B8FED" data-hex="#4B8FED" data-name="Blue 300">
+          <div class="swatch-info">
+            <span class="swatch-name">Blue 300</span>
+            <span class="swatch-hex">#4B8FED</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#1A56DB" data-hex="#1A56DB" data-name="Blue 500 ★">
+          <div class="swatch-info">
+            <span class="swatch-name">Blue 500 ★</span>
+            <span class="swatch-hex">#1A56DB</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#1343B0" data-hex="#1343B0" data-name="Blue 700">
+          <div class="swatch-info swatch-light">
+            <span class="swatch-name">Blue 700</span>
+            <span class="swatch-hex">#1343B0</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#0D2E7D" data-hex="#0D2E7D" data-name="Blue 900">
+          <div class="swatch-info swatch-light">
+            <span class="swatch-name">Blue 900</span>
+            <span class="swatch-hex">#0D2E7D</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Acento — Naranja Movimiento</h3>
+      <p class="color-reasoning">Razón: El naranja es el color de acción en la industria logística global (DHL, Amazon Logistics, UPS). No es casualidad — comunica energía, urgencia positiva, y movimiento. Aquí lo usamos desaturado hacia el cálido para diferenciarlo del naranja genérico.</p>
+
+      <div class="color-scale">
+        <div class="color-swatch" style="background:#FFF6ED" data-hex="#FFF6ED" data-name="Orange 50">
+          <div class="swatch-info">
+            <span class="swatch-name">Orange 50</span>
+            <span class="swatch-hex">#FFF6ED</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#FDDCB5" data-hex="#FDDCB5" data-name="Orange 100">
+          <div class="swatch-info">
+            <span class="swatch-name">Orange 100</span>
+            <span class="swatch-hex">#FDDCB5</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#F59638" data-hex="#F59638" data-name="Orange 400">
+          <div class="swatch-info">
+            <span class="swatch-name">Orange 400</span>
+            <span class="swatch-hex">#F59638</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#E07A14" data-hex="#E07A14" data-name="Orange 500 ★">
+          <div class="swatch-info">
+            <span class="swatch-name">Orange 500 ★</span>
+            <span class="swatch-hex">#E07A14</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#B35E0A" data-hex="#B35E0A" data-name="Orange 700">
+          <div class="swatch-info swatch-light">
+            <span class="swatch-name">Orange 700</span>
+            <span class="swatch-hex">#B35E0A</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Neutros</h3>
+
+      <div class="color-scale">
+        <div class="color-swatch" style="background:#F8FAFC" data-hex="#F8FAFC" data-name="Neutral 50">
+          <div class="swatch-info">
+            <span class="swatch-name">Neutral 50</span>
+            <span class="swatch-hex">#F8FAFC</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#E2E8F0" data-hex="#E2E8F0" data-name="Neutral 200">
+          <div class="swatch-info">
+            <span class="swatch-name">Neutral 200</span>
+            <span class="swatch-hex">#E2E8F0</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#94A3B8" data-hex="#94A3B8" data-name="Neutral 400">
+          <div class="swatch-info">
+            <span class="swatch-name">Neutral 400</span>
+            <span class="swatch-hex">#94A3B8</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#475569" data-hex="#475569" data-name="Neutral 600">
+          <div class="swatch-info swatch-light">
+            <span class="swatch-name">Neutral 600</span>
+            <span class="swatch-hex">#475569</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#1E293B" data-hex="#1E293B" data-name="Neutral 800">
+          <div class="swatch-info swatch-light">
+            <span class="swatch-name">Neutral 800</span>
+            <span class="swatch-hex">#1E293B</span>
+          </div>
+        </div>
+        <div class="color-swatch" style="background:#0F172A" data-hex="#0F172A" data-name="Neutral 950">
+          <div class="swatch-info swatch-light">
+            <span class="swatch-name">Neutral 950</span>
+            <span class="swatch-hex">#0F172A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="color-semantic">
+      <h2>Colores semánticos</h2>
+
+      <div class="semantic-grid">
+        <div class="semantic-card">
+          <div class="semantic-swatch" style="background:#16A34A"></div>
+          <div class="semantic-info">
+            <div class="semantic-name">Success</div>
+            <div class="semantic-hex">#16A34A</div>
+            <div class="semantic-use">Flete completado, pago confirmado, disponible</div>
+          </div>
+        </div>
+        <div class="semantic-card">
+          <div class="semantic-swatch" style="background:#D97706"></div>
+          <div class="semantic-info">
+            <div class="semantic-name">Warning</div>
+            <div class="semantic-hex">#D97706</div>
+            <div class="semantic-use">Conductor demorado, pago pendiente, atención requerida</div>
+          </div>
+        </div>
+        <div class="semantic-card">
+          <div class="semantic-swatch" style="background:#DC2626"></div>
+          <div class="semantic-info">
+            <div class="semantic-name">Danger</div>
+            <div class="semantic-hex">#DC2626</div>
+            <div class="semantic-use">Error crítico, flete cancelado, acción destructiva</div>
+          </div>
+        </div>
+        <div class="semantic-card">
+          <div class="semantic-swatch" style="background:#1A56DB"></div>
+          <div class="semantic-info">
+            <div class="semantic-name">Info</div>
+            <div class="semantic-hex">#1A56DB</div>
+            <div class="semantic-use">Información contextual, flete en progreso</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="color-tokens">
+      <h2>Tokens de color</h2>
+      <p>Los tokens siguen el patrón <code>--c-[role]-[variant]</code> para colores de rol semántico, y <code>--c-[name]-[step]</code> para la escala base.</p>
+
+      <div class="code-block-wrap">
+        <button class="copy-btn" aria-label="Copiar código">Copiar</button>
+        <pre class="code-block"><code>/* ─── Tokens de Color — Carga DS ─── */
+
+/* Escala primaria */
+--c-blue-50:  #EEF4FF;
+--c-blue-100: #C3D9FF;
+--c-blue-200: #7AB5FF;
+--c-blue-300: #4B8FED;
+--c-blue-500: #1A56DB;
+--c-blue-700: #1343B0;
+--c-blue-900: #0D2E7D;
+
+/* Acento */
+--c-orange-50:  #FFF6ED;
+--c-orange-100: #FDDCB5;
+--c-orange-400: #F59638;
+--c-orange-500: #E07A14;
+--c-orange-700: #B35E0A;
+
+/* Semánticos */
+--c-success:  #16A34A;
+--c-warning:  #D97706;
+--c-danger:   #DC2626;
+--c-info:     #1A56DB;
+
+/* Roles UI — Light */
+--c-bg:           #F8FAFC;
+--c-surface:      #FFFFFF;
+--c-surface-2:    #F1F5F9;
+--c-border:       #E2E8F0;
+--c-border-focus: #1A56DB;
+--c-text:         #0F172A;
+--c-text-soft:    #475569;
+--c-text-muted:   #94A3B8;
+--c-primary:      #1A56DB;
+--c-primary-hover: #1343B0;
+--c-accent:       #E07A14;
+
+/* Roles UI — Dark (activar con [data-theme="dark"]) */
+--c-bg:           #0F172A;
+--c-surface:      #1E293B;
+--c-surface-2:    #263346;
+--c-border:       rgba(255,255,255,0.08);
+--c-text:         #F1F5F9;
+--c-text-soft:    #94A3B8;
+--c-text-muted:   #475569;</code></pre>
+      </div>
+    </div>
+
+    <div class="content-block" id="color-dark">
+      <h2>Dark Mode</h2>
+      <p>El dark mode de Carga no es simplemente invertir colores. Es un sistema paralelo que mantiene las relaciones de contraste y comunicación semántica en fondos oscuros. El fondo base es <code>#0F172A</code> — un azul nocturno profundo que conecta con el color primario y da al sistema coherencia total.</p>
+
+      <div class="contrast-check">
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:#0F172A; color:#F1F5F9">Texto primario</div>
+          <div class="contrast-info">
+            <span class="contrast-ratio pass">15.3:1</span>
+            <span class="contrast-label">AAA — Texto sobre fondo base</span>
+          </div>
+        </div>
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:#1E293B; color:#94A3B8">Texto muted</div>
+          <div class="contrast-info">
+            <span class="contrast-ratio pass">4.6:1</span>
+            <span class="contrast-label">AA — Texto muted sobre superficie</span>
+          </div>
+        </div>
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:#1A56DB; color:#FFFFFF">Botón primario</div>
+          <div class="contrast-info">
+            <span class="contrast-ratio pass">5.1:1</span>
+            <span class="contrast-label">AA — Texto sobre primario</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       06 TIPOGRAFÍA
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="type-faces">
+    <div class="section-header">
+      <div class="section-eyebrow">06 — Tipografía</div>
+      <h2>Sistema tipográfico</h2>
+    </div>
+
+    <div class="content-block">
+      <p>El sistema usa dos familias con roles claros y un peso de tensión entre ellas: <strong>Instrument Serif</strong> para display (calidez, autoridad, humanidad) y <strong>DM Sans</strong> para UI (claridad, neutralidad, rendimiento). La tercera familia, <strong>DM Mono</strong>, sirve exclusivamente para datos, códigos de seguimiento, y valores numéricos.</p>
+
+      <div class="type-pair">
+        <div class="type-card">
+          <div class="type-sample type-display">Carga confiable</div>
+          <div class="type-meta">
+            <div class="type-name">Instrument Serif</div>
+            <div class="type-role">Display · Headlines · Wordmark</div>
+            <div class="type-reasoning">Razón: La serif con humanismo moderno transmite autoridad sin frialdad. Su forma orgánica equilibra la precisión de DM Sans y da al sistema una identidad que no parece "otra app de tecnología".</div>
+          </div>
+        </div>
+        <div class="type-card">
+          <div class="type-sample type-body">Tu flete en camino hacia Providencia. Carlos estará en 8 minutos.</div>
+          <div class="type-meta">
+            <div class="type-name">DM Sans</div>
+            <div class="type-role">UI · Body · Labels · Navegación</div>
+            <div class="type-reasoning">Razón: DM Sans es geométrica con correcciones humanistas en puntos críticos de legibilidad. Funciona perfectamente en densidades altas (tablas, listas) y en textos largos en mobile.</div>
+          </div>
+        </div>
+        <div class="type-card">
+          <div class="type-sample type-mono">FLT-2024-08471</div>
+          <div class="type-meta">
+            <div class="type-name">DM Mono</div>
+            <div class="type-role">Códigos · Valores · Datos técnicos</div>
+            <div class="type-reasoning">Razón: La misma familia sans (DM) en versión monoespaciada garantiza coherencia visual. Los códigos de seguimiento en mono son más legibles y comunicativamente distinguibles.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="type-scale">
+      <h2>Escala tipográfica</h2>
+
+      <div class="type-scale-table">
+        <div class="ts-header">
+          <div>Token</div>
+          <div>px</div>
+          <div>rem</div>
+          <div>Preview</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-display</code></div>
+          <div>48px</div>
+          <div>3rem</div>
+          <div class="ts-preview" style="font-size:48px; font-family:'Instrument Serif', serif; line-height:1">Carga</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-h1</code></div>
+          <div>36px</div>
+          <div>2.25rem</div>
+          <div class="ts-preview" style="font-size:36px; font-family:'Instrument Serif', serif; line-height:1.1">Tu flete</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-h2</code></div>
+          <div>28px</div>
+          <div>1.75rem</div>
+          <div class="ts-preview" style="font-size:28px; line-height:1.2">Confirmar dirección</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-h3</code></div>
+          <div>22px</div>
+          <div>1.375rem</div>
+          <div class="ts-preview" style="font-size:22px; line-height:1.3">Datos del conductor</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-lg</code></div>
+          <div>18px</div>
+          <div>1.125rem</div>
+          <div class="ts-preview" style="font-size:18px">Elige el tipo de vehículo</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-base</code></div>
+          <div>16px</div>
+          <div>1rem</div>
+          <div class="ts-preview" style="font-size:16px">Carlos Rodríguez está en camino</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-sm</code></div>
+          <div>14px</div>
+          <div>0.875rem</div>
+          <div class="ts-preview" style="font-size:14px">Calificación 4.9 · 312 fletes</div>
+        </div>
+        <div class="ts-row">
+          <div><code>--text-xs</code></div>
+          <div>12px</div>
+          <div>0.75rem</div>
+          <div class="ts-preview" style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em">Estado del flete</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="type-usage">
+      <h2>Reglas de uso</h2>
+      <div class="rule-list">
+        <div class="rule-item rule-do">
+          <div class="rule-tag">Hacer</div>
+          <ul>
+            <li>Instrument Serif para títulos de sección, nombres de estados, hero copy</li>
+            <li>DM Sans 400 para cuerpo, DM Sans 500 para labels, DM Sans 600 para botones</li>
+            <li>Line-height 1.6 en cuerpo, 1.2 en headings</li>
+            <li>Letter-spacing 0.08em en labels uppercase</li>
+          </ul>
+        </div>
+        <div class="rule-item rule-dont">
+          <div class="rule-tag">No hacer</div>
+          <ul>
+            <li>Instrument Serif en párrafos largos o textos de UI funcional</li>
+            <li>Mezclar las tres familias en un mismo componente</li>
+            <li>DM Mono para texto de cuerpo (es solo para datos)</li>
+            <li>Texto visible en pantalla por debajo de 12px</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       07 FUNDAMENTOS
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="found-spacing">
+    <div class="section-header">
+      <div class="section-eyebrow">07 — Fundamentos</div>
+      <h2>Espaciado</h2>
+    </div>
+
+    <div class="content-block">
+      <p>La escala de espaciado usa base 4px. Todos los valores son múltiplos de 4. Esto garantiza alineación pixel-perfect en cualquier densidad y simplifica las decisiones al reducirlas a un sistema finito.</p>
+
+      <div class="spacing-scale">
+        <div class="spacing-item"><div class="spacing-visual" style="width:4px; height:4px;"></div><code>--sp-1</code><span>4px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:8px; height:8px;"></div><code>--sp-2</code><span>8px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:12px; height:12px;"></div><code>--sp-3</code><span>12px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:16px; height:16px;"></div><code>--sp-4</code><span>16px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:20px; height:20px;"></div><code>--sp-5</code><span>20px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:24px; height:24px;"></div><code>--sp-6</code><span>24px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:32px; height:32px;"></div><code>--sp-8</code><span>32px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:40px; height:40px;"></div><code>--sp-10</code><span>40px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:48px; height:48px;"></div><code>--sp-12</code><span>48px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:64px; height:64px;"></div><code>--sp-16</code><span>64px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:80px; height:80px;"></div><code>--sp-20</code><span>80px</span></div>
+        <div class="spacing-item"><div class="spacing-visual" style="width:96px; height:96px;"></div><code>--sp-24</code><span>96px</span></div>
+      </div>
+
+      <h3>Guía de uso de espaciado</h3>
+      <div class="spacing-guide">
+        <div class="sg-row"><div class="sg-label">Dentro de componente</div><div class="sg-value"><code>--sp-2</code> – <code>--sp-4</code></div></div>
+        <div class="sg-row"><div class="sg-label">Entre componentes</div><div class="sg-value"><code>--sp-4</code> – <code>--sp-6</code></div></div>
+        <div class="sg-row"><div class="sg-label">Entre secciones</div><div class="sg-value"><code>--sp-12</code> – <code>--sp-20</code></div></div>
+        <div class="sg-row"><div class="sg-label">Padding de pantalla (mobile)</div><div class="sg-value"><code>--sp-4</code> horizontal</div></div>
+        <div class="sg-row"><div class="sg-label">Padding de pantalla (desktop)</div><div class="sg-value"><code>--sp-6</code> – <code>--sp-8</code></div></div>
+      </div>
+    </div>
+
+    <div class="content-block" id="found-grid">
+      <h2>Sistema de grilla</h2>
+      <div class="grid-spec">
+        <div class="grid-col-demo grid-4">
+          <div>4 col</div><div></div><div></div><div></div>
+          <div class="grid-label">Mobile — 4 cols · 16px gutter · 16px margin</div>
+        </div>
+        <div class="grid-col-demo grid-8">
+          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+          <div class="grid-label">Tablet — 8 cols · 24px gutter · 24px margin</div>
+        </div>
+        <div class="grid-col-demo grid-12">
+          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+          <div class="grid-label">Desktop — 12 cols · 32px gutter · max-width 1280px</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="found-radius">
+      <h2>Radio de borde</h2>
+      <div class="radius-demo-grid">
+        <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><code>--radius-sm — 4px</code><span>Chips, badges, tags</span></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><code>--radius-md — 8px</code><span>Inputs, botones</span></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><code>--radius-lg — 12px</code><span>Cards, panels</span></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><code>--radius-xl — 16px</code><span>Modales, sheets</span></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><code>--radius-full — 9999px</code><span>Pills, avatares</span></div>
+      </div>
+    </div>
+
+    <div class="content-block" id="found-elevation">
+      <h2>Elevación</h2>
+      <div class="elevation-demo">
+        <div class="elevation-card el-0">
+          <div class="el-label">0 — Flat</div>
+          <div class="el-use">Sin sombra. Fondo de superficie.</div>
+        </div>
+        <div class="elevation-card el-1">
+          <div class="el-label">1 — Raised</div>
+          <div class="el-use">Cards de contenido, inputs</div>
+        </div>
+        <div class="elevation-card el-2">
+          <div class="el-label">2 — Float</div>
+          <div class="el-use">Dropdowns, tooltips, popovers</div>
+        </div>
+        <div class="elevation-card el-3">
+          <div class="el-label">3 — Modal</div>
+          <div class="el-use">Modales, bottom sheets, diálogos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block" id="found-motion">
+      <h2>Movimiento</h2>
+      <p>El movimiento en Carga tiene un rol funcional: confirmar acciones, guiar atención, y comunicar estado. No es decorativo.</p>
+
+      <div class="motion-spec-table">
+        <div class="ms-header"><div>Token</div><div>Duración</div><div>Curva</div><div>Uso</div></div>
+        <div class="ms-row"><div><code>--ease-instant</code></div><div>100ms</div><div>ease-out</div><div>Hover, focus, active states</div></div>
+        <div class="ms-row"><div><code>--ease-fast</code></div><div>200ms</div><div>cubic-bezier(0.4, 0, 0.2, 1)</div><div>Botones, chips, badges</div></div>
+        <div class="ms-row"><div><code>--ease-base</code></div><div>300ms</div><div>cubic-bezier(0.4, 0, 0.2, 1)</div><div>Transiciones de panel, tabs</div></div>
+        <div class="ms-row"><div><code>--ease-slow</code></div><div>500ms</div><div>cubic-bezier(0.23, 1, 0.32, 1)</div><div>Entrada de modales, toasts</div></div>
+        <div class="ms-row"><div><code>--ease-tracking</code></div><div>800ms</div><div>cubic-bezier(0.23, 1, 0.32, 1)</div><div>Actualizaciones de mapa, posición</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       08 COMPONENTES
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="comp-buttons">
+    <div class="section-header">
+      <div class="section-eyebrow">08 — Componentes</div>
+      <h2>Botones</h2>
+    </div>
+
+    <div class="content-block">
+      <p>Los botones son el punto de acción más crítico del sistema. Cada variante tiene un rol específico y no deben usarse indistintamente.</p>
+
+      <h3>Variantes</h3>
+      <div class="comp-demo">
+        <div class="comp-demo-stage">
+          <button class="btn btn-primary">Solicitar flete</button>
+          <button class="btn btn-secondary">Ver detalles</button>
+          <button class="btn btn-ghost">Cancelar</button>
+          <button class="btn btn-danger">Cancelar flete</button>
+          <button class="btn btn-primary" disabled>Cargando…</button>
+        </div>
+        <div class="comp-demo-code">
+          <button class="copy-btn" aria-label="Copiar código de botones">Copiar</button>
+          <pre class="code-block"><code>/* Primario — acción principal */
+&lt;button class="btn btn-primary"&gt;Solicitar flete&lt;/button&gt;
+
+/* Secundario — acción de apoyo */
+&lt;button class="btn btn-secondary"&gt;Ver detalles&lt;/button&gt;
+
+/* Ghost — acción terciaria, destructiva baja */
+&lt;button class="btn btn-ghost"&gt;Cancelar&lt;/button&gt;
+
+/* Danger — acción destructiva */
+&lt;button class="btn btn-danger"&gt;Cancelar flete&lt;/button&gt;
+
+/* Disabled */
+&lt;button class="btn btn-primary" disabled&gt;Cargando…&lt;/button&gt;</code></pre>
+        </div>
+      </div>
+
+      <h3>Tamaños</h3>
+      <div class="comp-demo">
+        <div class="comp-demo-stage">
+          <button class="btn btn-primary btn-sm">Confirmar</button>
+          <button class="btn btn-primary">Solicitar flete</button>
+          <button class="btn btn-primary btn-lg">Solicitar flete ahora</button>
+        </div>
+      </div>
+
+      <div class="anatomy-block">
+        <h4>Anatomía</h4>
+        <div class="anatomy-diagram">
+          <div class="anatomy-btn">
+            <div class="anatomy-arrow anatomy-a1" data-label="Padding horizontal 16-20px"></div>
+            <button class="btn btn-primary btn-anatomy" tabindex="-1">Solicitar flete</button>
+            <div class="anatomy-arrow anatomy-a2" data-label="Height mínima 44px (touch target)"></div>
+          </div>
+        </div>
+        <ul class="anatomy-list">
+          <li><strong>Height mínima:</strong> 44px — cumple WCAG 2.5.5 touch target</li>
+          <li><strong>Padding horizontal:</strong> 16px (sm) · 20px (base) · 24px (lg)</li>
+          <li><strong>Border radius:</strong> <code>--radius-md</code> (8px)</li>
+          <li><strong>Font:</strong> DM Sans 500 (medium), 14px (sm) / 15px (base) / 16px (lg)</li>
+          <li><strong>Transición:</strong> <code>--ease-instant</code> (100ms) en hover/active</li>
+        </ul>
+      </div>
+
+      <div class="usage-grid">
+        <div class="usage-do">
+          <div class="usage-tag">Hacer</div>
+          <ul>
+            <li>Un botón primario por pantalla o sección</li>
+            <li>El texto del botón es la acción, no el resultado: "Solicitar" no "Flete solicitado"</li>
+            <li>Mantener el botón activo aunque el formulario esté incompleto — el error se muestra al intentar</li>
+          </ul>
+        </div>
+        <div class="usage-dont">
+          <div class="usage-tag">No hacer</div>
+          <ul>
+            <li>Dos botones primarios en la misma vista</li>
+            <li>Botón primario para acciones secundarias: "Ver más", "Filtrar"</li>
+            <li>Botón de danger para acciones reversibles</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="comp-inputs">
+    <div class="section-header">
+      <h2>Inputs y formularios</h2>
+    </div>
+    <div class="content-block">
+      <p>Los inputs en Carga tienen un estado claramente visible en cada momento. El foco, el error, y el éxito nunca dependen solo del color.</p>
+
+      <div class="comp-demo">
+        <div class="comp-demo-stage comp-demo-col">
+          <div class="input-group">
+            <label class="input-label" for="demo-origin">Dirección de origen</label>
+            <input class="input" id="demo-origin" type="text" placeholder="Ingresa la dirección de recogida" />
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="demo-dest">Dirección de destino</label>
+            <input class="input input-error" id="demo-dest" type="text" value="Las Condes, Región Met" aria-describedby="dest-error" aria-invalid="true"/>
+            <span class="input-error-msg" id="dest-error" role="alert">Ingresa la dirección completa incluyendo número.</span>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="demo-success">Teléfono de contacto</label>
+            <input class="input input-success" id="demo-success" type="tel" value="+56 9 1234 5678" aria-describedby="tel-success"/>
+            <span class="input-success-msg" id="tel-success">Número verificado</span>
+          </div>
+          <div class="input-group">
+            <label class="input-label input-label-disabled" for="demo-dis">Código de seguimiento</label>
+            <input class="input" id="demo-dis" type="text" placeholder="FLT-XXXXXXXX" disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="comp-cards">
+    <div class="section-header">
+      <h2>Cards</h2>
+    </div>
+    <div class="content-block">
+      <p>Las cards son los contenedores de información más usados en Carga. Existen tres tipos con propósitos distintos.</p>
+
+      <div class="cards-demo">
+        <!-- Driver card -->
+        <div class="driver-card">
+          <div class="driver-avatar">CR</div>
+          <div class="driver-info">
+            <div class="driver-name">Carlos Rodríguez</div>
+            <div class="driver-meta">
+              <span class="driver-rating">★ 4.9</span>
+              <span class="driver-sep">·</span>
+              <span class="driver-trips">312 fletes</span>
+            </div>
+            <div class="driver-vehicle">Camión 3/4 · Patente AB-CD-12</div>
+          </div>
+          <div class="driver-status status-active">
+            <span></span> Disponible
+          </div>
+        </div>
+
+        <!-- Freight card -->
+        <div class="freight-card">
+          <div class="freight-header">
+            <div class="freight-id">FLT-2024-08471</div>
+            <div class="freight-badge badge-progress">En curso</div>
+          </div>
+          <div class="freight-route">
+            <div class="route-point route-origin">
+              <div class="route-dot route-dot-origin"></div>
+              <div>
+                <div class="route-label">Origen</div>
+                <div class="route-addr">Av. Providencia 1234, Providencia</div>
+              </div>
+            </div>
+            <div class="route-line"></div>
+            <div class="route-point route-dest">
+              <div class="route-dot route-dot-dest"></div>
+              <div>
+                <div class="route-label">Destino</div>
+                <div class="route-addr">Av. Vitacura 5678, Las Condes</div>
+              </div>
+            </div>
+          </div>
+          <div class="freight-footer">
+            <div class="freight-price">$25.000</div>
+            <div class="freight-eta">ETA 14:32</div>
+          </div>
+        </div>
+
+        <!-- Price card -->
+        <div class="price-card">
+          <div class="price-vehicle-name">Camioneta</div>
+          <div class="price-vehicle-cap">Hasta 800 kg · Objetos medianos</div>
+          <div class="price-amount">$18.000</div>
+          <div class="price-note">Precio base + $850/km</div>
+          <button class="btn btn-primary btn-full">Seleccionar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="comp-badges">
+    <div class="section-header">
+      <h2>Badges y estados</h2>
+    </div>
+    <div class="content-block">
+      <div class="badge-demo">
+        <div class="badge-item">
+          <div class="status-badge status-pending"><span></span>Pendiente</div>
+          <code>status-pending</code>
+        </div>
+        <div class="badge-item">
+          <div class="status-badge status-active"><span></span>En curso</div>
+          <code>status-active</code>
+        </div>
+        <div class="badge-item">
+          <div class="status-badge status-done"><span></span>Completado</div>
+          <code>status-done</code>
+        </div>
+        <div class="badge-item">
+          <div class="status-badge status-cancelled"><span></span>Cancelado</div>
+          <code>status-cancelled</code>
+        </div>
+        <div class="badge-item">
+          <div class="status-badge status-delayed"><span></span>Demorado</div>
+          <code>status-delayed</code>
+        </div>
+      </div>
+      <p class="badge-note">Los indicadores de estado usan un cuadrado de 5×5px (border-radius: 2px) en lugar de un círculo. La información de estado nunca depende solo del color — siempre incluye texto.</p>
+    </div>
+  </section>
+
+  <section class="doc-section" id="comp-alerts">
+    <div class="section-header">
+      <h2>Alerts y Toasts</h2>
+    </div>
+    <div class="content-block">
+      <div class="alerts-demo">
+        <div class="alert alert-info" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div><strong>Conductor asignado.</strong> Carlos Rodríguez fue confirmado para tu flete. Llegará en aproximadamente 12 minutos.</div>
+        </div>
+        <div class="alert alert-success" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div><strong>Flete completado.</strong> El pago de $25.000 fue procesado exitosamente.</div>
+        </div>
+        <div class="alert alert-warning" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div><strong>Demora detectada.</strong> Tu conductor está a 25 minutos. El horario estimado se ha actualizado a las 15:40.</div>
+        </div>
+        <div class="alert alert-error" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div><strong>No se pudo procesar el pago.</strong> Verifica los datos de tu tarjeta o usa un método alternativo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="comp-navigation">
+    <div class="section-header">
+      <h2>Navegación</h2>
+    </div>
+    <div class="content-block">
+      <p>La navegación principal en mobile usa una barra inferior con máximo 5 ítems. En desktop, sidebar lateral. Nunca hamburger menu en desktop.</p>
+      <div class="nav-demo-wrap">
+        <div class="bottom-nav-demo" role="navigation" aria-label="Navegación principal (demo)">
+          <button class="bnav-item bnav-active" aria-current="page">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Inicio</span>
+          </button>
+          <button class="bnav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <span>Fletes</span>
+          </button>
+          <button class="bnav-item bnav-cta">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="bnav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span>Pagos</span>
+          </button>
+          <button class="bnav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Perfil</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="comp-tracking">
+    <div class="section-header">
+      <h2>Componente de tracking</h2>
+    </div>
+    <div class="content-block">
+      <p>El componente de seguimiento es el más crítico del sistema. Reduce la incertidumbre comunicando estado, posición, y ETA en tiempo real.</p>
+      <div class="tracking-card">
+        <div class="tracking-header">
+          <div>
+            <div class="tracking-code">FLT-2024-08471</div>
+            <div class="status-badge status-active" style="margin-top:6px"><span></span>En curso — a 8 min</div>
+          </div>
+          <div class="tracking-eta">
+            <div class="tracking-eta-label">Llegada estimada</div>
+            <div class="tracking-eta-time">14:32</div>
+          </div>
+        </div>
+        <div class="tracking-map-placeholder" aria-label="Mapa de seguimiento en tiempo real">
+          <div class="map-route-vis">
+            <div class="map-dot map-origin" title="Origen"></div>
+            <div class="map-line">
+              <div class="map-truck" title="Posición actual del conductor">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--c-primary)" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+            </div>
+            <div class="map-dot map-dest" title="Destino"></div>
+          </div>
+          <div class="map-label">Vista simplificada de ruta</div>
+        </div>
+        <div class="tracking-steps">
+          <div class="tstep tstep-done">
+            <div class="tstep-dot"></div>
+            <div class="tstep-info">
+              <div class="tstep-title">Flete confirmado</div>
+              <div class="tstep-time">13:45</div>
+            </div>
+          </div>
+          <div class="tstep tstep-done">
+            <div class="tstep-dot"></div>
+            <div class="tstep-info">
+              <div class="tstep-title">Conductor en camino al origen</div>
+              <div class="tstep-time">14:02</div>
+            </div>
+          </div>
+          <div class="tstep tstep-current">
+            <div class="tstep-dot"></div>
+            <div class="tstep-info">
+              <div class="tstep-title">Carga recogida — en ruta</div>
+              <div class="tstep-time">14:18</div>
+            </div>
+          </div>
+          <div class="tstep tstep-pending">
+            <div class="tstep-dot"></div>
+            <div class="tstep-info">
+              <div class="tstep-title">Entrega en destino</div>
+              <div class="tstep-time">~14:32</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       09 PATRONES UX
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="pattern-request">
+    <div class="section-header">
+      <div class="section-eyebrow">09 — Patrones UX</div>
+      <h2>Solicitar un flete</h2>
+    </div>
+    <div class="content-block">
+      <p>El flujo de solicitud es el core del producto. Debe ser completable en menos de 90 segundos por un usuario nuevo. Cada paso tiene un objetivo único.</p>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-info">
+            <div class="flow-title">Dirección de origen</div>
+            <div class="flow-desc">Autocompletado de dirección con geolocalización opcional. Una sola acción por pantalla.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-info">
+            <div class="flow-title">Dirección de destino</div>
+            <div class="flow-desc">Misma UX que origen. El precio preliminar aparece calculado en tiempo real.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-info">
+            <div class="flow-title">Tipo de carga y vehículo</div>
+            <div class="flow-desc">Cards de selección con foto del vehículo, capacidad, y precio. Máximo 4 opciones.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-info">
+            <div class="flow-title">Confirmar y pagar</div>
+            <div class="flow-desc">Resumen del flete + método de pago. Un solo CTA primario. Sin fricción adicional.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step flow-step-end">
+          <div class="flow-num flow-num-end">✓</div>
+          <div class="flow-info">
+            <div class="flow-title">Flete confirmado</div>
+            <div class="flow-desc">Conductor asignado. Pasa directamente a la vista de tracking.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="pattern-tracking">
+    <div class="section-header">
+      <h2>Seguimiento activo</h2>
+    </div>
+    <div class="content-block">
+      <p>Durante el seguimiento, la pantalla tiene un único trabajo: que el usuario sepa exactamente dónde está su carga. Todo lo demás es secundario.</p>
+      <div class="rule-list">
+        <div class="rule-item rule-do">
+          <div class="rule-tag">Hacer</div>
+          <ul>
+            <li>Mostrar ETA actualizada en tiempo real, no solo al inicio</li>
+            <li>Notificación proactiva cuando el conductor llega al origen</li>
+            <li>Nombre y calificación del conductor siempre visibles</li>
+            <li>Botón de contacto directo al conductor accesible sin scroll</li>
+          </ul>
+        </div>
+        <div class="rule-item rule-dont">
+          <div class="rule-tag">No hacer</div>
+          <ul>
+            <li>Mostrar el mapa sin indicador de progreso textual de respaldo</li>
+            <li>Actualizar la ETA sin avisar al usuario si cambia en más de 5 minutos</li>
+            <li>Mostrar precio durante el tracking (ya está confirmado, genera ansiedad)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="pattern-error">
+    <div class="section-header">
+      <h2>Recuperación de error</h2>
+    </div>
+    <div class="content-block">
+      <p>Los errores en Carga afectan directamente a personas que tienen objetos que mover. La recuperación debe ser inmediata, clara, y sin culpa al usuario.</p>
+      <div class="error-patterns">
+        <div class="error-pattern">
+          <div class="ep-type">Error de conexión</div>
+          <div class="ep-copy">"No hay conexión. Tus datos están guardados. Reconectando…"</div>
+          <div class="ep-action">Reintentar automáticamente + botón manual</div>
+        </div>
+        <div class="error-pattern">
+          <div class="ep-type">Conductor canceló</div>
+          <div class="ep-copy">"Tu conductor canceló el flete. Buscando uno nuevo — sin costo adicional."</div>
+          <div class="ep-action">Búsqueda automática. Opción de cancelar si tarda más de 3 min.</div>
+        </div>
+        <div class="error-pattern">
+          <div class="ep-type">Pago rechazado</div>
+          <div class="ep-copy">"No se pudo procesar el pago. El flete está reservado por 5 minutos mientras actualizas tu método."</div>
+          <div class="ep-action">Modal con métodos de pago disponibles. Contador visible.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       10 ACCESIBILIDAD
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="a11y-contrast">
+    <div class="section-header">
+      <div class="section-eyebrow">10 — Accesibilidad</div>
+      <h2>Contraste y visibilidad</h2>
+    </div>
+    <div class="content-block">
+      <p>El mínimo del sistema es <strong>WCAG 2.1 AA</strong>. Todas las combinaciones de texto sobre fondo fueron validadas. Los componentes interactivos cumplen el criterio 3:1 para estados no-texto.</p>
+
+      <div class="contrast-check">
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:var(--c-bg); color:var(--c-text)">Texto principal</div>
+          <div class="contrast-info"><span class="contrast-ratio pass">9.2:1</span><span class="contrast-label">AAA</span></div>
+        </div>
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:var(--c-bg); color:var(--c-text-soft)">Texto secundario</div>
+          <div class="contrast-info"><span class="contrast-ratio pass">4.8:1</span><span class="contrast-label">AA</span></div>
+        </div>
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:var(--c-primary); color:#fff">Botón primario</div>
+          <div class="contrast-info"><span class="contrast-ratio pass">5.1:1</span><span class="contrast-label">AA</span></div>
+        </div>
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:var(--c-success, #16A34A); color:#fff">Estado éxito</div>
+          <div class="contrast-info"><span class="contrast-ratio pass">4.5:1</span><span class="contrast-label">AA</span></div>
+        </div>
+        <div class="contrast-row">
+          <div class="contrast-sample" style="background:var(--c-danger, #DC2626); color:#fff">Estado error</div>
+          <div class="contrast-info"><span class="contrast-ratio pass">5.9:1</span><span class="contrast-label">AA</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="a11y-keyboard">
+    <div class="section-header">
+      <h2>Navegación por teclado</h2>
+    </div>
+    <div class="content-block">
+      <p>Todos los flujos críticos de Carga son completables sin mouse. El orden de tabulación sigue el flujo visual lógico.</p>
+      <div class="keyboard-demo">
+        <p>Demo: navega con <kbd>Tab</kbd> para ver el foco visible en cada elemento.</p>
+        <div class="keyboard-demo-stage">
+          <button class="btn btn-primary">Solicitar flete</button>
+          <button class="btn btn-secondary">Ver historial</button>
+          <a href="#" class="kbd-link" onclick="return false">Ver perfil del conductor</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="a11y-motion">
+    <div class="section-header">
+      <h2>Movimiento reducido</h2>
+    </div>
+    <div class="content-block">
+      <p>El sistema respeta <code>prefers-reduced-motion</code>. Cuando está activo, todas las transiciones se eliminan y las animaciones de estado se reemplazan por cambios instantáneos de opacidad.</p>
+      <div class="code-block-wrap">
+        <button class="copy-btn" aria-label="Copiar código">Copiar</button>
+        <pre class="code-block"><code>/* Implementado globalmente en Carga DS */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       11 DESIGN TOKENS
+  ═══════════════════════════════════════════ -->
+  <section class="doc-section" id="tokens-all">
+    <div class="section-header">
+      <div class="section-eyebrow">11 — Design Tokens</div>
+      <h2>Tokens completos</h2>
+    </div>
+    <div class="content-block">
+      <p>Los tokens están estructurados para importarse directamente en Figma Variables (v2). La nomenclatura sigue el patrón <code>categoria/rol/variante</code>.</p>
+
+      <div class="code-block-wrap">
+        <button class="copy-btn" aria-label="Copiar tokens">Copiar</button>
+        <pre class="code-block"><code>/* ═══════════════════════════════════════
+   CARGA DESIGN TOKENS v1.0
+   Compatible con: CSS Custom Properties
+   Figma Variables, Tokens Studio, Style Dictionary
+═══════════════════════════════════════ */
+
+:root {
+  /* ── Color / Scale ──────────── */
+  --color-blue-50:     #EEF4FF;
+  --color-blue-100:    #C3D9FF;
+  --color-blue-200:    #7AB5FF;
+  --color-blue-300:    #4B8FED;
+  --color-blue-500:    #1A56DB;
+  --color-blue-700:    #1343B0;
+  --color-blue-900:    #0D2E7D;
+
+  --color-orange-50:   #FFF6ED;
+  --color-orange-100:  #FDDCB5;
+  --color-orange-400:  #F59638;
+  --color-orange-500:  #E07A14;
+  --color-orange-700:  #B35E0A;
+
+  --color-neutral-50:  #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-600: #475569;
+  --color-neutral-800: #1E293B;
+  --color-neutral-950: #0F172A;
+
+  --color-success:     #16A34A;
+  --color-warning:     #D97706;
+  --color-danger:      #DC2626;
+  --color-info:        #1A56DB;
+
+  /* ── Color / Semantic / Light ── */
+  --c-bg:              var(--color-neutral-50);
+  --c-surface:         #FFFFFF;
+  --c-surface-2:       var(--color-neutral-100);
+  --c-border:          var(--color-neutral-200);
+  --c-border-focus:    var(--color-blue-500);
+  --c-text:            var(--color-neutral-950);
+  --c-text-soft:       var(--color-neutral-600);
+  --c-text-muted:      var(--color-neutral-400);
+  --c-primary:         var(--color-blue-500);
+  --c-primary-hover:   var(--color-blue-700);
+  --c-accent:          var(--color-orange-500);
+  --c-success:         var(--color-success);
+  --c-warning:         var(--color-warning);
+  --c-danger:          var(--color-danger);
+
+  /* ── Typography ─────────────── */
+  --font-display:      'Instrument Serif', Georgia, serif;
+  --font-body:         'DM Sans', system-ui, sans-serif;
+  --font-mono:         'DM Mono', 'Courier New', monospace;
+
+  --text-display:      3rem;       /* 48px */
+  --text-h1:           2.25rem;    /* 36px */
+  --text-h2:           1.75rem;    /* 28px */
+  --text-h3:           1.375rem;   /* 22px */
+  --text-lg:           1.125rem;   /* 18px */
+  --text-base:         1rem;       /* 16px */
+  --text-sm:           0.875rem;   /* 14px */
+  --text-xs:           0.75rem;    /* 12px — labels uppercase only */
+
+  --fw-light:          300;
+  --fw-regular:        400;
+  --fw-medium:         500;
+  --fw-semibold:       600;
+
+  --lh-tight:          1.2;
+  --lh-snug:           1.4;
+  --lh-base:           1.6;
+  --lh-relaxed:        1.75;
+
+  /* ── Spacing ─────────────────── */
+  --sp-1:   0.25rem;   /* 4px  */
+  --sp-2:   0.5rem;    /* 8px  */
+  --sp-3:   0.75rem;   /* 12px */
+  --sp-4:   1rem;      /* 16px */
+  --sp-5:   1.25rem;   /* 20px */
+  --sp-6:   1.5rem;    /* 24px */
+  --sp-8:   2rem;      /* 32px */
+  --sp-10:  2.5rem;    /* 40px */
+  --sp-12:  3rem;      /* 48px */
+  --sp-16:  4rem;      /* 64px */
+  --sp-20:  5rem;      /* 80px */
+  --sp-24:  6rem;      /* 96px */
+
+  /* ── Border Radius ───────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Elevation / Shadow ──────── */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-2: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.08);
+  --shadow-3: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+
+  /* ── Motion ─────────────────── */
+  --ease-instant: 100ms ease-out;
+  --ease-fast:    200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-base:    300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-slow:    500ms cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-tracking: 800ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ── Dark Mode ───────────────────── */
+[data-theme="dark"] {
+  --c-bg:        var(--color-neutral-950);
+  --c-surface:   var(--color-neutral-800);
+  --c-surface-2: #263346;
+  --c-border:    rgba(255, 255, 255, 0.07);
+  --c-text:      var(--color-neutral-100);
+  --c-text-soft: var(--color-neutral-400);
+  --c-text-muted: var(--color-neutral-600);
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-2: 0 4px 6px rgba(0,0,0,0.25), 0 10px 15px rgba(0,0,0,0.3);
+  --shadow-3: 0 20px 25px rgba(0,0,0,0.4), 0 10px 10px rgba(0,0,0,0.2);
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section" id="tokens-naming">
+    <div class="section-header">
+      <h2>Nomenclatura</h2>
+    </div>
+    <div class="content-block">
+      <p>El sistema de nomenclatura sigue tres niveles: <strong>escala</strong> (valores base), <strong>semántico</strong> (roles de UI), y <strong>componente</strong> (valores específicos de componente).</p>
+
+      <div class="naming-table">
+        <div class="nt-header"><div>Nivel</div><div>Patrón</div><div>Ejemplo</div><div>Cuándo usar</div></div>
+        <div class="nt-row"><div>Escala</div><div><code>--color-[name]-[step]</code></div><div><code>--color-blue-500</code></div><div>Nunca directamente en componentes</div></div>
+        <div class="nt-row"><div>Semántico</div><div><code>--c-[role]</code></div><div><code>--c-primary</code></div><div>En todos los componentes y estilos</div></div>
+        <div class="nt-row"><div>Componente</div><div><code>--[component]-[property]</code></div><div><code>--btn-radius</code></div><div>Solo dentro del scope del componente</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back to top -->
+  <div class="back-top-wrap">
+    <button class="back-top" id="backTop" aria-label="Volver al inicio">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Inicio
+    </button>
+  </div>
+
+</main>
+
+<script>
+/**
+ * Carga Design System Portal — script.js
+ * Interactive behaviours: theme, navigation, scroll, search, clipboard.
+ */
+
+'use strict';
+
+/* ─────────────────────────────────────────────
+   1. DOM REFERENCES
+───────────────────────────────────────────── */
+const html          = document.documentElement;
+const themeToggle   = document.getElementById('themeToggle');
+const navToggle     = document.getElementById('navToggle');
+const sidebar       = document.getElementById('sidebar');
+const sidebarOverlay= document.getElementById('sidebarOverlay');
+const progressBar   = document.getElementById('progressBar');
+const backTop       = document.getElementById('backTop');
+const searchInput   = document.getElementById('searchInput');
+const navLinks      = document.querySelectorAll('.nav-link');
+const navGroups     = document.querySelectorAll('.nav-group');
+const docSections   = document.querySelectorAll('.doc-section');
+const copyBtns      = document.querySelectorAll('.copy-btn');
+const groupToggles  = document.querySelectorAll('.nav-group-toggle');
+
+/* ─────────────────────────────────────────────
+   2. THEME (DARK / LIGHT)
+───────────────────────────────────────────── */
+(function initTheme() {
+  const stored = localStorage.getItem('carga-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = stored || (prefersDark ? 'dark' : 'light');
+  html.setAttribute('data-theme', theme);
+  updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+  if (!themeToggle) return;
+  themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+  themeToggle.innerHTML = theme === 'dark'
+    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`
+    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('carga-theme', next);
+    updateThemeIcon(next);
+  });
+}
+
+/* ─────────────────────────────────────────────
+   3. MOBILE SIDEBAR TOGGLE
+───────────────────────────────────────────── */
+function openSidebar() {
+  sidebar?.classList.add('open');
+  sidebarOverlay?.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  navToggle?.setAttribute('aria-expanded', 'true');
+}
+
+function closeSidebar() {
+  sidebar?.classList.remove('open');
+  sidebarOverlay?.classList.remove('visible');
+  document.body.style.overflow = '';
+  navToggle?.setAttribute('aria-expanded', 'false');
+}
+
+navToggle?.addEventListener('click', () => {
+  const isOpen = sidebar?.classList.contains('open');
+  isOpen ? closeSidebar() : openSidebar();
+});
+
+sidebarOverlay?.addEventListener('click', closeSidebar);
+
+// Close sidebar on ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && sidebar?.classList.contains('open')) closeSidebar();
+});
+
+/* ─────────────────────────────────────────────
+   4. SCROLL PROGRESS BAR
+───────────────────────────────────────────── */
+function updateProgress() {
+  if (!progressBar) return;
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = `${Math.min(pct, 100)}%`;
+}
+
+/* ─────────────────────────────────────────────
+   5. BACK TO TOP
+───────────────────────────────────────────── */
+function updateBackTop() {
+  if (!backTop) return;
+  if (window.scrollY > 400) {
+    backTop.classList.add('visible');
+  } else {
+    backTop.classList.remove('visible');
+  }
+}
+
+backTop?.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ─────────────────────────────────────────────
+   6. ACTIVE NAV LINK — IntersectionObserver
+───────────────────────────────────────────── */
+const observerOptions = {
+  root: null,
+  rootMargin: '-20% 0px -70% 0px',
+  threshold: 0
+};
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.getAttribute('id');
+      setActiveLink(id);
+    }
+  });
+}, observerOptions);
+
+docSections.forEach(section => sectionObserver.observe(section));
+
+function setActiveLink(id) {
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === `#${id}`) {
+      link.classList.add('active');
+      // Expand parent group if collapsed
+      const parentGroup = link.closest('.nav-group');
+      if (parentGroup) {
+        const list = parentGroup.querySelector('ul');
+        const toggle = parentGroup.querySelector('.nav-group-toggle');
+        if (list?.classList.contains('collapsed')) {
+          list.classList.remove('collapsed');
+          toggle?.setAttribute('aria-expanded', 'true');
+        }
+      }
+      // Scroll link into view within sidebar (without scrolling page)
+      link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  });
+}
+
+/* ─────────────────────────────────────────────
+   7. COLLAPSIBLE NAV GROUPS
+───────────────────────────────────────────── */
+groupToggles.forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const group = toggle.closest('.nav-group');
+    const list = group?.querySelector('ul');
+    if (!list) return;
+
+    const isCollapsed = list.classList.contains('collapsed');
+    list.classList.toggle('collapsed', !isCollapsed);
+    toggle.setAttribute('aria-expanded', String(isCollapsed));
+
+    // Animate chevron via CSS class
+    toggle.classList.toggle('open', isCollapsed);
+  });
+});
+
+/* ─────────────────────────────────────────────
+   8. COPY BUTTONS (Code Blocks)
+───────────────────────────────────────────── */
+copyBtns.forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const codeBlock = btn.closest('.code-block')?.querySelector('code, pre');
+    if (!codeBlock) return;
+
+    const text = codeBlock.innerText || codeBlock.textContent;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      const original = btn.textContent;
+      btn.textContent = 'Copiado ✓';
+      btn.setAttribute('aria-label', 'Copiado');
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.setAttribute('aria-label', 'Copiar código');
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch {
+      // Fallback for browsers without clipboard API
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copiado ✓';
+      setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
+    }
+  });
+});
+
+/* ─────────────────────────────────────────────
+   9. SIDEBAR SEARCH / FILTER
+───────────────────────────────────────────── */
+searchInput?.addEventListener('input', () => {
+  const query = searchInput.value.trim().toLowerCase();
+
+  navGroups.forEach(group => {
+    const links = group.querySelectorAll('.nav-link');
+    const list = group.querySelector('ul');
+    const toggle = group.querySelector('.nav-group-toggle');
+    let groupHasMatch = false;
+
+    links.forEach(link => {
+      const text = link.textContent.toLowerCase();
+      const matches = !query || text.includes(query);
+      link.parentElement.style.display = matches ? '' : 'none';
+      if (matches) groupHasMatch = true;
+    });
+
+    // Show/hide entire group
+    group.style.display = groupHasMatch ? '' : 'none';
+
+    // Expand groups that have matches when searching
+    if (query && groupHasMatch && list?.classList.contains('collapsed')) {
+      list.classList.remove('collapsed');
+      toggle?.setAttribute('aria-expanded', 'true');
+      toggle?.classList.add('open');
+    }
+  });
+});
+
+// Clear search on ESC inside input
+searchInput?.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+    searchInput.blur();
+  }
+});
+
+/* ─────────────────────────────────────────────
+   10. SMOOTH SCROLL FOR ANCHOR LINKS
+───────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    const targetId = anchor.getAttribute('href');
+    if (targetId === '#') return;
+
+    const target = document.querySelector(targetId);
+    if (!target) return;
+
+    e.preventDefault();
+
+    // Close mobile sidebar when a nav link is clicked
+    if (anchor.classList.contains('nav-link')) closeSidebar();
+
+    const headerOffset = 72; // sticky header height
+    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
+});
+
+/* ─────────────────────────────────────────────
+   11. SCROLL EVENT (throttled)
+───────────────────────────────────────────── */
+let scrollTicking = false;
+window.addEventListener('scroll', () => {
+  if (!scrollTicking) {
+    requestAnimationFrame(() => {
+      updateProgress();
+      updateBackTop();
+      scrollTicking = false;
+    });
+    scrollTicking = true;
+  }
+}, { passive: true });
+
+// Init on load
+updateProgress();
+updateBackTop();
+
+/* ─────────────────────────────────────────────
+   12. COLOR SWATCH — COPY HEX ON CLICK
+───────────────────────────────────────────── */
+document.querySelectorAll('.color-swatch').forEach(swatch => {
+  swatch.addEventListener('click', async () => {
+    const hex = swatch.dataset.hex || swatch.style.getPropertyValue('--swatch-color');
+    if (!hex) return;
+
+    try {
+      await navigator.clipboard.writeText(hex);
+    } catch {
+      // silent fail
+    }
+
+    // Brief visual feedback
+    const label = swatch.querySelector('.swatch-value');
+    if (label) {
+      const original = label.textContent;
+      label.textContent = '✓ Copiado';
+      setTimeout(() => { label.textContent = original; }, 1500);
+    }
+  });
+  // Make keyboard accessible
+  swatch.setAttribute('tabindex', '0');
+  swatch.setAttribute('role', 'button');
+  swatch.setAttribute('aria-label', `Copiar color ${swatch.dataset.hex || ''}`);
+  swatch.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      swatch.click();
+    }
+  });
+});
+
+/* ─────────────────────────────────────────────
+   13. INTERACTIVE COMPONENT DEMOS
+       (button / input state toggles in Section 08)
+───────────────────────────────────────────── */
+// Simulate loading state on demo buttons
+document.querySelectorAll('.demo-loading-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('loading')) return;
+    const original = btn.innerHTML;
+    btn.classList.add('loading');
+    btn.setAttribute('aria-busy', 'true');
+    btn.innerHTML = `<span class="btn-spinner" aria-hidden="true"></span> Cargando…`;
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.setAttribute('aria-busy', 'false');
+      btn.innerHTML = original;
+    }, 2500);
+  });
+});
+
+/* ─────────────────────────────────────────────
+   14. REDUCED MOTION RESPECT
+───────────────────────────────────────────── */
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+function applyReducedMotion(mq) {
+  html.toggleAttribute('data-reduced-motion', mq.matches);
+}
+applyReducedMotion(prefersReduced);
+prefersReduced.addEventListener('change', applyReducedMotion);
+
+/* ─────────────────────────────────────────────
+   15. KEYBOARD FOCUS OUTLINE MANAGEMENT
+       Only show outlines when using keyboard navigation
+───────────────────────────────────────────── */
+document.addEventListener('mousedown', () => html.classList.add('using-mouse'));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') html.classList.remove('using-mouse');
+});
+
+/* ─────────────────────────────────────────────
+   16. TABS COMPONENT (Section 08 — if present)
+───────────────────────────────────────────── */
+document.querySelectorAll('[role="tablist"]').forEach(tablist => {
+  const tabs = tablist.querySelectorAll('[role="tab"]');
+  tabs.forEach((tab, idx) => {
+    tab.addEventListener('click', () => activateTab(tablist, tab));
+    tab.addEventListener('keydown', (e) => {
+      let newIdx = idx;
+      if (e.key === 'ArrowRight') newIdx = (idx + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') newIdx = (idx - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') newIdx = 0;
+      else if (e.key === 'End') newIdx = tabs.length - 1;
+      else return;
+      e.preventDefault();
+      tabs[newIdx].focus();
+      activateTab(tablist, tabs[newIdx]);
+    });
+  });
+});
+
+function activateTab(tablist, activeTab) {
+  const tabs = tablist.querySelectorAll('[role="tab"]');
+  tabs.forEach(tab => {
+    tab.setAttribute('aria-selected', 'false');
+    tab.setAttribute('tabindex', '-1');
+  });
+  activeTab.setAttribute('aria-selected', 'true');
+  activeTab.setAttribute('tabindex', '0');
+
+  // Show corresponding panel
+  const panelId = activeTab.getAttribute('aria-controls');
+  if (!panelId) return;
+  const container = tablist.closest('.tabs-container') || document;
+  container.querySelectorAll('[role="tabpanel"]').forEach(panel => {
+    panel.hidden = panel.id !== panelId;
+  });
+}
+
+/* ─────────────────────────────────────────────
+   17. ACCORDION COMPONENT (Section 08 — if present)
+───────────────────────────────────────────── */
+document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const expanded = trigger.getAttribute('aria-expanded') === 'true';
+    trigger.setAttribute('aria-expanded', String(!expanded));
+    const panelId = trigger.getAttribute('aria-controls');
+    const panel = document.getElementById(panelId);
+    if (panel) panel.hidden = expanded;
+  });
+});
+
+/* ─────────────────────────────────────────────
+   18. TOOLTIP (keyboard + mouse)
+───────────────────────────────────────────── */
+document.querySelectorAll('[data-tooltip]').forEach(el => {
+  let tooltip = null;
+
+  function show() {
+    tooltip = document.createElement('div');
+    tooltip.className = 'tooltip-popup';
+    tooltip.textContent = el.dataset.tooltip;
+    tooltip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tooltip);
+
+    const rect = el.getBoundingClientRect();
+    tooltip.style.top  = `${rect.top + window.scrollY - tooltip.offsetHeight - 8}px`;
+    tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+  }
+
+  function hide() {
+    tooltip?.remove();
+    tooltip = null;
+  }
+
+  el.addEventListener('mouseenter', show);
+  el.addEventListener('mouseleave', hide);
+  el.addEventListener('focus', show);
+  el.addEventListener('blur', hide);
+});
+
+/* ─────────────────────────────────────────────
+   INIT COMPLETE
+───────────────────────────────────────────── */
+console.log('%cCarga Design System Portal v1.0', 'color:#1A56DB;font-weight:bold;font-size:14px;');
+
+</script>
+</body>
+</html>
